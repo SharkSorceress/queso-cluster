@@ -15,13 +15,6 @@ def _gen_dataID(Input):
 def pick_jth_label(labelLst, j):
 	return(np.array([str(x)[j] for x in labelLst.astype(int)]).astype(int))
 
-# def leadDigit(num):
-# 	out = np.floor(10**(np.log10(num) - np.floor(np.log10(num))))
-# 	# if np.isnan(out).any():
-# 	# 	#print(np.where(np.isnan(np.log10(num))))
-# 	# 	out[np.where(np.isnan(out))[0]] = 0
-#	return(out)
-
 def rotateArray(image, turns):
 	
 	for i in range(turns):

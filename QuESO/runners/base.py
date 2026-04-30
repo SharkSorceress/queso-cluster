@@ -1,5 +1,20 @@
 from lib.util.imports import *
-import lib.util.calc as _calc 
+#import lib.util.calc as _calc 
+
+
+import atoms.base as atom
+@nb.njit()
+def runStart(k, data, start='max'):
+	N                          = data.shape[0]
+	starting_centroid          = np.zeros((k, data.shape[1]), data.dtype)
+	starting_centroid[0, :]    = data[nb.u4(N * np.random.random()), :]
+	match start:
+		case '++':
+			initial_condition  = atom.startPlusPlus(data, k, starting_centroid)
+		case 'max':
+			initial_condition  = atom.startMax(data, k, starting_centroid)
+	return(initial_condition)
+
 
 
 def _runOptimalKSearch(labels, dataCube, converge):
@@ -112,3 +127,4 @@ def _findOptimalK(data, converge, zindx, func1, func2):
 				counter = 0
 		
 	return(optimalGroupLst)
+

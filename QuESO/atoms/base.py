@@ -1,3 +1,21 @@
+def normZ(dataSquare):
+	print("TBD")
+	return(dataSquare)
+
+def normMaximum(dataSquare):
+	norm_func = lambda x: x/(x.max(axis=1))[:,None]
+	normCube = da.blockwise(norm_func, 'ij', dataCube, 'ij', dtype=np.float32)
+	return(normSquare)
+
+def normContinuum(dataSquare, continuumIndx):
+	norm_func = lambda x: x/(x[:, int(continuum)])[:,None]
+	normCube = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
+	return(normSquare)
+	
+def concatSpectra(dataSquareLst):
+	return(dask.array.concatenate(dataSquareLst))	
+
+
 @nb.njit(cache=True)
 def minimize(data, decisions, size):
 	data_label      = np.zeros(data.shape[0], dtype=np.int32)
@@ -44,18 +62,6 @@ def curvature(y):
 	return(np.sqrt(np.power(signedCurvature, 2)))
 #	return(np.abs(np.gradient(np.gradient(y)))/(np.sqrt(1 + np.gradient(y)**2)**3))
 
-
-@nb.njit()
-def runStart(k, data, start='max'):
-	N                          = data.shape[0]
-	starting_centroid          = np.zeros((k, data.shape[1]), data.dtype)
-	starting_centroid[0, :]    = data[nb.u4(N * np.random.random()), :]
-	match start:
-		case '++':
-			initial_condition  = startPlusPlus(data, k, starting_centroid)
-		case 'max':
-			initial_condition  = startMax(data, k, starting_centroid)
-	return(initial_condition)
 
 @nb.njit()
 def startMax(data, k, decisions):

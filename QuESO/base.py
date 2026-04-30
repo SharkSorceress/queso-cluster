@@ -1,3 +1,25 @@
+import QuESO.atoms.base as baseAtom
+
+def prep(dataSquare, norm='continuum', maskSquare=None, quSquare=None):
+	match norm:
+		case 'continuum':
+			prepSquare = baseAtom.normContinuum(dataSquare)
+		case 'maximum':
+			prepSquare = baseAtom.normMaximum(dataSquare)
+		case 'Z':
+			prepSquare = baseAtom.normZ(dataSquare)
+
+	if not (maskSquare is None):
+		prepSquare *= maskSquare.rebin(1, -1).broadcast_to(dataSquare.shape)
+
+	if not (quSquare is None):
+		#> TODO: Implement quSquare normalization
+		prepSquare -= quSquare
+
+	return(prepSquare)
+
+
+
 def main(config, frame, spectralParams, quiescentFrame=np.array(0), optimalGroups=None, intrinsicPass=True, altLabels=None):
 	_, ii, jj = spectralParams
 	
@@ -11,49 +33,6 @@ def main(config, frame, spectralParams, quiescentFrame=np.array(0), optimalGroup
 		filter_indx = filter_indx[np.where(intrinsic_frame[filter_indx, ii:jj+1].sum(axis=-1) != 0)[0]]
 		util.logg("msg", val="residuals calculated")
 
-	# intrinsic_frame = frame
-	# filter_indx 	= np.where(np.logical_not(np.isnan(frame.sum(axis=-1))))[0]
-
-	# if quiescentFrame.sum() != 0:
-	# 	intrinsic_frame = frame - quiescentFrame
-	# 	filter_indx = filter_indx[np.where(intrinsic_frame[filter_indx, ii:jj].sum(axis=-1) != 0)[0]]
-	# 	util.logg("msg", val="residuals calculated")
-
-	# s0_no_nan = np.ones(len(filter_indx))
-	# if intrinsicPass:
-	# 	s0_no_nan_tmp = np.zeros(len(filter_indx))
-
-	# 	intrinsicConfig = config.clusterConfig['intrinsic']
-	# 	for i in range(len(intrinsicConfig)):
-	# 		key =  intrinsicConfig[i]['label']
-	# 		indxs = config.lines[lineIndx][key]
-	# 		if type(indxs) == list:
-	# 			iframe = intrinsic_frame[filter_indx, indxs[0]:indxs[1]].sum(axis=-1)
-	# 		else:
-	# 			iframe = intrinsic_frame[filter_indx, indxs]
-
-	# 		print(intrinsicConfig[i])
-	# 		if 'layerConfig' in list(intrinsicConfig[i].keys()):
-	# 			if 'bins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-	# 				bins = intrinsicConfig[i]['layerConfig']['bins']
-	# 				s0_0_no_nan 	= _runIntrinsic(len(np.diff(bins)), iframe, edgeOverride=np.array(bins).astype(float))
-
-	# 			if 'nbins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-	# 				nbins = intrinsicConfig[i]['layerConfig']['nbins']
-	# 				s0_0_no_nan 	= _runIntrinsic(nbins, iframe)
-
-	# 		else:
-	# 			s0_0_no_nan 	= _runIntrinsic(1, iframe)
-
-	# 		s0_no_nan_tmp += s0_0_no_nan*(10**(i))
-
-	# 	s0_Lst = np.unique(s0_no_nan_tmp)
-	# 	for i in range(len(s0_Lst)):
-	# 		# print([i, s0_Lst[i]])
-	# 		indx = np.where(s0_no_nan_tmp == s0_Lst[i])[0]
-	# 		s0_no_nan[indx.astype(int)] = i+1
-	
-	# print(np.unique(s0_no_nan))
 	if type(altLabels) != type(None):		
 		s0_no_nan = altLabels[filter_indx]
 	else:
@@ -69,6 +48,7 @@ def main(config, frame, spectralParams, quiescentFrame=np.array(0), optimalGroup
 		intrinsic_frame = frame/(np.nanmax(frame[:, :], axis=-1))[:, None] - quiescentFrame/(np.nanmax(quiescentFrame[:, :], axis=-1))[:, None]
 		frame_norm = intrinsic_frame[filter_indx, ii:jj+1]
 
+    #> TODO: Fix this logic
 	loopOpt = True
 	while loopOpt:
 		s0s1_labels, sscore = _mainOptimization(config, frame_norm, s0_no_nan, optimalGroups=optimalGroups)
@@ -117,6 +97,8 @@ def _mainIntrinsic(config, intrinsic_frame, intrinsicPass, filter_indx, lineIndx
 			s0_no_nan[indx.astype(int)] = i+1
 	return(s0_no_nan)
 
+
+#> TODO: reduce this to simple logic
 def _mainOptimization(config, dataCube, labels, optimalGroups=None):
 
 	k_lst = [int(len(np.unique(labels)))]

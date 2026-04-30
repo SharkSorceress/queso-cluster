@@ -1,17 +1,27 @@
 from lib.util.imports import *
+import argparse
 
-class intrument:
-	def __init__(self, config, dataPath):
-		self.config = config
+def QuESO(eventRunnerFname):
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-e', '--event')
+	parser.add_argument('-r', '--run')
+	args = parser.parse_args()	
+
+	eventObj = loader.eventInput(eventRunnerFname, int(args.event), int(args.run))
+	return(eventObj)
+
+
+class instrument:
+	def __init__(self, instrument, dataPath):
 		self.dataPath = dataPath
 
-		match self.config.data['instrument']:
-			case 'ViSP':
-				self.observation = self.vispLoad()
-			case 'IRIS':
-				self.observation = self.irisLoad()
-			case 'FISS':
-				self.observation = self.fissLoad()
+		# match instrument:
+		# 	case 'ViSP':
+		# 		self.observation = self.vispLoad()
+		# 	case 'IRIS':
+		# 		self.observation = self.irisLoad()
+		# 	case 'FISS':
+		# 		self.observation = self.fissLoad()
 
 	def vispLoad(self):
 		dataset = dkist.load_dataset(self.dataPath)
@@ -40,8 +50,9 @@ class intrument:
 						flat_axis *= dnaxis_entry
 						test.append(dnaxis_entry)
 
-		self.rasterSize 	= np.min(test)
 		self.alongSlitSize 	= np.max(test)
+		self.rasterSize 	= (self.dataCube.shape[0] // alongSlitSize) // numRaster
+
 		pxlSize = [[], []]
 		for m in range(dataset.headers['WCSAXES'][0]):
 			match dataset.headers['CTYPE' + str(m+1)][0]:
@@ -57,18 +68,11 @@ class intrument:
 			'pxlSlitWidth': dataset.headers['VSPWID'][0]
 		}
 
-		self.aspect = self.spaceInfo['pxlAlongSlit']/self.spaceInfo['pxlSlitWidth']
-		if dataset.headers['DSETID'][0] in ['BQKNO', 'BNYKX']:
-				spectral_len = 998
-				spectral_loc -= 1
-				flat_axis = 400 * 2539
-				self.spaceInfo['pxlAlongSlit'] = 0.0195
-
-		self.dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
-		self.shape = self.dataCube.shape
+		dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
+		self.shape = dataCube.shape
 		if numRaster == 1:
-				self.shape = (1, *self.dataCube.shape)
-		self.dataCube = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
+				self.shape = (1, *dataCube.shape)
+		self.dataSquare = dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
 
 		self.waveInfo = {
 			"lineLabel": "Ca II IRT",#dataset.headers['WAVEBAND'][0],
@@ -288,21 +292,11 @@ class fissDataset:
 class vispDataset:
 	def __init__(self, dataPath, stokes=0):
 		dataset = dkist.load_dataset(dataPath)
-		# print(np.unique(dataset.headers['CADENCE']))
-		# print(np.unique(dataset.headers['CADMAX']))
-		# print(np.unique(dataset.headers['CADMIN']))
-		# #print(dataset.headers['SPCLN1'])
-		# print(dataset.headers['DATEREF'])
-		# self.header = dataset.headers[0]
 		self.dataCube = dataset.data
-		# self.header 	= dataset.headers[0]
-		#print([dataset.headers['CADENCE','CADMIN','CADMAX']])
-
-		#print(dataset.headers['CADENCE'])
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
 			self.dataCube = self.dataCube[stokes, ...] 
 		axisInfo = [dataset.wcs.pixel_axis_names[::-1], dataset.data.shape]
-		#print(axisInfo)
+
 		flat_axis = 1
 		numRaster = 1
 		test = []
@@ -310,8 +304,6 @@ class vispDataset:
 		
 		for n in range(dataset.headers['DNAXIS'][0]):
 			dnaxis_entry = dataset.headers['DNAXIS' + str(n+1)][0]
-			
-			#print([dataset.headers['DTYPE' + str(n+1)][0], dnaxis_entry])
 			match dataset.headers['DTYPE' + str(n+1)][0]: 
 				case 'SPECTRAL':
 						spectral_len = dnaxis_entry
@@ -326,15 +318,11 @@ class vispDataset:
 
 		self.rasterSize 	= np.min(test)
 		self.alongSlitSize 	= np.max(test)
-		#print([self.rasterSize, self.alongSlitSize])
-		#print((dataset.headers['CADENCE'][0] * self.rasterSize) + dataset.headers['CADMAX'][0])
 		#self.mu = np.sqrt((1 - np.power(crval[0]/1000., 2))*(1 - np.power(crval[1]/1000., 2)))
-		
 		#self.limbDark = util.LimbDark(854.2091, self.mu)
-		#print([self.limbDark, self.mu])
+
 		pxlSize = [[], []]
 		for m in range(dataset.headers['WCSAXES'][0]):
-			#print(dataset.headers['CTYPE' + str(m+1)][0])
 			match dataset.headers['CTYPE' + str(m+1)][0]:
 				case 'HPLT-TAN':                     
 					pxlSize[0].append(dataset.headers['CDELT' + str(m+1)][0])   
@@ -348,36 +336,15 @@ class vispDataset:
 			'pxlSlitWidth': dataset.headers['VSPWID'][0]
 		}
 
-		self.aspect = self.spaceInfo['pxlAlongSlit']/self.spaceInfo['pxlSlitWidth']
-		#print([dataset.headers['VSPWID'][0], min(pxlSize[0])])
-		if dataset.headers['DSETID'][0] in ['BQKNO', 'BNYKX']:
-				spectral_len = 998
-				spectral_loc -= 1
-				flat_axis = 400 * 2539
-				self.spaceInfo['pxlAlongSlit'] = 0.0195
-		# print(self.spaceInfo)
-		# sys.exit()
-			#  print([dataset.headers['CTYPE' + str(m+1)][0], ])
-
-		#print(numRaster)
 		self.dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
 		self.shape = self.dataCube.shape
 		if numRaster == 1:
 				self.shape = (1, *self.dataCube.shape)
 		#print(self.shape)
-		self.dataCube = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
+		self.dataCube = self.dataCube.reshape(flat_axis, spectral_len)
 
-		#print(self.dataCube.shape)
-		#test1 = self.dataCube[2538,:]
-		#test = self.dataCube.reshape(6000, 2538, spectral_len)[1,0,:]
-		#print(da.equal(test1, test).compute())
-		# print(dataset.headers['WAVEMIN'][0][0]-0.56287825)
-		# print(dataset.headers['WAVEMAX'][0][0]-0.56287825)
-	#            print(waveAxisDelta)
-		# print(dataset.headers.keys())
-		# print(dataset.headers)
 		self.waveInfo = {
-			"lineLabel": "Ca II IRT",#dataset.headers['WAVEBAND'][0],
+			"lineLabel":dataset.headers['WAVEBAND'][0],
 			"waveDelta": waveAxisDelta,
 			"waveExtrema": (dataset.headers['WAVEMIN'][0], 
 							dataset.headers['LINEWAV'][0], 
@@ -419,37 +386,37 @@ class eventRunner:
 
 class srcMeta:
 	def __init__(self, srcInput):
-			self.id = srcInput['id']['data']
-			self.instrument = srcInput['id']['instrument']
-			if 'mod' in list(srcInput['id'].keys()):
-				self.id_mod = srcInput['id']['mod']
-			else:
-				self.id_mod = ""
-							
-			if 'theme' in list(srcInput.keys()):
-				self.theme = srcInput['theme']
-			else:
-				self.theme = '#0000FF'
+		self.id = srcInput['id']['data']
+		self.instrument = srcInput['id']['instrument']
+		if 'mod' in list(srcInput['id'].keys()):
+			self.id_mod = srcInput['id']['mod']
+		else:
+			self.id_mod = ""
+						
+		if 'theme' in list(srcInput.keys()):
+			self.theme = srcInput['theme']
+		else:
+			self.theme = '#0000FF'
 
-			if 'clustering' in list(srcInput.keys()):
-				srcCluster 	= srcInput['clustering']
-			else:
-				srcCluster = {'S0': [{'label': 'window', 'layerConfig': {'bins': [-1, 999]}}], 
-						  'S1': [{'layerGroups': [1], 'layerConfig': {'converge': 0}}]}
-
-
-			if 'residual' in list(srcInput.keys()):
-				self.residual = bool(srcInput['residual'])
-
-			self.clusterConfig = {'intrinsic': srcCluster['S0'],
-									'optimized': srcCluster['S1']}
+		if 'clustering' in list(srcInput.keys()):
+			srcCluster 	= srcInput['clustering']
+		else:
+			srcCluster = {'S0': [{'label': 'window', 'layerConfig': {'bins': [-1, 999]}}], 
+						'S1': [{'layerGroups': [1], 'layerConfig': {'converge': 0}}]}
 
 
-			self.lines = srcInput['lines']
+		if 'residual' in list(srcInput.keys()):
+			self.residual = bool(srcInput['residual'])
 
-			self.waveCoeff = np.array(srcInput['axis_fit']['coeff'])
-			if srcInput['axis_fit']['unit'] == 'nm':
-				self.waveCoeff *= 10
+		self.clusterConfig = {'intrinsic': srcCluster['S0'],
+								'optimized': srcCluster['S1']}
+
+
+		self.lines = srcInput['lines']
+
+		self.waveCoeff = np.array(srcInput['axis_fit']['coeff'])
+		if srcInput['axis_fit']['unit'] == 'nm':
+			self.waveCoeff *= 10
 
 
 class runnerMeta:
@@ -484,80 +451,80 @@ class eventInput:
 				print(error)
 
 
-class inputEntry:
-	def __init__(self, inputList, runnerIndex, vispIndex):
-		stokes_lst 		= ['I', 'Q', 'U', 'V']
-		runnerInput 	= inputList['run']
-		self.date       = runnerInput['date']
-		self.override   = runnerInput['override']
+# class inputEntry:
+# 	def __init__(self, inputList, runnerIndex, vispIndex):
+# 		stokes_lst 		= ['I', 'Q', 'U', 'V']
+# 		runnerInput 	= inputList['run']
+# 		self.date       = runnerInput['date']
+# 		self.override   = runnerInput['override']
 
-		runnerCluster 	= runnerInput['clustering']
+# 		runnerCluster 	= runnerInput['clustering']
 
-		self.clusterConfig = {'intrinsic': runnerCluster['stages']['S0'],
-								'optimized': runnerCluster['stages']['S1'],
-								'discrimination': runnerCluster['stages']['S2'],
-								'approach': runnerCluster['approach']}
+# 		self.clusterConfig = {'intrinsic': runnerCluster['stages']['S0'],
+# 								'optimized': runnerCluster['stages']['S1'],
+# 								'discrimination': runnerCluster['stages']['S2'],
+# 								'approach': runnerCluster['approach']}
 		
 
 
-		if 'correction' in inputList['run']['data'].keys():
-			self.correction = {'axis_fit': runnerInput['data']['correction']['axis_fit'],
-								'axis_shift':  runnerInput['data']['correction']['axis_shift']}
+# 		if 'correction' in inputList['run']['data'].keys():
+# 			self.correction = {'axis_fit': runnerInput['data']['correction']['axis_fit'],
+# 								'axis_shift':  runnerInput['data']['correction']['axis_shift']}
 
-		self.data       = {'instrument': runnerInput['data']['instrument'], 
-					 		'id': runnerInput['data']['id'][vispIndex],
-							'stokes': int(stokes_lst.index(runnerInput['data']['stokes'])),
-							} 
+# 		self.data       = {'instrument': runnerInput['data']['instrument'], 
+# 					 		'id': runnerInput['data']['id'][vispIndex],
+# 							'stokes': int(stokes_lst.index(runnerInput['data']['stokes'])),
+# 							} 
 	
-		self.spectralParams = {}
+# 		self.spectralParams = {}
 
-		for i in list(runnerInput['data']['spectral'].keys()):
-			self.spectralParams[i] = runnerInput['data']['spectral'][i]
+# 		for i in list(runnerInput['data']['spectral'].keys()):
+# 			self.spectralParams[i] = runnerInput['data']['spectral'][i]
 
-		if 'theme' not in inputList['run'].keys():
-			self.theme = {'primary': '#0000FF', 
-						  'cmap':  LinearSegmentedColormap.from_list('', ['white', '#0000FF'])}
-		else:
-			self.theme = {'primary': inputList['run']['theme'], 
-						  'cmap':  LinearSegmentedColormap.from_list('', ['white', inputList['run']['theme']])}
-		# if 'post' in inputList['run'].keys():
-		# 		self.timeMax = inputList['run']['post']['timeMax']
+# 		if 'theme' not in inputList['run'].keys():
+# 			self.theme = {'primary': '#0000FF', 
+# 						  'cmap':  LinearSegmentedColormap.from_list('', ['white', '#0000FF'])}
+# 		else:
+# 			self.theme = {'primary': inputList['run']['theme'], 
+# 						  'cmap':  LinearSegmentedColormap.from_list('', ['white', inputList['run']['theme']])}
+# 		# if 'post' in inputList['run'].keys():
+# 		# 		self.timeMax = inputList['run']['post']['timeMax']
 		
-		if 'manual' in runnerInput.keys():
-				self.manualOverride = inputList['run']['manual']
+# 		if 'manual' in runnerInput.keys():
+# 				self.manualOverride = inputList['run']['manual']
 
 
-		self.runner     = runnerIndex
+# 		self.runner     = runnerIndex
 
-class Input:
-	def __init__(self, fname):
-		self.configList = []
-		self.indexMap   = []
-		configList = self._load(fname)
-		for i in range(len(configList)):
-			for j in range(len(configList[i]['run']['data']['id'])):
-				self.configList.append(inputEntry(configList[i], i, j))
-				self.indexMap.append(configList[i]['run']['data']['id'][j])
-	def _load(self, fname):
-		with open(fname) as configFile:
-			try:
-				configInput = yaml.safe_load(configFile)
-				# for i in range(len(configInput)):
-				# 	if configInput[i]['run']['clustering'] == 'blind':
-				# 		configInput[i]['run'].update({'clustering':{'k_lvl':  [4,4,4],
-				# 										 'type': 'hybrid'}})
-				# 	if 'converge' not in configInput[i]['run']['data'].keys():
-				# 		configInput[i]['run'].update({'data': {'id': configInput[i]['run']['data']['id'],
-				# 										'converge': 1e-6}})
-				return(configInput) 
-			except yaml.YAMLError as error:
-				print(error)
+# class Input:
+# 	def __init__(self, fname):
+# 		self.configList = []
+# 		self.indexMap   = []
+# 		configList = self._load(fname)
+# 		for i in range(len(configList)):
+# 			for j in range(len(configList[i]['run']['data']['id'])):
+# 				self.configList.append(inputEntry(configList[i], i, j))
+# 				self.indexMap.append(configList[i]['run']['data']['id'][j])
+# 	def _load(self, fname):
+# 		with open(fname) as configFile:
+# 			try:
+# 				configInput = yaml.safe_load(configFile)
+# 				# for i in range(len(configInput)):
+# 				# 	if configInput[i]['run']['clustering'] == 'blind':
+# 				# 		configInput[i]['run'].update({'clustering':{'k_lvl':  [4,4,4],
+# 				# 										 'type': 'hybrid'}})
+# 				# 	if 'converge' not in configInput[i]['run']['data'].keys():
+# 				# 		configInput[i]['run'].update({'data': {'id': configInput[i]['run']['data']['id'],
+# 				# 										'converge': 1e-6}})
+# 				return(configInput) 
+# 			except yaml.YAMLError as error:
+# 				print(error)
 
 
-class hiKObj:
-	def __init__(self, labels, spectral, quiescent):
-		self.kLabels            = labels
-		self.spectralParams     = spectral
-		self.quiescentSpectrum  = quiescent
+# class hiKObj:
+# 	def __init__(self, labels, spectral, quiescent):
+# 		self.kLabels            = labels
+# 		self.spectralParams     = spectral
+# 		self.quiescentSpectrum  = quiescent
 
 		

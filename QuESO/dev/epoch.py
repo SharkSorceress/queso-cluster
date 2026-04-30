@@ -1,3 +1,6 @@
+
+
+
 class EpochDriven:
 	def __init__(self, config, catalogName):
 		self.catalogBase = catalogName
@@ -12,58 +15,49 @@ class EpochDriven:
 		self.config = config 
 		self.dirid = ''.join(config.date.split('-'))
 		# self.dataID, self.coreIndx = util._gen_dataID(config)
-		self.visp_id = self.config.srcLst.id
+		# self.visp_id = self.config.srcLst.id
 
 
 		spectralConfig 		= self.config.srcLst.lines[0]
 		self.spectralWindow = spectralConfig['window']
 		self.lineCore 		= spectralConfig['core']
 		self.continuum 		= spectralConfig['continuum']
-		self.waveCoeff		= self.config.srcLst.waveCoeff
+		waveCoeff		= self.config.srcLst.waveCoeff
+
+		self.waveFit = np.poly1d(waveCoeff)(np.arange(self.spectralData.shape[-1]))
 
 		#lineCore, ii, jj
 
 
-		__loadLog__ = util.logg("start", val="Load")
-		self.loadViSP()
-		self.delayAIA()
-	#		self.loadAIA()
-		util.logg("stop", _log=__loadLog__)
+	# 	__loadLog__ = util.logg("start", val="Load")
+	# 	self.loadViSP()
+	# 	self.delayAIA()
+	# #		self.loadAIA()
+	# 	util.logg("stop", _log=__loadLog__)
 
-	def loadViSP(self):
-		self.spectralData = vispDataset(globalVars.dkist_dir + "/" + self.dirid + "/" + self.visp_id + "/")
+	def __getattr__(self, name):
+		parentLst = [self.config]
+		for p in parentLst:
+			if hasattr(p, name):
+				return getattr(p, name)
+			else:
+				continue
+		raise AttributeError("No parents have object with attribute '%s'" % name)
+
+	# def loadViSP(self):
+	# 	self.spectralData = vispDataset(globalVars.dkist_dir + "/" + self.dirid + "/" + self.visp_id + "/")
 		
-		self.dataCube = self.spectralData.dataCube.compute()
-		norm_func = lambda x: x/(x[:, int(self.continuum)])[:,None]
-		self.normCube = da.blockwise(norm_func, 'ij', self.dataCube, 'ij', dtype=np.float32)
+	# 	#self.dataCube = self.spectralData.dataCube.compute()
+	# 	norm_func = lambda x: x/(x[:, int(self.continuum)])[:,None]
+	# 	self.normSquare = da.blockwise(norm_func, 'ij', self.dataCube, 'ij', dtype=np.float32)
 
+	
+	# 	self.correct = lambda x: x.reshape(self.spaceInfo['alongSlitSize'], self.spaceInfo['rasterSize']).T.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])
 
-		alongSlitSize   = int(np.max(self.spectralData.shape))
-		maxRasters      = self.spectralData.spaceInfo['maxRasters']
-		rasterSize      = int((self.dataCube.shape[0] / alongSlitSize) / maxRasters)
+	# 	self.correct_3d = lambda x,y: x.reshape(self.spaceInfo['alongSlitSize'], self.spaceInfo['rasterSize'], y).T.reshape((self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'], y))
 
-		self.spaceInfo = {'alongSlitSize': alongSlitSize,
-							'rasterSize': rasterSize,
-							'maxRasters': maxRasters}
-
-		self.deltas = {'pxlSlitWidth': self.spectralData.spaceInfo['pxlSlitWidth'],
-						'pxlAlongSlit': self.spectralData.spaceInfo['pxlAlongSlit']}
-
-		
-		self.waveFit = np.poly1d(self.waveCoeff)(np.arange(self.spectralData.shape[-1]))
-
-		print(self.waveFit[self.spectralWindow[0]:self.spectralWindow[1]+1] - self.waveFit[self.lineCore])
-		print(self.waveFit[self.lineCore])
-		# sys.exit()
-
-		self.aspect = self.deltas['pxlAlongSlit']/self.deltas['pxlSlitWidth']
-
-		self.correct = lambda x: x.reshape(self.spaceInfo['alongSlitSize'], self.spaceInfo['rasterSize']).T.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])
-
-		self.correct_3d = lambda x,y: x.reshape(self.spaceInfo['alongSlitSize'], self.spaceInfo['rasterSize'], y).T.reshape((self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'], y))
-
-		self.flatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])  
-		self.unflatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize'], self.spaceInfo['alongSlitSize']) 
+	# 	self.flatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])  
+	# 	self.unflatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize'], self.spaceInfo['alongSlitSize']) 
 
 
 	def clustering(self, frame, altLabels=None):
@@ -236,28 +230,29 @@ class EpochDriven:
 
 
 
-	def prep(self):
-		__prepLog__ = util.logg("start", val="Preparations")
-		prepped_frame 	= np.zeros(self.spectralData.shape[1:])
-		mask_map = self.unflatten(self.mask_map)
-		#self.unflatten(self.correct(self.mask_map))#self.unflatten(self.mask_map)
+	# def prep(self):
+	# 	__prepLog__ = util.logg("start", val="Preparations")
+	# 	prepped_frame 	= np.zeros(self.spectralData.shape[1:])
+	# 	mask_map = self.unflatten(self.mask_map)
+	# 	#self.unflatten(self.correct(self.mask_map))#self.unflatten(self.mask_map)
 
-		expanded_dataCube = self.dataCube.reshape(self.spectralData.shape[1:])
-		if self.config.runners.config['useMask']:	
-			for x in range(self.spaceInfo['rasterSize']):
-				for y in range(self.spaceInfo['alongSlitSize']):
-					if mask_map[x, y]:
-						prepped_frame[x, y, :] = expanded_dataCube[x, y, :]
-					else:
-						prepped_frame[x, y, :] = np.nan
+	# 	expanded_dataCube = self.dataCube.reshape(self.spectralData.shape[1:])
+	# 	if self.config.runners.config['useMask']:	
+	# 		# for x in range(self.spaceInfo['rasterSize']):
+	# 		# 	for y in range(self.spaceInfo['alongSlitSize']):
+	# 		# 		if mask_map[x, y]:
+	# 		# 			prepped_frame[x, y, :] = expanded_dataCube[x, y, :]
+	# 		# 		else:
+	# 		# 			prepped_frame[x, y, :] = np.nan
+
 	
-		else:
-			for x in range(self.spaceInfo['rasterSize']):
-				for y in range(self.spaceInfo['alongSlitSize']):			
-					prepped_frame[x, y, :] = expanded_dataCube[x, y, :]
+	# 	else:
+	# 		for x in range(self.spaceInfo['rasterSize']):
+	# 			for y in range(self.spaceInfo['alongSlitSize']):			
+	# 				prepped_frame[x, y, :] = expanded_dataCube[x, y, :]
 
-		util.logg("stop", _log=__prepLog__)
-		return(prepped_frame)
+	# 	util.logg("stop", _log=__prepLog__)
+	# 	return(prepped_frame)
 
 	def delayAIA(self):
 		# aiaCube = readsav(globalVars.home_dir + self.dirid + '/results/transformed_lgtcube_' + self.visp_id + '.sav')['transformed_lgtcube'].astype(np.int32)

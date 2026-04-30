@@ -61,21 +61,22 @@ import lib.util.style as sty
 
 import lib.util.ViSP_tools as vt
 
-www_catalog  = "https://solar.physics.montana.edu/sriley/catalog"
-www_catkey   = "https://solar.physics.montana.edu/sriley/catalog_key"
-www_main     = "https://solar.physics.montana.edu/sriley" 
+#www_catalog  = "https://solar.physics.montana.edu/sriley/catalog"
+#www_catkey   = "https://solar.physics.montana.edu/sriley/catalog_key"
+#www_main     = "https://solar.physics.montana.edu/sriley" 
 
-dkist_dir = "/disk/data/DKIST/"
+dkist_dir = ""
+home_dir  = "" 
 
-match os.uname()[1]:
-    case 'filament':
-        home_dir = '/disk/data/sriley/'
-        www_dir  = '/www/sriley'
-    case 'mandjetcola13':
-        home_dir = '/hdd/filament/'
-        globus_dir = '/hdd/globusconnectpersonal-*/'
-    case 'neothothcola13':
-        home_dir = '/media/pharaohcola13/USB DISK/filament/'
+# match os.uname()[1]:
+#     case 'filament':
+#         home_dir = '/disk/data/sriley/'
+#         #www_dir  = '/www/sriley'
+#     case 'mandjetcola13':
+#         home_dir = '/hdd/filament/'
+#         #globus_dir = '/hdd/globusconnectpersonal-*/'
+#     case 'neothothcola13':
+#         home_dir = '/media/pharaohcola13/USB DISK/filament/'
         
 
 __version__ = "0.0.0"
