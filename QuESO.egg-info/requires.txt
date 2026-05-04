@@ -1,0 +1,9 @@
+numpy
+dkist
+scipy
+numba
+astropy
+numba_progress
+dask
+pyyaml
+argparse

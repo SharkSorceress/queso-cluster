@@ -1,20 +1,89 @@
+import numpy as np
+import dask.array as da
+import numba as nb
+
+
 def normZ(dataSquare):
 	print("TBD")
 	return(dataSquare)
 
 def normMaximum(dataSquare):
 	norm_func = lambda x: x/(x.max(axis=1))[:,None]
-	normCube = da.blockwise(norm_func, 'ij', dataCube, 'ij', dtype=np.float32)
+	normSquare = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
 	return(normSquare)
 
 def normContinuum(dataSquare, continuumIndx):
-	norm_func = lambda x: x/(x[:, int(continuum)])[:,None]
-	normCube = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
+	norm_func = lambda x: x/(x[:, int(continuumIndx)])[:,None]
+	normSquare = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
 	return(normSquare)
 	
 def concatSpectra(dataSquareLst):
-	return(dask.array.concatenate(dataSquareLst))	
+	return(da.concatenate(dataSquareLst))	
 
+@nb.njit()
+def numba_histogram(a, bins, lim):
+	hist = np.zeros((bins,), dtype=np.intp)
+	bin_edges = get_bin_edges(bins, lim)
+
+	for x in a.flat:
+		bin = compute_bin(x, bin_edges)
+		if bin is not None:
+			hist[int(bin)] += 1
+
+	return hist, bin_edges
+
+
+
+def rotateArray(image, turns):
+	
+	for i in range(turns):
+		image = np.array(list(zip(*image[::-1])))
+
+	return(image[::-1])
+
+@nb.njit(cache=True)
+def get_bin_edges(bins, lim):
+	bin_edges = np.zeros((bins+1,), dtype=np.float64)
+	a_min = lim.min()
+	a_max = lim.max()
+	delta = (a_max - a_min) / bins
+	for i in range(bin_edges.shape[0]):
+		bin_edges[i] = a_min + i * delta
+
+	bin_edges[-1] = a_max  # Avoid roundoff error on last point
+	return bin_edges
+
+
+@nb.njit()
+def compute_bin(x, bin_edges):
+	# assuming uniform bins for now
+	n = bin_edges.shape[0] - 1
+	a_min = bin_edges[0]
+	a_max = bin_edges[-1]
+
+	# special case to mirror NumPy behavior for last bin
+	if x == a_max:
+		return n - 1 # a_max always in last bin
+
+	bin = int(n * (x - a_min) / (a_max - a_min))
+
+	if bin < 0 or bin >= n:
+		return None
+	else:
+		return bin
+
+
+# @numba.extending.overload(np.gradient)
+@nb.njit()
+def np_gradient(f):
+    # def np_gradient_impl(f):
+	out = np.empty_like(f, np.float64)
+	out[1:-1] = (f[2:] - f[:-2]) / 2.0
+	out[0] = f[1] - f[0]
+	out[-1] = f[-1] - f[-2]
+	return out
+
+#    return np_gradient_impl
 
 @nb.njit(cache=True)
 def minimize(data, decisions, size):
@@ -42,6 +111,21 @@ def maximize(data, decisions, size):
 		D_x[ii]         = sq_dist[nb.u4(data_label[ii])]
 	return(data_label, D_x)
 
+@nb.njit(cache=True)
+def np_all_axis0(x):
+	"""Numba compatible version of np.all(x, axis=0)."""
+	out = np.ones(x.shape[1], dtype=np.bool8)
+	for i in range(x.shape[0]):
+		out = np.logical_and(out, x[i, :])
+	return out
+@nb.njit(cache=True)
+def np_all_axis1(x):
+	"""Numba compatible version of np.all(x, axis=1)."""
+	out = np.ones(x.shape[0], dtype=np.bool8)
+	for i in range(x.shape[1]):
+		out = np.logical_and(out, x[:, i])
+	return out
+
 @nb.njit()
 def similarityMetric(x, y, type='dist', ref=0):
 	if type  == 'dist':
@@ -63,14 +147,15 @@ def curvature(y):
 #	return(np.abs(np.gradient(np.gradient(y)))/(np.sqrt(1 + np.gradient(y)**2)**3))
 
 
+
 @nb.njit()
 def startMax(data, k, decisions):
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
-		dc_left = np.flatnonzero(1-_calc.np_all_axis1(decisions))
+		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
 		if len(dc_left) == 0:
 			return(decisions)
-		_, D_x = _calc.minimize(data, decisions, k-len(dc_left))        
+		_, D_x = minimize(data, decisions, k-len(dc_left))        
 	
 		if (killer - data[nb.u4(D_x.argmax()), :]).sum() == 0:
 			return(decisions)
@@ -82,10 +167,10 @@ def startMax(data, k, decisions):
 def startPlusPlus(data, k, decisions):
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
-		dc_left = np.flatnonzero(1-_calc.np_all_axis1(decisions))
+		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
 		if len(dc_left) == 0:
 			return(decisions)
-		_, D_x = _calc.minimize(data, decisions, k-len(dc_left))     
+		_, D_x = minimize(data, decisions, k-len(dc_left))     
 		probs = D_x/D_x.sum()
 		r = np.random.rand()
 		for j, p in enumerate(probs.cumsum()):
@@ -130,7 +215,7 @@ def _calcFeatureDensity(data, converge, zindx, func1):
 @nb.njit()
 def _calcOptimization(k, data, decision, threshold):
 	while True:
-		data_label, _ = _calc.minimize(data, decision, k)
+		data_label, _ = minimize(data, decision, k)
 		new_centroid = np.zeros((k, data.shape[1]), dtype=data.dtype)
 		converge = 0
 		for kk in range(k):
@@ -172,41 +257,57 @@ def _calcVarianceScore(data):
 	avg_var = np.std(data, axis=0).sum()/data.shape[1]
 	centroid = data.sum(axis=0)/data.shape[0]
 
+@nb.njit()
+def _criteriaInertiaScore(score):
+	diff = np_gradient(score)
+	for d in range(diff.size):
+		if diff[d] < diff[0]*0.8:
+			return d		
 
 @nb.njit()
-def _calcSilhouetteScore(data, labels):
+def _calcInertiaScore(dataSquare, labelLine):
+	labelLst = np.unique(labelLine)
+	inertia = 0
+	for l in range(labelLst.size):
+		lindx = np.where(labelLine == labelLst[l])[0]
+		centroid = dataSquare[lindx, :].sum(axis=0)/labelLst.size
+		for ll in range(lindx.size):
+			delta = dataSquare[lindx[ll], :] - centroid
+			inertia += delta.dot(delta)
+	return(inertia)	
+
+@nb.njit()
+def _criteriaSilhouetteScore(score):
+	return(score.argmax())
+
+@nb.njit()
+def _calcSilhouetteScore(dataSquare, labelLine):
 	
-	labelLst = np.unique(labels)
-	intraDistance = np.zeros(len(labelLst))
-	interDistance = np.zeros(len(labelLst))
+	labelLst = np.unique(labelLine)
+	# intraDistance = np.zeros(len(labelLst))
+	# interDistance = np.zeros(len(labelLst))
+	scoreLine = np.zeros(labelLst.size)
 	if len(labelLst) > 1:
-		for j in range(len(labelLst)):
-			intraIndx = np.where(labels == labelLst[j])[0]
-			interIndx = np.where(labels != labelLst[j])[0]
+		for j in range(labelLst.size):
+			scoreLine[j] = _calcSingleSilhouetteScore(dataSquare, labelLine, labelLst[j])
+			# intraIndx = np.where(labelLine == labelLst[j])[0]
+			# interIndx = np.where(labelLine != labelLst[j])[0]
 
-			centroid = data[intraIndx, :].sum(axis=0)/len(intraIndx)
-			intra_d2 = 0.0
-			for k in range(len(intraIndx)):
-				d = data[intraIndx[k], :] - centroid
-				intra_d2 += np.sqrt(d.dot(d))		
+			# centroid = dataSquare[intraIndx, :].sum(axis=0)/len(intraIndx)
+			# intra_d2 = 0.0
+			# for k in range(len(intraIndx)):
+			# 	d = dataSquare[intraIndx[k], :] - centroid
+			# 	intra_d2 += np.sqrt(d.dot(d))		
 			
-			inter_d2 = 0.0
-			for k in range(len(interIndx)):
-				d = data[interIndx[k], :] - centroid
-				inter_d2 += np.sqrt(d.dot(d))
+			# inter_d2 = 0.0
+			# for k in range(len(interIndx)):
+			# 	d = dataSquare[interIndx[k], :] - centroid
+			# 	inter_d2 += np.sqrt(d.dot(d))
 
-			intraDistance[j] = intra_d2/len(intraIndx)
-			interDistance[j] = inter_d2/len(interIndx)
+			#intraDistance[j] = intra_d2/len(intraIndx)
+			#interDistance[j] = inter_d2/len(interIndx)
 
-	# def _calcScore(scores):
-	# 	return(np.argmax(scores) + 1)
-
-	# denomArr 	= np.array([intraDistance, interDistance])
-	# maxIndx = np.argmax(np.array([intraDistance.max(), interDistance.max()]))
-
-#	return((interDistance - intraDistance)/np.maximum(intraDistance, interDistance))
-
-	return(1 - intraDistance/interDistance)
+	return(scoreLine)
 
 
 @nb.njit()

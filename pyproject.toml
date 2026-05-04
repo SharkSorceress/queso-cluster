@@ -1,15 +1,31 @@
-name = "Quantifying the Evolution of Spectra with Optimization"
-version = "0.0.1"
+[build-system]
+requires = ["setuptools", "wheel"]
+
+[project]
+name = "QuESO"
+version = "0.0.0"
 authors = [
 	{name = "Sarah Riley", email="sarah.riley1@montana.edu"}
 ]
 
-description = ""
+description = "Quantifying the Evolution of Spectra with Optimization"
 readme = "README.md"
 requires-python=">=3.9"
 
-license = ""
-license-files=["LICENSE"]
+license = {file = "LICENSE"}
+
+dependencies = [
+	"numpy",
+	"dkist",
+	"scipy",
+	"numba",
+	"astropy",
+	"numba_progress",
+	"dask",
+	"pyyaml",
+	"argparse",
+	"tol-colors",
+]
 
 [project.urls]
 Homepage = "queso.sriley.dev"

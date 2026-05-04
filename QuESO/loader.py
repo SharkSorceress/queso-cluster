@@ -1,18 +1,25 @@
-from lib.util.imports import *
 import argparse
+import dkist
+import yaml
 
-def QuESO(eventRunnerFname):
-	parser = argparse.ArgumentParser()
-	parser.add_argument('-e', '--event')
-	parser.add_argument('-r', '--run')
-	args = parser.parse_args()	
+import numpy as np
 
-	eventObj = loader.eventInput(eventRunnerFname, int(args.event), int(args.run))
-	return(eventObj)
+class QuESO:
+	def __init__(self, data, home, fig):
+		global datDir
+		datDir = data
+		global homDir
+		homDir = home
+		global figDir
+		figDir = fig
+
+	def _loadEventConfig(self, eventRunnerFname, args):
+		eventObj = eventInput(eventRunnerFname, int(args.event), int(args.run))
+		return(eventObj)
 
 
 class instrument:
-	def __init__(self, instrument, dataPath):
+	def __init__(self, dataPath):
 		self.dataPath = dataPath
 
 		# match instrument:
@@ -23,7 +30,7 @@ class instrument:
 		# 	case 'FISS':
 		# 		self.observation = self.fissLoad()
 
-	def vispLoad(self):
+	def vispLoad(self, stokes=0):
 		dataset = dkist.load_dataset(self.dataPath)
 		self.dataCube = dataset.data
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
@@ -50,8 +57,6 @@ class instrument:
 						flat_axis *= dnaxis_entry
 						test.append(dnaxis_entry)
 
-		self.alongSlitSize 	= np.max(test)
-		self.rasterSize 	= (self.dataCube.shape[0] // alongSlitSize) // numRaster
 
 		pxlSize = [[], []]
 		for m in range(dataset.headers['WCSAXES'][0]):
@@ -62,8 +67,8 @@ class instrument:
 				case 'AWAV':
 						waveAxisDelta = dataset.headers['CDELT' + str(m+1)][0]
 
-		self.spaceInfo = {
-			"maxRasters": numRaster,
+
+		self.deltas = {	
 			"pxlAlongSlit": min(pxlSize[0]),
 			'pxlSlitWidth': dataset.headers['VSPWID'][0]
 		}
@@ -71,8 +76,18 @@ class instrument:
 		dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
 		self.shape = dataCube.shape
 		if numRaster == 1:
-				self.shape = (1, *dataCube.shape)
+				self.shape = dataCube.shape
 		self.dataSquare = dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
+
+
+		self.alongSlitSize 	= np.max(test)
+		self.rasterSize 	= (self.dataSquare.shape[0] // self.alongSlitSize) // numRaster
+
+		self.spaceInfo = {
+			"maxRasters": numRaster,
+			"rasterSize": self.rasterSize,
+			"alongSlitSize": self.alongSlitSize,
+		}
 
 		self.waveInfo = {
 			"lineLabel": "Ca II IRT",#dataset.headers['WAVEBAND'][0],
@@ -335,6 +350,7 @@ class vispDataset:
 			"pxlAlongSlit": min(pxlSize[0]),
 			'pxlSlitWidth': dataset.headers['VSPWID'][0]
 		}
+
 
 		self.dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
 		self.shape = self.dataCube.shape

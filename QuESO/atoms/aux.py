@@ -1,4 +1,6 @@
-from lib.util.imports import *
+import numpy as np
+import numba as nb
+
 
 def _gen_dataID(Input):
 	stokes_lst 		= ['I', 'Q', 'U', 'V']
@@ -14,70 +16,6 @@ def _gen_dataID(Input):
 
 def pick_jth_label(labelLst, j):
 	return(np.array([str(x)[j] for x in labelLst.astype(int)]).astype(int))
-
-def rotateArray(image, turns):
-	
-	for i in range(turns):
-		image = np.array(list(zip(*image[::-1])))
-
-	return(image[::-1])
-
-@nb.njit(cache=True)
-def get_bin_edges(bins, lim):
-	bin_edges = np.zeros((bins+1,), dtype=np.float64)
-	a_min = lim.min()
-	a_max = lim.max()
-	delta = (a_max - a_min) / bins
-	for i in range(bin_edges.shape[0]):
-		bin_edges[i] = a_min + i * delta
-
-	bin_edges[-1] = a_max  # Avoid roundoff error on last point
-	return bin_edges
-
-
-@nb.njit()
-def compute_bin(x, bin_edges):
-	# assuming uniform bins for now
-	n = bin_edges.shape[0] - 1
-	a_min = bin_edges[0]
-	a_max = bin_edges[-1]
-
-	# special case to mirror NumPy behavior for last bin
-	if x == a_max:
-		return n - 1 # a_max always in last bin
-
-	bin = int(n * (x - a_min) / (a_max - a_min))
-
-	if bin < 0 or bin >= n:
-		return None
-	else:
-		return bin
-
-
-@nb.njit()
-def numba_histogram(a, bins, lim):
-	hist = np.zeros((bins,), dtype=np.intp)
-	bin_edges = get_bin_edges(bins, lim)
-
-	for x in a.flat:
-		bin = compute_bin(x, bin_edges)
-		if bin is not None:
-			hist[int(bin)] += 1
-
-	return hist, bin_edges
-
-
-# @numba.extending.overload(np.gradient)
-@nb.njit()
-def np_gradient(f):
-    # def np_gradient_impl(f):
-	out = np.empty_like(f, np.float64)
-	out[1:-1] = (f[2:] - f[:-2]) / 2.0
-	out[0] = f[1] - f[0]
-	out[-1] = f[-1] - f[-2]
-	return out
-
-#    return np_gradient_impl
 
 
 @nb.njit()
@@ -101,20 +39,7 @@ def density_hist2d(data, dy, top, bottom):
 			hist[j,k] += 1
 	return(hist)
 
-@nb.njit(cache=True)
-def np_all_axis0(x):
-	"""Numba compatible version of np.all(x, axis=0)."""
-	out = np.ones(x.shape[1], dtype=np.bool8)
-	for i in range(x.shape[0]):
-		out = np.logical_and(out, x[i, :])
-	return out
-@nb.njit(cache=True)
-def np_all_axis1(x):
-	"""Numba compatible version of np.all(x, axis=1)."""
-	out = np.ones(x.shape[0], dtype=np.bool8)
-	for i in range(x.shape[1]):
-		out = np.logical_and(out, x[:, i])
-	return out
+
 
 @nb.njit(cache=True)
 def close_factors(number):
