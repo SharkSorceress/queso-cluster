@@ -28,4 +28,4 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "queso.sriley.dev"
+Homepage = "https://queso.sriley.dev"

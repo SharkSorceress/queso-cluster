@@ -14,3 +14,5 @@ Official QuESO Documentation
 	install
 	api-reference
 
+	Download Documentation <https://codeberg.org/SharkSorceress/QuESO/raw/branch/main/queso.pdf>
+
