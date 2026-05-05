@@ -1,12 +1,21 @@
+#> file:  ./QuESO/addon/aia
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 
 from scipy.io import readsav
 import numpy as np
 
-from ..aux.logg import loggTimer
+from .logg import loggTimer
 
 
 @loggTimer
 def delayAIA(fname, epochDev):
+#> detail: 
+#> param type fname:
+#> param type epochDev:
+#> return (type): 
+#> test-method:
 	
 	eD = epochDev
 

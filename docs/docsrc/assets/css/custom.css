@@ -1,0 +1,15 @@
+.wy-side-nav-search {
+    background-color: #ECE2C6;
+}
+
+.wy-side-nav-search>div.version {
+    color: #d4a500;
+}
+
+.wy-side-scroll {
+    background-color: #d4a500;
+}
+
+.wy-side-nav-search a {
+	color: #000
+}

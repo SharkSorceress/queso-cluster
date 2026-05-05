@@ -1,0 +1,52 @@
+{
+    "lang": {
+        "py": {
+            "name": "python",
+            "comment": "#",
+            "class": "class",
+            "function": {
+                "tag": "^def",
+                "arg": {
+                    "format": "(argName=default):",
+                    "sep": ","
+                }
+            }
+        },
+        "r": {
+            "name": "r",
+            "comment": "#",
+            "function": {
+                "tag": "<-function",
+                "arg": {
+                    "format": "(argName=default){",
+                    "sep": ","
+                }
+            }
+        },
+        "pro": {
+            "name": "idl",
+            "comment": ";",
+            "function": {
+                "tag": "^(pro|function)",
+                "arg": {
+                    "format": ", argName=default",
+                    "sep": ","
+                }
+            }
+        }
+    },
+    "apiStrings": {
+        "file": {
+            "fileName": "file",
+            "fileSynopsis": "synopsis",
+            "fileAuthor": "author"
+        },
+        "function": {
+            "functionDetail": "detail",
+            "functionParam": "param type",
+            "functionReturn": "return (type)",
+            "functionMethod": "method",
+            "functionFntest": "test-method"
+        }
+    }
+}

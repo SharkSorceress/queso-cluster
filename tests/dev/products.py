@@ -1,6 +1,15 @@
+#> file:  ./tests/dev/products
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 
 class EpochProducts:
 	def __init__(self, epochObj):
+#> detail: 
+#> param type self:
+#> param type epochObj:
+#> return (type): 
+#> test-method:
 		self.epochObj 	= epochObj
 		self.version 	= datetime.now(timezone.utc)
 		self.catalogBase=self.epochObj.catalogBase
@@ -28,6 +37,14 @@ class EpochProducts:
 		self.mapMake = util.mapMaker(self.epochObj.spaceInfo, self.deltas)
 
 	def catalogTemplate(self, labels, sscore, noMask_labels, catalogType):
+#> detail: 
+#> param type self:
+#> param type labels:
+#> param type sscore:
+#> param type noMask_labels:
+#> param type catalogType:
+#> return (type): 
+#> test-method:
 		ii, jj = self.spectralWindow
 
 		lineLabel   = self.epochObj.spectralData.waveInfo['lineLabel']
@@ -127,6 +144,15 @@ class EpochProducts:
 		util.logg("msg", "Catalog Key Saved")	
 
 	def spectralEntry(self, ax, indx, color, wavelambda, extent):
+#> detail: 
+#> param type self:
+#> param type ax:
+#> param type indx:
+#> param type color:
+#> param type wavelambda:
+#> param type extent:
+#> return (type): 
+#> test-method:
 		ii, jj = self.spectralWindow
 		raw_dat = self.epochObj.normCube[indx.astype(np.uint32), ii:jj]
 		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]		
@@ -142,6 +168,13 @@ class EpochProducts:
 		return(ax)
 
 	def timeDelayEntry(self,ax, indx, color):
+#> detail: 
+#> param type self:
+#> param type ax:
+#> param type indx:
+#> param type color:
+#> return (type): 
+#> test-method:
 		binRate = 2
 		xmax = np.ceil(np.max(np.abs(np.array([np.nanmin(self.epochObj.delayCube), np.nanmax(self.epochObj.delayCube)]))))
 		xmax += (1-(xmax % 2))
@@ -165,6 +198,13 @@ class EpochProducts:
 		return(ax, aia_hist)
 
 	def catalogKey(self, labels, sscore, noMask_labels):
+#> detail: 
+#> param type self:
+#> param type labels:
+#> param type sscore:
+#> param type noMask_labels:
+#> return (type): 
+#> test-method:
 		ii, jj = self.spectralWindow
 
 		lineLabel   = self.epochObj.spectralData.waveInfo['lineLabel']
@@ -274,6 +314,12 @@ class EpochProducts:
 		util.logg("msg", "Catalog Key Saved")	
 
 	def catalogDelayKey(self, labels, noMask_labels):
+#> detail: 
+#> param type self:
+#> param type labels:
+#> param type noMask_labels:
+#> return (type): 
+#> test-method:
 		# dir_mod, i1, i2 = self.config.intensityBins
 
 		# labels = Labels
@@ -421,6 +467,15 @@ class EpochProducts:
 
 
 	def spectra_maps_time(self, indx, labelFrame, label, time, i0Lst):
+#> detail: 
+#> param type self:
+#> param type indx:
+#> param type labelFrame:
+#> param type label:
+#> param type time:
+#> param type i0Lst:
+#> return (type): 
+#> test-method:
 		hist, edges = time
 		ii, jj = self.epochObj.spectralWindow
 		wavelambda  = self.epochObj.waveFit

@@ -1,6 +1,17 @@
+#> file:  ./tests/dev/base
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 import QuESO.atoms.base as baseAtom
 
 def prep(dataSquare, norm='continuum', maskSquare=None, quSquare=None):
+#> detail: 
+#> param type dataSquare:
+#> param type ['continuum'] norm:
+#> param type [None] maskSquare:
+#> param type [None] quSquare:
+#> return (type): 
+#> test-method:
 	match norm:
 		case 'continuum':
 			prepSquare = baseAtom.normContinuum(dataSquare)
@@ -21,6 +32,16 @@ def prep(dataSquare, norm='continuum', maskSquare=None, quSquare=None):
 
 
 def main(config, frame, spectralParams, quiescentFrame=np.array(0), optimalGroups=None, intrinsicPass=True, altLabels=None):
+#> detail: 
+#> param type config:
+#> param type frame:
+#> param type spectralParams:
+#> param type [np.array(0)] quiescentFrame:
+#> param type [None] optimalGroups:
+#> param type [True] intrinsicPass:
+#> param type [None] altLabels:
+#> return (type): 
+#> test-method:
 	_, ii, jj = spectralParams
 	
 	lineIndx = 0
@@ -104,6 +125,14 @@ def main(config, frame, spectralParams, quiescentFrame=np.array(0), optimalGroup
 
 
 def _mainIntrinsic(config, intrinsic_frame, intrinsicPass, filter_indx, lineIndx):
+#> detail: 
+#> param type config:
+#> param type intrinsic_frame:
+#> param type intrinsicPass:
+#> param type filter_indx:
+#> param type lineIndx:
+#> return (type): 
+#> test-method:
 
 	s0_no_nan = np.ones(len(filter_indx))
 	if intrinsicPass:
@@ -140,6 +169,13 @@ def _mainIntrinsic(config, intrinsic_frame, intrinsicPass, filter_indx, lineIndx
 	return(s0_no_nan)
 
 def _mainOptimization(config, dataCube, labels, optimalGroups=None):
+#> detail: 
+#> param type config:
+#> param type dataCube:
+#> param type labels:
+#> param type [None] optimalGroups:
+#> return (type): 
+#> test-method:
 
 	k_lst = [int(len(np.unique(labels)))]
 	if type(optimalGroups) == type(None):

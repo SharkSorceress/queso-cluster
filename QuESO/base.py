@@ -1,7 +1,7 @@
 from .atoms import base as baseAtom
 from .atoms import aux as auxAtom
 from .runners import base as baseRun
-from .aux.logg import loggTimer
+from .addon.logg import loggTimer
 import numpy as np
 import dask.array as da
 import numba as nb

@@ -1,3 +1,7 @@
+#> file:  ./QuESO/loader
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 import argparse
 import dkist
 import yaml
@@ -6,6 +10,13 @@ import numpy as np
 
 class QuESO:
 	def __init__(self, data, home, fig):
+#> detail: 
+#> param type self:
+#> param type data:
+#> param type home:
+#> param type fig:
+#> return (type): 
+#> test-method:
 		global datDir
 		datDir = data
 		global homDir
@@ -14,12 +25,23 @@ class QuESO:
 		figDir = fig
 
 	def _loadEventConfig(self, eventRunnerFname, args):
+#> detail: 
+#> param type self:
+#> param type eventRunnerFname:
+#> param type args:
+#> return (type): 
+#> test-method:
 		eventObj = eventInput(eventRunnerFname, int(args.event), int(args.run))
 		return(eventObj)
 
 
 class instrument:
 	def __init__(self, dataPath):
+#> detail: 
+#> param type self:
+#> param type dataPath:
+#> return (type): 
+#> test-method:
 		self.dataPath = dataPath
 
 		# match instrument:
@@ -31,6 +53,11 @@ class instrument:
 		# 		self.observation = self.fissLoad()
 
 	def vispLoad(self, stokes=0):
+#> detail: 
+#> param type self:
+#> param type [0] stokes:
+#> return (type): 
+#> test-method:
 		dataset = dkist.load_dataset(self.dataPath)
 		self.dataCube = dataset.data
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
@@ -98,9 +125,18 @@ class instrument:
 		}
 
 	def irisLoad(self):
+#> detail: 
+#> param type self:
+#> return (type): 
+#> test-method:
 			dataset = fits.open(self.dataPath, memmap=True, do_not_scale_image_data=True)
 
 	def fissLoad(self, labels):
+#> detail: 
+#> param type self:
+#> param type labels:
+#> return (type): 
+#> test-method:
 
 			biasDarkLst = glob.glob(self.dataPath + "*_{}_BiasDark.fts".format(labels))
 			flatLst 	= glob.glob(self.dataPath + "*_{}_Flat.fts".format(labels))
@@ -140,12 +176,22 @@ class instrument:
 
 class coalignment:
 	def __init__(self, config1, config2):
+#> detail: 
+#> param type self:
+#> param type config1:
+#> param type config2:
+#> return (type): 
+#> test-method:
 		self.config_src = config1
 		self.config_des = config2
 
 
 
 	def visp2visp(self):
+#> detail: 
+#> param type self:
+#> return (type): 
+#> test-method:
 		waveInfo = {"AEVEG_I": {"lineCenter": 854.21, "lineBand": 0.1},
 				   		"BZNNG_I_D1": {'lineCenter': 589.5940, "lineBand": 0.05},
 						"BZNNG_I_D2": {'lineCenter': 588.9973, "lineBand": 0.05}, 
@@ -240,6 +286,10 @@ class coalignment:
 
 
 	def fiss2fiss(self):
+#> detail: 
+#> param type self:
+#> return (type): 
+#> test-method:
 		self.dataLst = []
 		self.spectralParamsLst = []
 		self.waveAxisLst = []
@@ -269,6 +319,12 @@ class coalignment:
 
 class fissDataset:
 	def __init__(self, dataPath, labels):
+#> detail: 
+#> param type self:
+#> param type dataPath:
+#> param type labels:
+#> return (type): 
+#> test-method:
 
 		biasDarkLst = glob.glob(dataPath + "*_{}_BiasDark.fts".format(labels))
 		flatLst 	= glob.glob(dataPath + "*_{}_Flat.fts".format(labels))
@@ -306,6 +362,12 @@ class fissDataset:
 
 class vispDataset:
 	def __init__(self, dataPath, stokes=0):
+#> detail: 
+#> param type self:
+#> param type dataPath:
+#> param type [0] stokes:
+#> return (type): 
+#> test-method:
 		dataset = dkist.load_dataset(dataPath)
 		self.dataCube = dataset.data
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
@@ -376,6 +438,12 @@ class vispDataset:
 
 class eventRunner:
 	def __init__(self, inputLst, runIndx):
+#> detail: 
+#> param type self:
+#> param type inputLst:
+#> param type runIndx:
+#> return (type): 
+#> test-method:
 		stokes_lst 		= ['I', 'Q', 'U', 'V']
 
 		eventRaw 	= inputLst['event']
@@ -391,6 +459,11 @@ class eventRunner:
 											
 
 	def loadSource(self, eventInput):
+#> detail: 
+#> param type self:
+#> param type eventInput:
+#> return (type): 
+#> test-method:
 		self.srcLst = []
 		self.srcLabelLst = []
 		for s in range(len(eventInput['src'])):
@@ -402,6 +475,11 @@ class eventRunner:
 
 class srcMeta:
 	def __init__(self, srcInput):
+#> detail: 
+#> param type self:
+#> param type srcInput:
+#> return (type): 
+#> test-method:
 		self.id = srcInput['id']['data']
 		self.instrument = srcInput['id']['instrument']
 		if 'mod' in list(srcInput['id'].keys()):
@@ -437,6 +515,11 @@ class srcMeta:
 
 class runnerMeta:
 	def __init__(self, runnerInput):
+#> detail: 
+#> param type self:
+#> param type runnerInput:
+#> return (type): 
+#> test-method:
 
 		self.label = runnerInput['label']
 		self.approach = runnerInput['approach']
@@ -453,6 +536,13 @@ class runnerMeta:
 
 class eventInput:
 	def __init__(self, fname, eventIndx, runIndx):
+#> detail: 
+#> param type self:
+#> param type fname:
+#> param type eventIndx:
+#> param type runIndx:
+#> return (type): 
+#> test-method:
 		self.configList = []
 		configLst = self._load(fname)
 		self.event = eventRunner(configLst[eventIndx], runIndx)

@@ -1,6 +1,14 @@
+#> file:  ./tests/main
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 from lib.util.imports import *
 
 def epoch_main(config):
+#> detail: 
+#> param type config:
+#> return (type): 
+#> test-method:
 	import lib.approach.epoch as ep
 	import lib.paper as paper01
 	import lib.util.calc as _calc 
@@ -75,6 +83,10 @@ def epoch_main(config):
 	util.logg("stop", _log=__cataLog__)
 
 def evo_main(config):
+#> detail: 
+#> param type config:
+#> return (type): 
+#> test-method:
 	import lib.approach.evo as ev
 	import lib.paper as paper01
 
@@ -113,6 +125,10 @@ def evo_main(config):
 
 
 def DKIST_02_main(configs):
+#> detail: 
+#> param type configs:
+#> return (type): 
+#> test-method:
 	import lib.approach.evo as ev
 	import lib.paper as paper02
 	import lib.util.calc as _calc 
@@ -151,6 +167,10 @@ def DKIST_02_main(configs):
 	evoDev.catalogSeqKey(frameLst, labelLst, timeLst, mod='_before')
 
 def download_new(did):
+#> detail: 
+#> param type did:
+#> return (type): 
+#> test-method:
 	res = Fido.search(a.dkist.Dataset(did))[0][0]
 	if hasattr(globalVars, 'globus_dir') and res['Downloadable']:
 		util.logg("start", "{} will be downloaded".format(did))

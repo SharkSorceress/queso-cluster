@@ -1,26 +1,16 @@
-Metadata-Version: 2.4
+Metadata-Version: 2.1
 Name: QuESO
 Version: 0.0.0
+Summary: Quantifying the Evolution of Spectra with Optimization
 Home-page: https://queso.sriley.dev
 Author: Sarah Olivia Riley
-Author-email: Sarah Riley <sarah.riley1@montana.edu>
-Project-URL: Homepage, queso.sriley.dev
-Requires-Python: >=3.9
-Description-Content-Type: text/markdown
+Author-email: sarah.riley1@montana.edu
+License: LICENSE.txt
+Platform: UNKNOWN
 License-File: LICENSE
-Requires-Dist: numpy
-Requires-Dist: dkist
-Requires-Dist: scipy
-Requires-Dist: numba
-Requires-Dist: astropy
-Requires-Dist: numba_progress
-Requires-Dist: dask
-Requires-Dist: pyyaml
-Requires-Dist: argparse
-Dynamic: author
-Dynamic: home-page
-Dynamic: license-file
 
 # Quantifying the Evolution of Spectra with Optimization (QuESO)
 **Author:** Sarah Olivia Riley (Montana State University)
  
+
+

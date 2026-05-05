@@ -1,5 +1,9 @@
+#> file:  ./tests/epoch
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 from QuESO import approach, base, loader
-from QuESO.aux import writer
+from QuESO import writer
 from QuESO.runners import base as runBase
 from QuESO.addon import aia
 
@@ -9,6 +13,10 @@ from netCDF4 import Dataset
 import numpy as np
 
 def main(config):
+#> detail: 
+#> param type config:
+#> return (type): 
+#> test-method:
 
 	srcUse = config.runners.config['src']
 	aiaUse = config.runners.config['aia']
@@ -67,9 +75,9 @@ if __name__ == '__main__':
 	#from paper01 import paper01_products
 	quesoInstance = loader.QuESO("/disk/data/DKIST/" ,
 							 	"/disk/data/sriley/",
-							 	"./tests/dev/fig/")
+							 	"./dev/fig/")
 	
-	eventManager = quesoInstance._loadEventConfig("./tests/eventRunners.yml", args)
+	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", args)
 
 
 	#quesoInstance.aiaFname 	=  "/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(eventManager.event.runners.config['aia'])

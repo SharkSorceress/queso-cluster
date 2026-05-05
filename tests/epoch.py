@@ -1,5 +1,9 @@
+#> file:  ./tests/epoch
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 from QuESO import approach, base, loader
-from QuESO.aux import writer
+from QuESO import writer
 from QuESO.runners import base as runBase
 from QuESO.addon import aia
 
@@ -9,6 +13,10 @@ from netCDF4 import Dataset
 import numpy as np
 
 def main(config):
+#> detail: 
+#> param type config:
+#> return (type): 
+#> test-method:
 
 	srcUse = config.runners.config['src']
 	aiaUse = config.runners.config['aia']

@@ -1,5 +1,16 @@
+#> file:  ./tests/dev/evo
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 class EvolutionDriven:
 	def __init__(self, events, alignmentDir, catalogBase):
+#> detail: 
+#> param type self:
+#> param type events:
+#> param type alignmentDir:
+#> param type catalogBase:
+#> return (type): 
+#> test-method:
 
 		self.catalogBase = catalogBase
 		self.figDir 	 = './fig/{}/'.format(self.catalogBase)
@@ -47,6 +58,10 @@ class EvolutionDriven:
 		util.logg("stop", _log=__coalignLog__)
 
 	def coalignment(self):
+#> detail: 
+#> param type self:
+#> return (type): 
+#> test-method:
 
 		waveInfo = {"AEVEG_I": {"lineCenter": 854.21, "lineBand": 0.1},
 				   		"BZNNG_I_D1": {'lineCenter': 589.5940, "lineBand": 0.05},
@@ -144,6 +159,10 @@ class EvolutionDriven:
 		self.unflatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize'], self.spaceInfo['alongSlitSize']) 
 
 	def clustering(self):
+#> detail: 
+#> param type self:
+#> return (type): 
+#> test-method:
 		frameLst 	= []
 		labelLst 	= []
 		timeLst 	= []
@@ -184,6 +203,16 @@ class EvolutionDriven:
 
 
 def _mainEvo(config, spectralData, spectralParams, tlst, clusterThis, support=False, TarrSupport=None):
+#> detail: 
+#> param type config:
+#> param type spectralData:
+#> param type spectralParams:
+#> param type tlst:
+#> param type clusterThis:
+#> param type [False] support:
+#> param type [None] TarrSupport:
+#> return (type): 
+#> test-method:
 	#for concat 
 	ii, jj = 0, spectralData.shape[-1]
 	iii, jjj = spectralParams['window']

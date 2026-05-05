@@ -1,8 +1,16 @@
+#> file:  ./QuESO/atoms/aux
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 import numpy as np
 import numba as nb
 
 
 def _gen_dataID(Input):
+#> detail: 
+#> param type Input:
+#> return (type): 
+#> test-method:
 	stokes_lst 		= ['I', 'Q', 'U', 'V']
 	coreIndex, coreLabel = [None, '']
 	if hasattr(Input, 'manualOverride'):
@@ -15,11 +23,25 @@ def _gen_dataID(Input):
 
 
 def pick_jth_label(labelLst, j):
+#> detail: 
+#> param type labelLst:
+#> param type j:
+#> return (type): 
+#> test-method:
 	return(np.array([str(x)[j] for x in labelLst.astype(int)]).astype(int))
 
 
 @nb.njit()
 def density_2channel(x, y, dy, xsize, top, bottom):
+#> detail: 
+#> param type x:
+#> param type y:
+#> param type dy:
+#> param type xsize:
+#> param type top:
+#> param type bottom:
+#> return (type): 
+#> test-method:
 	NbinY   = nb.int32((top-bottom)/dy)
 	centerRaster = np.zeros((xsize, NbinY))
 	for i in range(len(x)):
@@ -31,6 +53,13 @@ def density_2channel(x, y, dy, xsize, top, bottom):
 
 @nb.njit()
 def density_hist2d(data, dy, top, bottom):
+#> detail: 
+#> param type data:
+#> param type dy:
+#> param type top:
+#> param type bottom:
+#> return (type): 
+#> test-method:
 	NbinY   = nb.int32((top-bottom)/dy)
 	hist    = np.zeros((data.shape[1], NbinY))
 	for i in range(data.shape[0]):
@@ -43,6 +72,10 @@ def density_hist2d(data, dy, top, bottom):
 
 @nb.njit(cache=True)
 def close_factors(number):
+#> detail: 
+#> param type number:
+#> return (type): 
+#> test-method:
 	''' 
 	find the closest pair of factors for a given number
 	'''
@@ -57,6 +90,10 @@ def close_factors(number):
 
 @nb.njit(cache=True)
 def almost_factors(number):
+#> detail: 
+#> param type number:
+#> return (type): 
+#> test-method:
 	'''
 	find a pair of factors that are close enough for a number that is close enough
 	'''
@@ -69,6 +106,12 @@ def almost_factors(number):
 
 @nb.njit()
 def common_elements(ar1, ar2, ar3):
+#> detail: 
+#> param type ar1:
+#> param type ar2:
+#> param type ar3:
+#> return (type): 
+#> test-method:
     n1, n2, n3 = len(ar1), len(ar2), len(ar3)
     i, j, k = 0, 0, 0
     common = []

@@ -1,0 +1,703 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; QuESO Documentation</title>
+      <link rel="stylesheet" type="text/css" href="assets/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="assets/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="assets/css/custom.css?v=7abf7bb8" />
+
+  
+    <link rel="shortcut icon" href="assets/icon.png"/>
+      <script src="assets/jquery.js?v=5d32c60e"></script>
+      <script src="assets/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="assets/documentation_options.js?v=7f41d439"></script>
+      <script src="assets/doctools.js?v=9bcbadda"></script>
+      <script src="assets/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="assets/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Installation" href="install.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="assets/banner.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev/man">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#writer-py">writer.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#exportFITS"><code class="docutils literal notranslate"><span class="pre">exportFITS()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aux-py">aux.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gen_dataID"><code class="docutils literal notranslate"><span class="pre">_gen_dataID()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pick_jth_label"><code class="docutils literal notranslate"><span class="pre">pick_jth_label()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#density_2channel"><code class="docutils literal notranslate"><span class="pre">density_2channel()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#density_hist2d"><code class="docutils literal notranslate"><span class="pre">density_hist2d()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#close_factors"><code class="docutils literal notranslate"><span class="pre">close_factors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#almost_factors"><code class="docutils literal notranslate"><span class="pre">almost_factors()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#common_elements"><code class="docutils literal notranslate"><span class="pre">common_elements()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#base-py">base.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#normZ"><code class="docutils literal notranslate"><span class="pre">normZ()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normMaximum"><code class="docutils literal notranslate"><span class="pre">normMaximum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normContinuum"><code class="docutils literal notranslate"><span class="pre">normContinuum()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#concatSpectra"><code class="docutils literal notranslate"><span class="pre">concatSpectra()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#numba_histogram"><code class="docutils literal notranslate"><span class="pre">numba_histogram()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rotateArray"><code class="docutils literal notranslate"><span class="pre">rotateArray()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get_bin_edges"><code class="docutils literal notranslate"><span class="pre">get_bin_edges()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compute_bin"><code class="docutils literal notranslate"><span class="pre">compute_bin()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#np_gradient"><code class="docutils literal notranslate"><span class="pre">np_gradient()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minimize"><code class="docutils literal notranslate"><span class="pre">minimize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maximize"><code class="docutils literal notranslate"><span class="pre">maximize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#np_all_axis0"><code class="docutils literal notranslate"><span class="pre">np_all_axis0()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#np_all_axis1"><code class="docutils literal notranslate"><span class="pre">np_all_axis1()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#similarityMetric"><code class="docutils literal notranslate"><span class="pre">similarityMetric()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#curvature"><code class="docutils literal notranslate"><span class="pre">curvature()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#startMax"><code class="docutils literal notranslate"><span class="pre">startMax()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#startPlusPlus"><code class="docutils literal notranslate"><span class="pre">startPlusPlus()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcMoment"><code class="docutils literal notranslate"><span class="pre">_calcMoment()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcFeatureDensity"><code class="docutils literal notranslate"><span class="pre">_calcFeatureDensity()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcOptimization"><code class="docutils literal notranslate"><span class="pre">_calcOptimization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcElbowEntry"><code class="docutils literal notranslate"><span class="pre">_calcElbowEntry()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcVarianceScore"><code class="docutils literal notranslate"><span class="pre">_calcVarianceScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#criteriaInertiaScore"><code class="docutils literal notranslate"><span class="pre">_criteriaInertiaScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcInertiaScore"><code class="docutils literal notranslate"><span class="pre">_calcInertiaScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#criteriaSilhouetteScore"><code class="docutils literal notranslate"><span class="pre">_criteriaSilhouetteScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcSilhouetteScore"><code class="docutils literal notranslate"><span class="pre">_calcSilhouetteScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcSingleSilhouetteScore"><code class="docutils literal notranslate"><span class="pre">_calcSingleSilhouetteScore()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcCHindex"><code class="docutils literal notranslate"><span class="pre">_calcCHindex()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#labelGluer"><code class="docutils literal notranslate"><span class="pre">labelGluer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#labelReorder"><code class="docutils literal notranslate"><span class="pre">labelReorder()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcQuiescentFrame"><code class="docutils literal notranslate"><span class="pre">_calcQuiescentFrame()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calcDynamicFrame"><code class="docutils literal notranslate"><span class="pre">_calcDynamicFrame()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#approach-py">approach.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getattr__"><code class="docutils literal notranslate"><span class="pre">__getattr__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clustering"><code class="docutils literal notranslate"><span class="pre">clustering()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#logg-py">logg.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loggTimer"><code class="docutils literal notranslate"><span class="pre">loggTimer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#wrapper"><code class="docutils literal notranslate"><span class="pre">wrapper()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logg"><code class="docutils literal notranslate"><span class="pre">logg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#duration_string"><code class="docutils literal notranslate"><span class="pre">duration_string()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#aia-py">aia.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#delayAIA"><code class="docutils literal notranslate"><span class="pre">delayAIA()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#style-py">style.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cbar_bounds"><code class="docutils literal notranslate"><span class="pre">cbar_bounds()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#genColorPallet"><code class="docutils literal notranslate"><span class="pre">_genColorPallet()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rainbow_cmap"><code class="docutils literal notranslate"><span class="pre">rainbow_cmap()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#cmap_discretize"><code class="docutils literal notranslate"><span class="pre">cmap_discretize()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mapGen"><code class="docutils literal notranslate"><span class="pre">_mapGen()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#multiline-py">multiline.py</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#products-py">products.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#figure03"><code class="docutils literal notranslate"><span class="pre">figure03()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#figure04_template"><code class="docutils literal notranslate"><span class="pre">figure04_template()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spectralEntry"><code class="docutils literal notranslate"><span class="pre">spectralEntry()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#loader-py">loader.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loadEventConfig"><code class="docutils literal notranslate"><span class="pre">_loadEventConfig()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#vispLoad"><code class="docutils literal notranslate"><span class="pre">vispLoad()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#irisLoad"><code class="docutils literal notranslate"><span class="pre">irisLoad()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fissLoad"><code class="docutils literal notranslate"><span class="pre">fissLoad()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visp2visp"><code class="docutils literal notranslate"><span class="pre">visp2visp()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fiss2fiss"><code class="docutils literal notranslate"><span class="pre">fiss2fiss()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#loadSource"><code class="docutils literal notranslate"><span class="pre">loadSource()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id9"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id10"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id11"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load"><code class="docutils literal notranslate"><span class="pre">_load()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id12">base.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mainIntrinsic"><code class="docutils literal notranslate"><span class="pre">_mainIntrinsic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#mainOptimization"><code class="docutils literal notranslate"><span class="pre">_mainOptimization()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#id13">base.py</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#runOptimalKSearch"><code class="docutils literal notranslate"><span class="pre">_runOptimalKSearch()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runPrep"><code class="docutils literal notranslate"><span class="pre">runPrep()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runIntrinsic"><code class="docutils literal notranslate"><span class="pre">_runIntrinsic()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runStart"><code class="docutils literal notranslate"><span class="pre">runStart()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runOptimization"><code class="docutils literal notranslate"><span class="pre">_runOptimization()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#findOptimalK"><code class="docutils literal notranslate"><span class="pre">_findOptimalK()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#runLabelSort"><code class="docutils literal notranslate"><span class="pre">_runLabelSort()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QuESO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="writer-py">
+<h2>writer.py<a class="headerlink" href="#writer-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="exportFITS">
+<span class="sig-name descname"><span class="pre">exportFITS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectralDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exportFITS" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="aux-py">
+<h2>aux.py<a class="headerlink" href="#aux-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="gen_dataID">
+<span class="sig-name descname"><span class="pre">_gen_dataID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gen_dataID" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pick_jth_label">
+<span class="sig-name descname"><span class="pre">pick_jth_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labelLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pick_jth_label" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="density_2channel">
+<span class="sig-name descname"><span class="pre">density_2channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#density_2channel" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="density_hist2d">
+<span class="sig-name descname"><span class="pre">density_hist2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#density_hist2d" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="close_factors">
+<span class="sig-name descname"><span class="pre">close_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#close_factors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="almost_factors">
+<span class="sig-name descname"><span class="pre">almost_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#almost_factors" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="common_elements">
+<span class="sig-name descname"><span class="pre">common_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ar1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ar2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ar3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#common_elements" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="base-py">
+<h2>base.py<a class="headerlink" href="#base-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="normZ">
+<span class="sig-name descname"><span class="pre">normZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normZ" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="normMaximum">
+<span class="sig-name descname"><span class="pre">normMaximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normMaximum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="normContinuum">
+<span class="sig-name descname"><span class="pre">normContinuum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuumIndx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normContinuum" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="concatSpectra">
+<span class="sig-name descname"><span class="pre">concatSpectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquareLst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#concatSpectra" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="numba_histogram">
+<span class="sig-name descname"><span class="pre">numba_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_histogram" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rotateArray">
+<span class="sig-name descname"><span class="pre">rotateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotateArray" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="get_bin_edges">
+<span class="sig-name descname"><span class="pre">get_bin_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_bin_edges" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="compute_bin">
+<span class="sig-name descname"><span class="pre">compute_bin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_edges</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#compute_bin" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="np_gradient">
+<span class="sig-name descname"><span class="pre">np_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#np_gradient" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="minimize">
+<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minimize" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="maximize">
+<span class="sig-name descname"><span class="pre">maximize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#maximize" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="np_all_axis0">
+<span class="sig-name descname"><span class="pre">np_all_axis0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#np_all_axis0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="np_all_axis1">
+<span class="sig-name descname"><span class="pre">np_all_axis1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#np_all_axis1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="similarityMetric">
+<span class="sig-name descname"><span class="pre">similarityMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dist'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#similarityMetric" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="curvature">
+<span class="sig-name descname"><span class="pre">curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#curvature" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="startMax">
+<span class="sig-name descname"><span class="pre">startMax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#startMax" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="startPlusPlus">
+<span class="sig-name descname"><span class="pre">startPlusPlus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#startPlusPlus" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcMoment">
+<span class="sig-name descname"><span class="pre">_calcMoment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waveAxis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineCore</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataCube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcMoment" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcFeatureDensity">
+<span class="sig-name descname"><span class="pre">_calcFeatureDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zindx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcFeatureDensity" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcOptimization">
+<span class="sig-name descname"><span class="pre">_calcOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decision</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcOptimization" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcElbowEntry">
+<span class="sig-name descname"><span class="pre">_calcElbowEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcElbowEntry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcVarianceScore">
+<span class="sig-name descname"><span class="pre">_calcVarianceScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcVarianceScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="criteriaInertiaScore">
+<span class="sig-name descname"><span class="pre">_criteriaInertiaScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#criteriaInertiaScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcInertiaScore">
+<span class="sig-name descname"><span class="pre">_calcInertiaScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcInertiaScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="criteriaSilhouetteScore">
+<span class="sig-name descname"><span class="pre">_criteriaSilhouetteScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#criteriaSilhouetteScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcSilhouetteScore">
+<span class="sig-name descname"><span class="pre">_calcSilhouetteScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcSilhouetteScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcSingleSilhouetteScore">
+<span class="sig-name descname"><span class="pre">_calcSingleSilhouetteScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcSingleSilhouetteScore" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcCHindex">
+<span class="sig-name descname"><span class="pre">_calcCHindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcCHindex" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="labelGluer">
+<span class="sig-name descname"><span class="pre">labelGluer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#labelGluer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="labelReorder">
+<span class="sig-name descname"><span class="pre">labelReorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#labelReorder" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcQuiescentFrame">
+<span class="sig-name descname"><span class="pre">_calcQuiescentFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectralData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralParams</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contIndxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcQuiescentFrame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="calcDynamicFrame">
+<span class="sig-name descname"><span class="pre">_calcDynamicFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectralData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamicScanNum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcDynamicFrame" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="approach-py">
+<h2>approach.py<a class="headerlink" href="#approach-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrumentObj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#init__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="getattr__">
+<span class="sig-name descname"><span class="pre">__getattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#getattr__" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py">
+<span class="sig-name descname"><span class="pre">cluster(self,prepSquare,maskLine</span></span></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogBase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="clustering">
+<span class="sig-name descname"><span class="pre">clustering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepCube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tlst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intrinsicSquare</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clustering" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Detail<span class="colon">:</span></dt>
+<dd class="field-odd"><p>low temporal resolution clustering</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="logg-py">
+<h2>logg.py<a class="headerlink" href="#logg-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="loggTimer">
+<span class="sig-name descname"><span class="pre">loggTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loggTimer" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="wrapper">
+<span class="sig-name descname"><span class="pre">wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="logg">
+<span class="sig-name descname"><span class="pre">logg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#logg" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="duration_string">
+<span class="sig-name descname"><span class="pre">duration_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dur</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#duration_string" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="aia-py">
+<h2>aia.py<a class="headerlink" href="#aia-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="delayAIA">
+<span class="sig-name descname"><span class="pre">delayAIA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochDev</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delayAIA" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="style-py">
+<h2>style.py<a class="headerlink" href="#style-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="cbar_bounds">
+<span class="sig-name descname"><span class="pre">cbar_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cbar_bounds" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="genColorPallet">
+<span class="sig-name descname"><span class="pre">_genColorPallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#genColorPallet" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="rainbow_cmap">
+<span class="sig-name descname"><span class="pre">rainbow_cmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discrete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rainbow_cmap" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="cmap_discretize">
+<span class="sig-name descname"><span class="pre">cmap_discretize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cmap_discretize" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spaceInfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mapGen">
+<span class="sig-name descname"><span class="pre">_mapGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flareContour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargsDict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mapGen" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="multiline-py">
+<h2>multiline.py<a class="headerlink" href="#multiline-py" title="Link to this heading"></a></h2>
+</section>
+<section id="products-py">
+<h2>products.py<a class="headerlink" href="#products-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochObj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optLabels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="figure03">
+<span class="sig-name descname"><span class="pre">figure03</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#figure03" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="figure04_template">
+<span class="sig-name descname"><span class="pre">figure04_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#figure04_template" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="spectralEntry">
+<span class="sig-name descname"><span class="pre">spectralEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spectralEntry" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="loader-py">
+<h2>loader.py<a class="headerlink" href="#loader-py" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="id3">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loadEventConfig">
+<span class="sig-name descname"><span class="pre">_loadEventConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventRunnerFname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loadEventConfig" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="vispLoad">
+<span class="sig-name descname"><span class="pre">vispLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vispLoad" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="irisLoad">
+<span class="sig-name descname"><span class="pre">irisLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#irisLoad" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fissLoad">
+<span class="sig-name descname"><span class="pre">fissLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fissLoad" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="visp2visp">
+<span class="sig-name descname"><span class="pre">visp2visp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#visp2visp" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="fiss2fiss">
+<span class="sig-name descname"><span class="pre">fiss2fiss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiss2fiss" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runIndx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="loadSource">
+<span class="sig-name descname"><span class="pre">loadSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loadSource" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srcInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runnerInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id10" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="id11">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventIndx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runIndx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id11" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="load">
+<span class="sig-name descname"><span class="pre">_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="id12">
+<h2>base.py<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="mainIntrinsic">
+<span class="sig-name descname"><span class="pre">_mainIntrinsic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineIndx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intrinsicSkip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainIntrinsic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="mainOptimization">
+<span class="sig-name descname"><span class="pre">_mainOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kLst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stageMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainOptimization" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+<section id="id13">
+<h2>base.py<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="runOptimalKSearch">
+<span class="sig-name descname"><span class="pre">_runOptimalKSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkLst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runOptimalKSearch" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="runPrep">
+<span class="sig-name descname"><span class="pre">runPrep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'continuum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepI0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quSquare</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runPrep" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="runIntrinsic">
+<span class="sig-name descname"><span class="pre">_runIntrinsic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgeOverride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runIntrinsic" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="runStart">
+<span class="sig-name descname"><span class="pre">runStart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runStart" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="runOptimization">
+<span class="sig-name descname"><span class="pre">_runOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runOptimization" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="findOptimalK">
+<span class="sig-name descname"><span class="pre">_findOptimalK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteriaLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#findOptimalK" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="runLabelSort">
+<span class="sig-name descname"><span class="pre">_runLabelSort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runLabelSort" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Sarah Riley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

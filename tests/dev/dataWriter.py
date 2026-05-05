@@ -1,7 +1,18 @@
+#> file:  ./tests/dev/dataWriter
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 
 
 
 def exportNetCDF(config, vispDataset, label_map, spectralParams):
+#> detail: 
+#> param type config:
+#> param type vispDataset:
+#> param type label_map:
+#> param type spectralParams:
+#> return (type): 
+#> test-method:
 	coreIndex, coreLabel = [None, '']
 	if hasattr(config, 'manualOverride'):
 		if 'coreOrder' in config.manualOverride.keys():

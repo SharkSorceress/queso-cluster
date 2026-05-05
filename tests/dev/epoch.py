@@ -1,8 +1,18 @@
+#> file:  ./tests/dev/epoch
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 
 
 
 class EpochDriven:
 	def __init__(self, config, catalogName):
+#> detail: 
+#> param type self:
+#> param type config:
+#> param type catalogName:
+#> return (type): 
+#> test-method:
 		self.catalogBase = catalogName
 
 		self.figDir 	 = './fig/{}/'.format(self.catalogBase)
@@ -36,6 +46,11 @@ class EpochDriven:
 	# 	util.logg("stop", _log=__loadLog__)
 
 	def __getattr__(self, name):
+#> detail: 
+#> param type self:
+#> param type name:
+#> return (type): 
+#> test-method:
 		parentLst = [self.config]
 		for p in parentLst:
 			if hasattr(p, name):
@@ -61,6 +76,12 @@ class EpochDriven:
 
 
 	def clustering(self, frame, altLabels=None):
+#> detail: 
+#> param type self:
+#> param type frame:
+#> param type [None] altLabels:
+#> return (type): 
+#> test-method:
 		if type(altLabels) == type(None):
 		# 	return(analysis.main(self.config.srcLst, frame, [self.lineCore]+self.spectralWindow, intrinsicPass=False, altLabels=altLabels))
 		# else:
@@ -72,6 +93,13 @@ class EpochDriven:
 		return(altLabels, labels, scores)
 
 	def _writeMask(self, labels, noMask_labels, mod=""):
+#> detail: 
+#> param type self:
+#> param type labels:
+#> param type noMask_labels:
+#> param type [] mod:
+#> return (type): 
+#> test-method:
 
 		dataFile = Dataset(self.figDir + '/epochCCS_' + "_".join([x for x in [self.catalogBase, mod]]) + '.nc', 'w', format="NETCDF4")
 
@@ -108,6 +136,11 @@ class EpochDriven:
 		dataFile.close()
 
 	def _sortFile(self, labels):
+#> detail: 
+#> param type self:
+#> param type labels:
+#> return (type): 
+#> test-method:
 
 	#		file2jq = Dataset(self.figDir + '/profiles_2025oct20.nc', 'w', format="NETCDF4")
 
@@ -255,6 +288,10 @@ class EpochDriven:
 	# 	return(prepped_frame)
 
 	def delayAIA(self):
+#> detail: 
+#> param type self:
+#> return (type): 
+#> test-method:
 		# aiaCube = readsav(globalVars.home_dir + self.dirid + '/results/transformed_lgtcube_' + self.visp_id + '.sav')['transformed_lgtcube'].astype(np.int32)
 
 		# visp_aia = readsav("/disk/data/sriley/20221227/mask_map_2025feb24.sav")

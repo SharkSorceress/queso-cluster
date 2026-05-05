@@ -1,27 +1,54 @@
+#> file:  ./QuESO/atoms/base
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 import numpy as np
 import dask.array as da
 import numba as nb
 
 
 def normZ(dataSquare):
+#> detail: 
+#> param type dataSquare:
+#> return (type): 
+#> test-method:
 	print("TBD")
 	return(dataSquare)
 
 def normMaximum(dataSquare):
+#> detail: 
+#> param type dataSquare:
+#> return (type): 
+#> test-method:
 	norm_func = lambda x: x/(x.max(axis=1))[:,None]
 	normSquare = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
 	return(normSquare)
 
 def normContinuum(dataSquare, continuumIndx):
+#> detail: 
+#> param type dataSquare:
+#> param type continuumIndx:
+#> return (type): 
+#> test-method:
 	norm_func = lambda x: x/(x[:, int(continuumIndx)])[:,None]
 	normSquare = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
 	return(normSquare)
 	
 def concatSpectra(dataSquareLst):
+#> detail: 
+#> param type dataSquareLst:
+#> return (type): 
+#> test-method:
 	return(da.concatenate(dataSquareLst))	
 
 @nb.njit()
 def numba_histogram(a, bins, lim):
+#> detail: 
+#> param type a:
+#> param type bins:
+#> param type lim:
+#> return (type): 
+#> test-method:
 	hist = np.zeros((bins,), dtype=np.intp)
 	bin_edges = get_bin_edges(bins, lim)
 
@@ -35,6 +62,11 @@ def numba_histogram(a, bins, lim):
 
 
 def rotateArray(image, turns):
+#> detail: 
+#> param type image:
+#> param type turns:
+#> return (type): 
+#> test-method:
 	
 	for i in range(turns):
 		image = np.array(list(zip(*image[::-1])))
@@ -43,6 +75,11 @@ def rotateArray(image, turns):
 
 @nb.njit(cache=True)
 def get_bin_edges(bins, lim):
+#> detail: 
+#> param type bins:
+#> param type lim:
+#> return (type): 
+#> test-method:
 	bin_edges = np.zeros((bins+1,), dtype=np.float64)
 	a_min = lim.min()
 	a_max = lim.max()
@@ -56,6 +93,11 @@ def get_bin_edges(bins, lim):
 
 @nb.njit()
 def compute_bin(x, bin_edges):
+#> detail: 
+#> param type x:
+#> param type bin_edges:
+#> return (type): 
+#> test-method:
 	# assuming uniform bins for now
 	n = bin_edges.shape[0] - 1
 	a_min = bin_edges[0]
@@ -76,6 +118,10 @@ def compute_bin(x, bin_edges):
 # @numba.extending.overload(np.gradient)
 @nb.njit()
 def np_gradient(f):
+#> detail: 
+#> param type f:
+#> return (type): 
+#> test-method:
     # def np_gradient_impl(f):
 	out = np.empty_like(f, np.float64)
 	out[1:-1] = (f[2:] - f[:-2]) / 2.0
@@ -87,6 +133,12 @@ def np_gradient(f):
 
 @nb.njit(cache=True)
 def minimize(data, decisions, size):
+#> detail: 
+#> param type data:
+#> param type decisions:
+#> param type size:
+#> return (type): 
+#> test-method:
 	data_label      = np.zeros(data.shape[0], dtype=np.int32)
 	D_x             = np.zeros(data.shape[0], dtype=data.dtype)
 	sq_dist         = np.zeros(size, dtype=data.dtype)
@@ -99,6 +151,12 @@ def minimize(data, decisions, size):
 
 @nb.njit(cache=True)
 def maximize(data, decisions, size):
+#> detail: 
+#> param type data:
+#> param type decisions:
+#> param type size:
+#> return (type): 
+#> test-method:
 	data_label      = np.zeros(data.shape[0])
 	D_x             = np.zeros(data.shape[0])
 	sq_dist         = np.zeros(size)
@@ -113,6 +171,10 @@ def maximize(data, decisions, size):
 
 @nb.njit(cache=True)
 def np_all_axis0(x):
+#> detail: 
+#> param type x:
+#> return (type): 
+#> test-method:
 	"""Numba compatible version of np.all(x, axis=0)."""
 	out = np.ones(x.shape[1], dtype=np.bool8)
 	for i in range(x.shape[0]):
@@ -120,6 +182,10 @@ def np_all_axis0(x):
 	return out
 @nb.njit(cache=True)
 def np_all_axis1(x):
+#> detail: 
+#> param type x:
+#> return (type): 
+#> test-method:
 	"""Numba compatible version of np.all(x, axis=1)."""
 	out = np.ones(x.shape[0], dtype=np.bool8)
 	for i in range(x.shape[1]):
@@ -128,6 +194,13 @@ def np_all_axis1(x):
 
 @nb.njit()
 def similarityMetric(x, y, type='dist', ref=0):
+#> detail: 
+#> param type x:
+#> param type y:
+#> param type ['dist'] type:
+#> param type [0] ref:
+#> return (type): 
+#> test-method:
 	if type  == 'dist':
 		delta = (x - y).astype(x.dtype)
 		metric = np.sqrt(delta.dot(delta))
@@ -141,6 +214,10 @@ def similarityMetric(x, y, type='dist', ref=0):
 
 @nb.njit(cache=True)
 def curvature(y):
+#> detail: 
+#> param type y:
+#> return (type): 
+#> test-method:
 	grady = np_gradient(y)
 	signedCurvature = np_gradient(grady)/(np.power(np.sqrt(1 + grady.dot(grady)), 3))
 	return(np.sqrt(np.power(signedCurvature, 2)))
@@ -150,6 +227,12 @@ def curvature(y):
 
 @nb.njit()
 def startMax(data, k, decisions):
+#> detail: 
+#> param type data:
+#> param type k:
+#> param type decisions:
+#> return (type): 
+#> test-method:
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
 		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
@@ -165,6 +248,12 @@ def startMax(data, k, decisions):
 
 @nb.njit(cache=True)
 def startPlusPlus(data, k, decisions):
+#> detail: 
+#> param type data:
+#> param type k:
+#> param type decisions:
+#> return (type): 
+#> test-method:
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
 		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
@@ -186,6 +275,17 @@ def startPlusPlus(data, k, decisions):
 
 @nb.njit(cache=True)
 def _calcMoment(waveAxis, ii, jj, lineCore, dataCube, order, ref, counter=0):    
+#> detail: 
+#> param type waveAxis:
+#> param type ii:
+#> param type jj:
+#> param type lineCore:
+#> param type dataCube:
+#> param type order:
+#> param type ref:
+#> param type [0] counter:
+#> return (type): 
+#> test-method:
 	momentN = np.zeros((order+1, dataCube.shape[0]))
 	while counter <= order:
 		factor = np.power((waveAxis[ii:jj] - waveAxis[lineCore]), counter)
@@ -199,6 +299,13 @@ def _calcMoment(waveAxis, ii, jj, lineCore, dataCube, order, ref, counter=0):
 
 @nb.njit()
 def _calcFeatureDensity(data, converge, zindx, func1):
+#> detail: 
+#> param type data:
+#> param type converge:
+#> param type zindx:
+#> param type func1:
+#> return (type): 
+#> test-method:
 	featureDensityArr = np.zeros(50)
 	for a in range(featureDensityArr.shape[0]):
 		scores1 = np.zeros(len(zindx))
@@ -214,6 +321,13 @@ def _calcFeatureDensity(data, converge, zindx, func1):
 
 @nb.njit()
 def _calcOptimization(k, data, decision, threshold):
+#> detail: 
+#> param type k:
+#> param type data:
+#> param type decision:
+#> param type threshold:
+#> return (type): 
+#> test-method:
 	while True:
 		data_label, _ = minimize(data, decision, k)
 		new_centroid = np.zeros((k, data.shape[1]), dtype=data.dtype)
@@ -233,6 +347,11 @@ def _calcOptimization(k, data, decision, threshold):
 
 @nb.njit()
 def _calcElbowEntry(data, labels):
+#> detail: 
+#> param type data:
+#> param type labels:
+#> return (type): 
+#> test-method:
 
 	labelLst = np.unique(labels)
 	localDistance = np.zeros(len(labelLst))
@@ -253,12 +372,20 @@ def _calcElbowEntry(data, labels):
 
 @nb.njit()
 def _calcVarianceScore(data):
+#> detail: 
+#> param type data:
+#> return (type): 
+#> test-method:
 
 	avg_var = np.std(data, axis=0).sum()/data.shape[1]
 	centroid = data.sum(axis=0)/data.shape[0]
 
 @nb.njit()
 def _criteriaInertiaScore(score):
+#> detail: 
+#> param type score:
+#> return (type): 
+#> test-method:
 	diff = np_gradient(score)
 	for d in range(diff.size):
 		if diff[d] < diff[0]*0.8:
@@ -266,6 +393,11 @@ def _criteriaInertiaScore(score):
 
 @nb.njit()
 def _calcInertiaScore(dataSquare, labelLine):
+#> detail: 
+#> param type dataSquare:
+#> param type labelLine:
+#> return (type): 
+#> test-method:
 	labelLst = np.unique(labelLine)
 	inertia = 0
 	for l in range(labelLst.size):
@@ -278,10 +410,19 @@ def _calcInertiaScore(dataSquare, labelLine):
 
 @nb.njit()
 def _criteriaSilhouetteScore(score):
+#> detail: 
+#> param type score:
+#> return (type): 
+#> test-method:
 	return(score.argmax())
 
 @nb.njit()
 def _calcSilhouetteScore(dataSquare, labelLine):
+#> detail: 
+#> param type dataSquare:
+#> param type labelLine:
+#> return (type): 
+#> test-method:
 	
 	labelLst = np.unique(labelLine)
 	# intraDistance = np.zeros(len(labelLst))
@@ -312,6 +453,12 @@ def _calcSilhouetteScore(dataSquare, labelLine):
 
 @nb.njit()
 def _calcSingleSilhouetteScore(data, labels, lab):
+#> detail: 
+#> param type data:
+#> param type labels:
+#> param type lab:
+#> return (type): 
+#> test-method:
 	
 	labelLst = np.unique(labels)
 	if len(labelLst) > 1:
@@ -345,6 +492,11 @@ def _calcSingleSilhouetteScore(data, labels, lab):
 
 @nb.njit()
 def _calcCHindex(data, labels):
+#> detail: 
+#> param type data:
+#> param type labels:
+#> return (type): 
+#> test-method:
 	N = data.shape[0]
 	K = len(np.unique(labels))
 
@@ -374,6 +526,10 @@ def _calcCHindex(data, labels):
 
 
 def labelGluer(labels):
+#> detail: 
+#> param type labels:
+#> return (type): 
+#> test-method:
 	time_label_concat = np.char.asarray(np.zeros(labels[0].shape[1], dtype=int))
 	for i in range(len(labels)):
 		for l in range(labels[i].shape[0]):
@@ -382,6 +538,10 @@ def labelGluer(labels):
 	return(time_label_concat)
 
 def labelReorder(labels):
+#> detail: 
+#> param type labels:
+#> return (type): 
+#> test-method:
 	time_label = []
 	for i in range(len(labels)):
 		time_label_wave = labelGluer([labels[i]])
@@ -407,6 +567,13 @@ def labelReorder(labels):
 
 @nb.njit()
 def _calcQuiescentFrame(spectralData, spectralParams, contIndxs, progress=None):
+#> detail: 
+#> param type spectralData:
+#> param type spectralParams:
+#> param type contIndxs:
+#> param type [None] progress:
+#> return (type): 
+#> test-method:
 	lineCore, ii, jj = spectralParams
 	quiescentFrame 	= np.zeros(spectralData.shape[1:])
 	for x in range(spectralData.shape[1]):
@@ -422,6 +589,13 @@ def _calcQuiescentFrame(spectralData, spectralParams, contIndxs, progress=None):
 
 @nb.njit()
 def _calcDynamicFrame(spectralData, dynamicScanNum, progress=None, delta=0):
+#> detail: 
+#> param type spectralData:
+#> param type dynamicScanNum:
+#> param type [None] progress:
+#> param type [0] delta:
+#> return (type): 
+#> test-method:
 	dynamicFrame 	= np.zeros(spectralData.shape[1:]) + np.nan
 	for x in range(spectralData.shape[1]):
 		for y in range(spectralData.shape[2]):

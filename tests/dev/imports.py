@@ -1,3 +1,7 @@
+#> file:  ./tests/dev/imports
+#> lang:  python
+#> synopsis: 
+#> author:   <>
 import numba
 import numpy as np
 from numba import jit
