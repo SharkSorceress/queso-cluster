@@ -60,14 +60,13 @@ class timeIndependent:
 				continue
 		raise AttributeError("No parents have object with attribute '%s'" % name)
 
-	def cluster(self, prepSquare, maskLine, 
+	def cluster(self, prepSquare, maskLine, intrinsicLine=None, keepI0=None, kLst=None):
 #> detail: 
 #> param type self:
 #> param type prepSquare:
 #> param type maskLine:
 #> return (type): 
 #> test-method:
-			 intrinsicLine=None, keepI0=None, kLst=None):
 		
 		ii, jj = self.spectralWindow
 		if intrinsicLine is None:

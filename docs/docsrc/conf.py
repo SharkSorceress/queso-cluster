@@ -21,8 +21,8 @@ extensions = [
 
 # -- Options for HTML output
 html_title = 'QuESO Documentation'
-html_logo = 'assets/img/banner.png'
-html_favicon = 'assets/img/icon.png'
+html_logo = 'assets/img/iconTeal.png'
+html_favicon = 'assets/img/iconTeal.png'
 
 html_css_files = [
     'css/custom.css',
@@ -46,7 +46,7 @@ latex_elements = {
 latex_documents = [
  ('index', 'queso.tex', u'QuESO Official Manual', u'Sarah Riley', 'manual'),
 ]
-# latex_logo = 'banner_icon.png'
+latex_logo = 'assets/img/iconTeal.png'
 latex_domain_indices = True
 latex_show_urls = 'footnote'
 latex_use_xindy = False

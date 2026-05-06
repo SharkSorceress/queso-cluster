@@ -7,7 +7,7 @@ setup(
     author_email='sarah.riley1@montana.edu',
     packages=['QuESO', 'QuESO.atoms', 'QuESO.runners', 'QuESO.addon', 'tests'],
     url='https://queso.sriley.dev',
-    license='LICENSE.txt',
+    license='LICENSE',
     description='Quantifying the Evolution of Spectra with Optimization',
     long_description=open('README.md').read(),
     install_requires=[

@@ -10,7 +10,7 @@ Official QuESO Documentation
 	:maxdepth: 2
 	:caption: Contents:
 
-	Documentation Home <https://queso.sriley.dev/man>
+	Documentation Home <https://queso.sriley.dev>
 	install
 	api-reference
 
