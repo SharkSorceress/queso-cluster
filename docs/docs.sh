@@ -1,8 +1,8 @@
-python3 -m sphinx -d ./man/_static/source -T -E -b html ./docsrc ./man
-rm -r ./man/assets/
-mv ./man/_static/ ./man/assets/
+python3 -m sphinx -d ./_static/source -T -E -b html ./docsrc ./
+rm -r ./assets/
+mv ./_static/ ./assets/
 
 find ./man/ -type f -name "*.html" -print0 | xargs -0 sed -i 's/_static/assets/g'
 python3 -m sphinx -T -E -b latex ./docsrc ./_pdf
 cd ./_pdf/ && pdflatex queso.tex && pdflatex queso.tex && pdflatex queso.tex
-mv ./queso.pdf ../ && cd ../ && rm -r _pdf
+mv ./queso.pdf ../../ && cd ../ && rm -r _pdf
