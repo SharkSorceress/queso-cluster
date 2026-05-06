@@ -8,12 +8,12 @@ import numpy as np
 # from globals import __version__
 
 def exportFITS(spectralDataset, labelLine, fname):
-#> detail: 
-#> param type spectralDataset:
-#> param type labelLine:
-#> param type fname:
-#> return (type): 
-#> test-method:
+	#> detail: 
+	#> param type spectralDataset:
+	#> param type labelLine:
+	#> param type fname:
+	#> return (type): 
+	#> test-method:
 
 
 	#[t, x, y, lambda]

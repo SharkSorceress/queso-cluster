@@ -9,48 +9,6 @@ import numba as nb
 
 from numba_progress import ProgressBar
 
-
-
-# def main(config, frame, spectralParams, quiescentFrame=np.array(0), optimalGroups=None, intrinsicPass=True, altLabels=None):
-# 	_, ii, jj = spectralParams
-	
-# 	lineIndx = 0
-
-# 	intrinsic_frame = frame
-# 	filter_indx 	= np.where(np.logical_not(np.isnan(frame.sum(axis=-1))))[0]
- 
-# 	if quiescentFrame.sum() != 0:
-# 		intrinsic_frame = frame - quiescentFrame
-# 		filter_indx = filter_indx[np.where(intrinsic_frame[filter_indx, ii:jj+1].sum(axis=-1) != 0)[0]]
-# 		util.logg("msg", val="residuals calculated")
-
-# 	if type(altLabels) != type(None):		
-# 		s0_no_nan = altLabels[filter_indx]
-# 	else:
-# 		s0_no_nan = _mainIntrinsic(config, frame, intrinsicPass, filter_indx, lineIndx)
-
-# 	if quiescentFrame.sum() == 0:
-# 		continuum_indx = config.lines[lineIndx]['continuum']
-# 		no_nan_frame = frame[filter_indx, :]
-# 		norm_func = lambda x: x/(x[:, continuum_indx])[:,None]
-# 		frameNorm = da.blockwise(norm_func, 'ij', no_nan_frame, 'ij', dtype=np.float32)
-# 		frame_norm = frameNorm[:, ii:jj+1].compute()
-# 	else:
-# 		intrinsic_frame = frame/(np.nanmax(frame[:, :], axis=-1))[:, None] - quiescentFrame/(np.nanmax(quiescentFrame[:, :], axis=-1))[:, None]
-# 		frame_norm = intrinsic_frame[filter_indx, ii:jj+1]
-
-#     #> TODO: Fix this logic
-# 	loopOpt = True
-# 	while loopOpt:
-# 		s0s1_labels, sscore = _mainOptimization(config, frame_norm, s0_no_nan, optimalGroups=optimalGroups)
-# 		if np.array(s0s1_labels != 0).all():
-# 			loopOpt = False
-
-# 	labels = np.zeros(frame.shape[0]) + np.nan
-
-# 	labels[filter_indx] = s0s1_labels.astype(np.uint)
-# 	return(labels, sscore)
-
 @loggTimer
 def _mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
 	intrinsicLine = np.zeros(prepSquare.shape[0])
@@ -85,68 +43,52 @@ def _mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
 	return(intrinsicLine)
 
 
-#from .atoms import aux as base
 @loggTimer
 def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 	if not (kLst is None):
-		#k_lst = [int(len(np.unique(labelLine)))]
 		k_lst  	= [x['layerGroups'] for x in kLst]
 		k_pre 	= [np.arange(len(k_lst[0])).astype(int).tolist()] + [[int(np.sum(k_lst[a][:b])) for b in range(len(k_lst[a]))] for a in range(len(k_lst)-1)]
-		# print(k_pre)
-		# else:
-		# 	k_lst += [optimalGroups]
 	else:
 		validationFuncLst = [baseAtom._calcInertiaScore, baseAtom._calcSilhouetteScore]
 		criteriaFuncLst = [baseAtom._criteriaInertiaScore, baseAtom._criteriaSilhouetteScore]
-
-	# print(k_lst)
 	pwrSeq = (10**(stageMax - np.arange(stageMax+1))).astype(np.uint16)
 	labelLine *= pwrSeq[0]
 
 	stageCounter = 1
-
-
-	#k = 3
 	scoreLst = []
-	# with ProgressBar(total=stageMax, ascii=False, leave=True, 
-	# 			desc='mainOptimization',
-	# 			bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as pS:
+	with ProgressBar(total=stageMax, ascii=False, leave=True, 
+				desc='mainOptimization',
+				bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as pS:
+		while stageCounter <= stageMax:
+			labelLst = np.unique(labelLine[~np.isnan(labelLine)])
+			with ProgressBar(total=labelLst.size, ascii=False, leave=True, 
+						desc='mainOptimization (Stage {})'.format(stageCounter),
+						bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as p:
+				for l in range(labelLst.size):
+					indx = np.where(labelLine == labelLst[l])[0]
+					lstr = str(labelLst[l])
+					print((lstr, len(indx)))
+					if not (kLst is None):
+						kindx = [int(lstr[a])-1 for a in range(len(lstr)) if int(lstr[a]) > 0]
+						k1 = 0
+						k0 = int(np.sum(kindx[0]))
+						if stageCounter > 1:
+							k0 = int(np.sum(kindx[:stageCounter-1]))
+							k1 = kindx[stageCounter-1]
+			
+						kk = k_pre[stageCounter-1][k0] + k1
+						k = k_lst[stageCounter - 1][kk]
+					else:
+						k = baseRun._runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
+					nxtLabelLineUnsorted, scoreLine = baseRun._runOptimization(k, prepSquare[indx, :], 1e-6)
+					nxtLabelLineSorted, sortIndx 	= baseRun._runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted) 
 
-	while stageCounter <= stageMax:
-		labelLst = np.unique(labelLine[~np.isnan(labelLine)])
-		#with ProgressBar(total=labelLst.size, ascii=False, leave=True, 
-		#			desc='mainOptimization (Stage {})'.format(stageCounter),
-		#			bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as p:
-		#m0Lst = np.zeros(labelLst)
-		for l in range(labelLst.size):
-			indx = np.where(labelLine == labelLst[l])[0]
-			lstr = str(labelLst[l])
-			print((lstr, len(indx)))
-			if not (kLst is None):
-				kindx = [int(lstr[a])-1 for a in range(len(lstr)) if int(lstr[a]) > 0]
-				k1 = 0
-				k0 = int(np.sum(kindx[0]))
-				if stageCounter > 1:
-					k0 = int(np.sum(kindx[:stageCounter-1]))
-					k1 = kindx[stageCounter-1]
-	
-				# print((lstr, kindx, (k0, k1)))
-				kk = k_pre[stageCounter-1][k0] + k1
-				k = k_lst[stageCounter - 1][kk]
-				# print((kk, k))
-			else:
-				k = baseRun._runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
-			nxtLabelLineUnsorted, scoreLine = baseRun._runOptimization(k, prepSquare[indx, :], 1e-6)
-			nxtLabelLineSorted, sortIndx 	= baseRun._runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted) 
+					scoreLst.append(scoreLine[sortIndx])
+					labelLine[indx] += nxtLabelLineSorted*pwrSeq[stageCounter]
 
-			scoreLst.append(scoreLine[sortIndx])
-			labelLine[indx] += nxtLabelLineSorted*pwrSeq[stageCounter]
-
-		#		p.update(1)
-		#pS.update(1)
-		stageCounter += 1
-	# print(scoreLst)
-	# print(np.unique(labelLine))
+					p.update(1)
+			pS.update(1)
+			stageCounter += 1
 	return(labelLine, scoreLst)
 	
 

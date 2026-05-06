@@ -1,9 +1,8 @@
-#> file:  ./QuESO/approach
+#> file:  ./queso-cluster/approach
 #> lang:  python
 #> synopsis: 
-#> author:   <>
+#> author: Sarah Olivia Riley  <academic@sriley.dev>
 from . import base as baseMain
-#from .runners import base as baseRunner
 from .atoms import aux as auxAtom
 from .atoms import base as baseAtom
 
@@ -13,13 +12,6 @@ import os
 
 class timeIndependent:
 	def __init__(self, config, catalogName, instrumentObj):
-#> detail: 
-#> param type self:
-#> param type config:
-#> param type catalogName:
-#> param type instrumentObj:
-#> return (type): 
-#> test-method:
 		self.catalogBase = catalogName
 		self.instrumentObj = instrumentObj
 
@@ -47,11 +39,6 @@ class timeIndependent:
 		self.waveFit = np.poly1d(self.waveCoeff)(np.arange(self.instrumentObj.shape[-1]))
 
 	def __getattr__(self, name):
-#> detail: 
-#> param type self:
-#> param type name:
-#> return (type): 
-#> test-method:
 		parentLst = [self.config, self.instrumentObj]
 		for p in parentLst:
 			if hasattr(p, name):
@@ -61,12 +48,12 @@ class timeIndependent:
 		raise AttributeError("No parents have object with attribute '%s'" % name)
 
 	def cluster(self, prepSquare, maskLine, intrinsicLine=None, keepI0=None, kLst=None):
-#> detail: 
-#> param type self:
-#> param type prepSquare:
-#> param type maskLine:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> param type prepSquare:
+		#> param type maskLine:
+		#> return (type): 
+		#> test-method:
 		
 		ii, jj = self.spectralWindow
 		if intrinsicLine is None:
@@ -101,25 +88,20 @@ class timeIndependent:
 from numba_progress import ProgressBar
 class timeDependent:
 	def __init__(self, catalogBase):
-#> detail: 
-#> param type self:
-#> param type catalogBase:
-#> return (type): 
-#> test-method:
 
 		self.catalogBase = catalogBase
 		self.figDir 	 = './fig/{}/'.format(self.catalogBase)
 
 
 	def clustering(self, prepCube, tlst, groups, intrinsicSquare=None):
-#> param type self:
-#> param type prepCube:
-#> param type tlst:
-#> param type groups:
-#> param type [None] intrinsicSquare:
-#> return (type): 
-#> test-method:
 		#> detail: low temporal resolution clustering
+		#> param type self:
+		#> param type prepCube:
+		#> param type tlst:
+		#> param type groups:
+		#> param type [None] intrinsicSquare:
+		#> return (type): 
+		#> test-method:
 
 		ii, jj = self.spectralWindow
 		peakTimeSquare = self.dataCube[..., ii:jj].sum(axis=-1).argmax(axis=0)

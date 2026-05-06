@@ -1,22 +1,15 @@
-#> file:  ./QuESO/loader
+#> file:  ./queso-cluster/loader
 #> lang:  python
 #> synopsis: 
-#> author:   <>
+#> author: Sarah Olivia Riley  <academic@sriley.dev>
+
 import argparse
 import dkist
 import yaml
-
 import numpy as np
 
 class QuESO:
 	def __init__(self, data, home, fig):
-#> detail: 
-#> param type self:
-#> param type data:
-#> param type home:
-#> param type fig:
-#> return (type): 
-#> test-method:
 		global datDir
 		datDir = data
 		global homDir
@@ -25,39 +18,26 @@ class QuESO:
 		figDir = fig
 
 	def _loadEventConfig(self, eventRunnerFname, args):
-#> detail: 
-#> param type self:
-#> param type eventRunnerFname:
-#> param type args:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> param type eventRunnerFname:
+		#> param type args:
+		#> return (type): 
+		#> test-method:
 		eventObj = eventInput(eventRunnerFname, int(args.event), int(args.run))
 		return(eventObj)
 
 
 class instrument:
 	def __init__(self, dataPath):
-#> detail: 
-#> param type self:
-#> param type dataPath:
-#> return (type): 
-#> test-method:
 		self.dataPath = dataPath
 
-		# match instrument:
-		# 	case 'ViSP':
-		# 		self.observation = self.vispLoad()
-		# 	case 'IRIS':
-		# 		self.observation = self.irisLoad()
-		# 	case 'FISS':
-		# 		self.observation = self.fissLoad()
-
 	def vispLoad(self, stokes=0):
-#> detail: 
-#> param type self:
-#> param type [0] stokes:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> param type [0] stokes:
+		#> return (type): 
+		#> test-method:
 		dataset = dkist.load_dataset(self.dataPath)
 		self.dataCube = dataset.data
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
@@ -125,73 +105,67 @@ class instrument:
 		}
 
 	def irisLoad(self):
-#> detail: 
-#> param type self:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> return (type): 
+		#> test-method:
 			dataset = fits.open(self.dataPath, memmap=True, do_not_scale_image_data=True)
 
 	def fissLoad(self, labels):
-#> detail: 
-#> param type self:
-#> param type labels:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> param type labels:
+		#> return (type): 
+		#> test-method:
 
-			biasDarkLst = glob.glob(self.dataPath + "*_{}_BiasDark.fts".format(labels))
-			flatLst 	= glob.glob(self.dataPath + "*_{}_Flat.fts".format(labels))
-			fitsLst 	= glob.glob(self.dataPath + "*_{}.fts".format(labels))
+		biasDarkLst = glob.glob(self.dataPath + "*_{}_BiasDark.fts".format(labels))
+		flatLst 	= glob.glob(self.dataPath + "*_{}_Flat.fts".format(labels))
+		fitsLst 	= glob.glob(self.dataPath + "*_{}.fts".format(labels))
 
-			initial = fits.open(fitsLst[0])
+		initial = fits.open(fitsLst[0])
 
-			self.rasterSize = initial[0].header['NAXIS2']
-			self.alongSlitSize = initial[0].header['NAXIS3']
-
-
-			self.waveInfo = {
-				"lineLabel": initial[0].header['GRATWVLN'],#dataset.headers['WAVEBAND'][0],
-			}
-
-			print(self.waveInfo)
-
-			self.spaceInfo = {
-				"maxRasters": len(fitsLst),
-				"pxlAlongSlit": 512,
-				'pxlSlitWidth': 512
-			}
+		self.rasterSize = initial[0].header['NAXIS2']
+		self.alongSlitSize = initial[0].header['NAXIS3']
 
 
+		self.waveInfo = {
+			"lineLabel": initial[0].header['GRATWVLN'],#dataset.headers['WAVEBAND'][0],
+		}
 
-			self.dataCube =  np.zeros((len(fitsLst), self.alongSlitSize, self.rasterSize, initial[0].header['NAXIS1']))
+		print(self.waveInfo)
 
-			for f in range(len(fitsLst)):
-				file = fits.open(fitsLst[f])
-				self.dataCube[f, ...] = file[0].data#.reshape(self.rasterSize*self.alongSlitSize, initial[0].header['NAXIS1'])
-				print(file[0].data.shape)
+		self.spaceInfo = {
+			"maxRasters": len(fitsLst),
+			"pxlAlongSlit": 512,
+			'pxlSlitWidth': 512
+		}
 
-				file.close()
 
-			self.dataCube = np.moveaxis(self.dataCube, 1, 2)
-			self.shape = self.dataCube.shape
+
+		self.dataCube =  np.zeros((len(fitsLst), self.alongSlitSize, self.rasterSize, initial[0].header['NAXIS1']))
+
+		for f in range(len(fitsLst)):
+			file = fits.open(fitsLst[f])
+			self.dataCube[f, ...] = file[0].data#.reshape(self.rasterSize*self.alongSlitSize, initial[0].header['NAXIS1'])
+			print(file[0].data.shape)
+
+			file.close()
+
+		self.dataCube = np.moveaxis(self.dataCube, 1, 2)
+		self.shape = self.dataCube.shape
 
 class coalignment:
 	def __init__(self, config1, config2):
-#> detail: 
-#> param type self:
-#> param type config1:
-#> param type config2:
-#> return (type): 
-#> test-method:
 		self.config_src = config1
 		self.config_des = config2
 
 
 
 	def visp2visp(self):
-#> detail: 
-#> param type self:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> return (type): 
+		#> test-method:
 		waveInfo = {"AEVEG_I": {"lineCenter": 854.21, "lineBand": 0.1},
 				   		"BZNNG_I_D1": {'lineCenter': 589.5940, "lineBand": 0.05},
 						"BZNNG_I_D2": {'lineCenter': 588.9973, "lineBand": 0.05}, 
@@ -286,10 +260,10 @@ class coalignment:
 
 
 	def fiss2fiss(self):
-#> detail: 
-#> param type self:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> return (type): 
+		#> test-method:
 		self.dataLst = []
 		self.spectralParamsLst = []
 		self.waveAxisLst = []
@@ -319,12 +293,6 @@ class coalignment:
 
 class fissDataset:
 	def __init__(self, dataPath, labels):
-#> detail: 
-#> param type self:
-#> param type dataPath:
-#> param type labels:
-#> return (type): 
-#> test-method:
 
 		biasDarkLst = glob.glob(dataPath + "*_{}_BiasDark.fts".format(labels))
 		flatLst 	= glob.glob(dataPath + "*_{}_Flat.fts".format(labels))
@@ -360,90 +328,8 @@ class fissDataset:
 		self.dataCube = np.moveaxis(self.dataCube, 1, 2)
 		self.shape = self.dataCube.shape
 
-class vispDataset:
-	def __init__(self, dataPath, stokes=0):
-#> detail: 
-#> param type self:
-#> param type dataPath:
-#> param type [0] stokes:
-#> return (type): 
-#> test-method:
-		dataset = dkist.load_dataset(dataPath)
-		self.dataCube = dataset.data
-		if 'polarization state' in dataset.wcs.pixel_axis_names:
-			self.dataCube = self.dataCube[stokes, ...] 
-		axisInfo = [dataset.wcs.pixel_axis_names[::-1], dataset.data.shape]
-
-		flat_axis = 1
-		numRaster = 1
-		test = []
-		crval = []
-		
-		for n in range(dataset.headers['DNAXIS'][0]):
-			dnaxis_entry = dataset.headers['DNAXIS' + str(n+1)][0]
-			match dataset.headers['DTYPE' + str(n+1)][0]: 
-				case 'SPECTRAL':
-						spectral_len = dnaxis_entry
-						spectral_loc = int(np.where(np.asarray(self.dataCube.shape) == dnaxis_entry)[0])
-				case 'TEMPORAL':
-						numRaster = dnaxis_entry
-						flat_axis *= numRaster
-				case 'SPATIAL':
-						crval.append(dataset.headers['CRVAL' + str(n+1)][0])
-						flat_axis *= dnaxis_entry
-						test.append(dnaxis_entry)
-
-		self.rasterSize 	= np.min(test)
-		self.alongSlitSize 	= np.max(test)
-		#self.mu = np.sqrt((1 - np.power(crval[0]/1000., 2))*(1 - np.power(crval[1]/1000., 2)))
-		#self.limbDark = util.LimbDark(854.2091, self.mu)
-
-		pxlSize = [[], []]
-		for m in range(dataset.headers['WCSAXES'][0]):
-			match dataset.headers['CTYPE' + str(m+1)][0]:
-				case 'HPLT-TAN':                     
-					pxlSize[0].append(dataset.headers['CDELT' + str(m+1)][0])   
-					pxlSize[1].append(m)
-				case 'AWAV':
-						waveAxisDelta = dataset.headers['CDELT' + str(m+1)][0]
-
-		self.spaceInfo = {
-			"maxRasters": numRaster,
-			"pxlAlongSlit": min(pxlSize[0]),
-			'pxlSlitWidth': dataset.headers['VSPWID'][0]
-		}
-
-
-		self.dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
-		self.shape = self.dataCube.shape
-		if numRaster == 1:
-				self.shape = (1, *self.dataCube.shape)
-		#print(self.shape)
-		self.dataCube = self.dataCube.reshape(flat_axis, spectral_len)
-
-		self.waveInfo = {
-			"lineLabel":dataset.headers['WAVEBAND'][0],
-			"waveDelta": waveAxisDelta,
-			"waveExtrema": (dataset.headers['WAVEMIN'][0], 
-							dataset.headers['LINEWAV'][0], 
-							dataset.headers['WAVEMAX'][0])
-		}
-
-		# print(self.waveInfo)
-		# print(self.spaceInfo)
-		# print([self.rasterSize, self.alongSlitSize])
-		# sys.exit()
-		#sys.exit()
-		#print(waveAxisDelta)
-
 class eventRunner:
 	def __init__(self, inputLst, runIndx):
-#> detail: 
-#> param type self:
-#> param type inputLst:
-#> param type runIndx:
-#> return (type): 
-#> test-method:
 		stokes_lst 		= ['I', 'Q', 'U', 'V']
 
 		eventRaw 	= inputLst['event']
@@ -459,11 +345,11 @@ class eventRunner:
 											
 
 	def loadSource(self, eventInput):
-#> detail: 
-#> param type self:
-#> param type eventInput:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> param type eventInput:
+		#> return (type): 
+		#> test-method:
 		self.srcLst = []
 		self.srcLabelLst = []
 		for s in range(len(eventInput['src'])):
@@ -475,11 +361,6 @@ class eventRunner:
 
 class srcMeta:
 	def __init__(self, srcInput):
-#> detail: 
-#> param type self:
-#> param type srcInput:
-#> return (type): 
-#> test-method:
 		self.id = srcInput['id']['data']
 		self.instrument = srcInput['id']['instrument']
 		if 'mod' in list(srcInput['id'].keys()):
@@ -515,12 +396,6 @@ class srcMeta:
 
 class runnerMeta:
 	def __init__(self, runnerInput):
-#> detail: 
-#> param type self:
-#> param type runnerInput:
-#> return (type): 
-#> test-method:
-
 		self.label = runnerInput['label']
 		self.approach = runnerInput['approach']
 		self.config = runnerInput['config']
@@ -536,13 +411,6 @@ class runnerMeta:
 
 class eventInput:
 	def __init__(self, fname, eventIndx, runIndx):
-#> detail: 
-#> param type self:
-#> param type fname:
-#> param type eventIndx:
-#> param type runIndx:
-#> return (type): 
-#> test-method:
 		self.configList = []
 		configLst = self._load(fname)
 		self.event = eventRunner(configLst[eventIndx], runIndx)
@@ -555,82 +423,3 @@ class eventInput:
 				return(configInput) 
 			except yaml.YAMLError as error:
 				print(error)
-
-
-# class inputEntry:
-# 	def __init__(self, inputList, runnerIndex, vispIndex):
-# 		stokes_lst 		= ['I', 'Q', 'U', 'V']
-# 		runnerInput 	= inputList['run']
-# 		self.date       = runnerInput['date']
-# 		self.override   = runnerInput['override']
-
-# 		runnerCluster 	= runnerInput['clustering']
-
-# 		self.clusterConfig = {'intrinsic': runnerCluster['stages']['S0'],
-# 								'optimized': runnerCluster['stages']['S1'],
-# 								'discrimination': runnerCluster['stages']['S2'],
-# 								'approach': runnerCluster['approach']}
-		
-
-
-# 		if 'correction' in inputList['run']['data'].keys():
-# 			self.correction = {'axis_fit': runnerInput['data']['correction']['axis_fit'],
-# 								'axis_shift':  runnerInput['data']['correction']['axis_shift']}
-
-# 		self.data       = {'instrument': runnerInput['data']['instrument'], 
-# 					 		'id': runnerInput['data']['id'][vispIndex],
-# 							'stokes': int(stokes_lst.index(runnerInput['data']['stokes'])),
-# 							} 
-	
-# 		self.spectralParams = {}
-
-# 		for i in list(runnerInput['data']['spectral'].keys()):
-# 			self.spectralParams[i] = runnerInput['data']['spectral'][i]
-
-# 		if 'theme' not in inputList['run'].keys():
-# 			self.theme = {'primary': '#0000FF', 
-# 						  'cmap':  LinearSegmentedColormap.from_list('', ['white', '#0000FF'])}
-# 		else:
-# 			self.theme = {'primary': inputList['run']['theme'], 
-# 						  'cmap':  LinearSegmentedColormap.from_list('', ['white', inputList['run']['theme']])}
-# 		# if 'post' in inputList['run'].keys():
-# 		# 		self.timeMax = inputList['run']['post']['timeMax']
-		
-# 		if 'manual' in runnerInput.keys():
-# 				self.manualOverride = inputList['run']['manual']
-
-
-# 		self.runner     = runnerIndex
-
-# class Input:
-# 	def __init__(self, fname):
-# 		self.configList = []
-# 		self.indexMap   = []
-# 		configList = self._load(fname)
-# 		for i in range(len(configList)):
-# 			for j in range(len(configList[i]['run']['data']['id'])):
-# 				self.configList.append(inputEntry(configList[i], i, j))
-# 				self.indexMap.append(configList[i]['run']['data']['id'][j])
-# 	def _load(self, fname):
-# 		with open(fname) as configFile:
-# 			try:
-# 				configInput = yaml.safe_load(configFile)
-# 				# for i in range(len(configInput)):
-# 				# 	if configInput[i]['run']['clustering'] == 'blind':
-# 				# 		configInput[i]['run'].update({'clustering':{'k_lvl':  [4,4,4],
-# 				# 										 'type': 'hybrid'}})
-# 				# 	if 'converge' not in configInput[i]['run']['data'].keys():
-# 				# 		configInput[i]['run'].update({'data': {'id': configInput[i]['run']['data']['id'],
-# 				# 										'converge': 1e-6}})
-# 				return(configInput) 
-# 			except yaml.YAMLError as error:
-# 				print(error)
-
-
-# class hiKObj:
-# 	def __init__(self, labels, spectral, quiescent):
-# 		self.kLabels            = labels
-# 		self.spectralParams     = spectral
-# 		self.quiescentSpectrum  = quiescent
-
-		
