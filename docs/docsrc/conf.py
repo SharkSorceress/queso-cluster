@@ -6,8 +6,8 @@ sys.path.insert(0, os.path.abspath('../'))
 project = 'QuESO'
 copyright = '2026, Sarah Riley'
 author = 'Sarah Riley'
-version = 'mild'
-release = ''
+version = 'v0.0'
+release = 'v0.0'
 
 # -- General configuration
 
@@ -19,19 +19,20 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
+html_static_path = ["assets"]
+
 # -- Options for HTML output
 html_title = 'QuESO Documentation'
-html_logo = 'assets/img/iconTeal.png'
-html_favicon = 'assets/img/iconTeal.png'
+html_short_title = 'QuESO'
+html_logo = 'assets/img/iconTeal_small.png'
+html_favicon = 'assets/img/iconTeal_small.png'
 
 html_css_files = [
-    'css/custom.css',
+    '../docsrc/assets/css/custom.css',
 ]
 html_copy_source = False
 
 html_theme = 'sphinx_rtd_theme'
-
-html_static_path = ["assets"]
 
 html_theme_options = {
     'logo_only': True,

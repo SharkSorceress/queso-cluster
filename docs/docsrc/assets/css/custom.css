@@ -17,3 +17,7 @@
 .wy-side-nav-search a {
 	color: #000
 }
+
+.rst-content code.literal {
+    color: #0989a0;
+}

@@ -17,14 +17,14 @@ class QuESO:
 		global figDir
 		figDir = fig
 
-	def _loadEventConfig(self, eventRunnerFname, args):
+	def _loadEventConfig(self, eventRunnerFname, event=0, runner=0):
 		#> detail: 
 		#> param type self:
 		#> param type eventRunnerFname:
 		#> param type args:
 		#> return (type): 
 		#> test-method:
-		eventObj = eventInput(eventRunnerFname, int(args.event), int(args.run))
+		eventObj = eventInput(eventRunnerFname, int(event), int(runner))
 		return(eventObj)
 
 
@@ -39,9 +39,9 @@ class instrument:
 		#> return (type): 
 		#> test-method:
 		dataset = dkist.load_dataset(self.dataPath)
-		self.dataCube = dataset.data
+		dataCube = dataset.data
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
-			self.dataCube = self.dataCube[stokes, ...] 
+			dataCube = dataCube[stokes, ...] 
 		axisInfo = [dataset.wcs.pixel_axis_names[::-1], dataset.data.shape]
 		flat_axis = 1
 		numRaster = 1
@@ -55,7 +55,7 @@ class instrument:
 			match dataset.headers['DTYPE' + str(n+1)][0]: 
 				case 'SPECTRAL':
 						spectral_len = dnaxis_entry
-						spectral_loc = int(np.where(np.asarray(self.dataCube.shape) == dnaxis_entry)[0])
+						spectral_loc = int(np.where(np.asarray(dataCube.shape) == dnaxis_entry)[0])
 				case 'TEMPORAL':
 						numRaster = dnaxis_entry
 						flat_axis *= numRaster
@@ -80,12 +80,14 @@ class instrument:
 			'pxlSlitWidth': dataset.headers['VSPWID'][0]
 		}
 
-		dataCube = np.moveaxis(self.dataCube, spectral_loc, -1)
-		self.shape = dataCube.shape
+		self.dataCube = np.moveaxis(dataCube, spectral_loc, -1)
+		
+		self.shape = self.dataCube.shape
 		if numRaster == 1:
-				self.shape = dataCube.shape
-		self.dataSquare = dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
-
+			self.shape = self.dataCube.shape
+			self.dataSquare = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
+		else:
+			self.dataSquare = self.dataCube.reshape(numRaster, flat_axis//numRaster, spectral_len)
 
 		self.alongSlitSize 	= np.max(test)
 		self.rasterSize 	= (self.dataSquare.shape[0] // self.alongSlitSize) // numRaster
@@ -290,7 +292,6 @@ class coalignment:
 
 		self.bbox = [0, self.dataLst[0].shape[1], 0, self.dataLst[0].shape[2]]
 
-
 class fissDataset:
 	def __init__(self, dataPath, labels):
 
@@ -350,6 +351,7 @@ class eventRunner:
 		#> param type eventInput:
 		#> return (type): 
 		#> test-method:
+
 		self.srcLst = []
 		self.srcLabelLst = []
 		for s in range(len(eventInput['src'])):

@@ -39,15 +39,19 @@ def _mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
 			intrinsicLine[indx.astype(int)] = i+1
 	else:
 		intrinsicLine += 1
-	print(np.unique(intrinsicLine))
+	#print(np.unique(intrinsicLine))
 	return(intrinsicLine)
 
 
 @loggTimer
 def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
+	print(kLst)
 	if not (kLst is None):
-		k_lst  	= [x['layerGroups'] for x in kLst]
-		k_pre 	= [np.arange(len(k_lst[0])).astype(int).tolist()] + [[int(np.sum(k_lst[a][:b])) for b in range(len(k_lst[a]))] for a in range(len(k_lst)-1)]
+		if type(kLst) == list:
+			k_lst = kLst
+		else:
+			k_lst  	= [x['layerGroups'] for x in kLst]
+			k_pre 	= [np.arange(len(k_lst[0])).astype(int).tolist()] + [[int(np.sum(k_lst[a][:b])) for b in range(len(k_lst[a]))] for a in range(len(k_lst)-1)]
 	else:
 		validationFuncLst = [baseAtom._calcInertiaScore, baseAtom._calcSilhouetteScore]
 		criteriaFuncLst = [baseAtom._criteriaInertiaScore, baseAtom._criteriaSilhouetteScore]
@@ -67,17 +71,20 @@ def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 				for l in range(labelLst.size):
 					indx = np.where(labelLine == labelLst[l])[0]
 					lstr = str(labelLst[l])
-					print((lstr, len(indx)))
+					#print((lstr, len(indx)))
 					if not (kLst is None):
-						kindx = [int(lstr[a])-1 for a in range(len(lstr)) if int(lstr[a]) > 0]
-						k1 = 0
-						k0 = int(np.sum(kindx[0]))
-						if stageCounter > 1:
-							k0 = int(np.sum(kindx[:stageCounter-1]))
-							k1 = kindx[stageCounter-1]
-			
-						kk = k_pre[stageCounter-1][k0] + k1
-						k = k_lst[stageCounter - 1][kk]
+						if type(kLst) == list:
+							k = k_lst[l]
+						else:
+							kindx = [int(lstr[a])-1 for a in range(len(lstr)) if int(lstr[a]) > 0]
+							k1 = 0
+							k0 = int(np.sum(kindx[0]))
+							if stageCounter > 1:
+								k0 = int(np.sum(kindx[:stageCounter-1]))
+								k1 = kindx[stageCounter-1]
+				
+							kk = k_pre[stageCounter-1][k0] + k1
+							k = k_lst[stageCounter - 1][kk]
 					else:
 						k = baseRun._runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
 					nxtLabelLineUnsorted, scoreLine = baseRun._runOptimization(k, prepSquare[indx, :], 1e-6)

@@ -144,6 +144,21 @@ def _runLabelSort(dataSquare, labelLine):
 
 	return(sortedLabelLine, sortIndx)
 
+# def intrinsicMask(dataSquare, intrinsicLine, keepI0=None):
+# 	intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, 
+# 									np.floor(dataSquare*100)/100., 0, intrinsicSkip=False)
+# 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
+		
+# 	i0Mask = np.ones(dataSquare.shape[0])
+# 	if not (keepI0 is None):
+# 		i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
+# 		for i in keepI0:
+# 			#print(np.unique(intrinsicLine[(intrinsicLine == i)]))
+# 			#print(np.unique(intrinsicLine[(intrinsicLine == i)*maskLine]))
+# 			i0Mask[(intrinsicLine == i)] = 1
+# 	return(i0Mask)
+
+
 # @nb.njit()
 # def _findOptimalK(data, converge, zindx, func1, func2):
 # 	optimalGroupLst = np.zeros(30)

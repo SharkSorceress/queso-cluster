@@ -2,13 +2,13 @@
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from QuESO import approach, base, loader
-from QuESO import writer
-from QuESO.runners import base as runBase
-from QuESO.addon import aia
+from queso_cluster import approach, base, loader
+from queso_cluster import writer
+from queso_cluster.runners import base as runBase
+from queso_cluster.addon import aia
 
 # import sys
-import argparse
+#import argparse
 from netCDF4 import Dataset
 import numpy as np
 
@@ -66,10 +66,10 @@ def main(config):
 
 if __name__ == '__main__':
 
-	parser = argparse.ArgumentParser()
-	parser.add_argument('-e', '--event')
-	parser.add_argument('-r', '--run')
-	args = parser.parse_args()	
+	# parser = argparse.ArgumentParser()
+	# parser.add_argument('-e', '--event')
+	# parser.add_argument('-r', '--run')
+	# args = parser.parse_args()	
 
 
 	#from paper01 import paper01_products
@@ -77,7 +77,7 @@ if __name__ == '__main__':
 							 	"/disk/data/sriley/",
 							 	"./dev/fig/")
 	
-	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", args)
+	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=0, runner=0)
 
 
 	#quesoInstance.aiaFname 	=  "/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(eventManager.event.runners.config['aia'])
@@ -86,7 +86,7 @@ if __name__ == '__main__':
 
 	epochDev, labelLine = main(eventManager.event)
 
-	from QuESO.addon import products
+	from queso_cluster.addon import products
 	p = products.Products(epochDev, labelLine)
 	p.figure03()
 	#p.figure04_template()
