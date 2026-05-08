@@ -33,12 +33,61 @@ class Products:
 		self.continuum = self.epochObj.continuum
 		
 
-		self.waveFit 	= self.epochObj.waveFit 
+		#self.waveFit 	= self.epochObj.waveFit 
 		self.optLabels 	= optLabels
 		self.optLabels[self.optLabels == 0] = np.nan
 		self.vindx 	= np.where(~np.isnan(self.optLabels))[0]
 
 		self.mapMake = sty.mapMaker(self.epochObj.spaceInfo, self.epochObj.deltas)
+
+	@loggTimer
+	def figure03_sequence(self):
+		ncols = self.optLabels.shape[0]
+		fig = plt.figure(layout='compressed', figsize=(2*ncols, ncols), dpi=300)
+		gs = GridSpec(2, ncols, figure=fig, height_ratios=[0.025, 1], hspace=0, wspace=0)
+
+		indx = np.where(~np.isnan(self.optLabels[0, ...]))[0]
+
+		xx = indx % self.epochObj.shape[1]
+		yy = indx // self.epochObj.shape[1]
+
+
+		xx0, xx1, yy0, yy1 = self.config.runners.config['bbox']
+
+		inset_bbox = [xx0*self.epochObj.deltas['pxlSlitWidth'], 
+				xx1*self.epochObj.deltas['pxlSlitWidth'], 
+				yy0*self.epochObj.deltas['pxlAlongSlit'], 
+				yy1*self.epochObj.deltas['pxlAlongSlit']]
+
+		for t in range(ncols):
+			tLabels = np.unique(self.optLabels[t, ...])
+
+			actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list(tLabels[~np.isnan(tLabels)]))
+			cmap = mpl.colors.ListedColormap(color_pallet)
+			norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
+
+			kwargsDict = {'cmap': cmap}
+			ax, im, tax = self.mapMake._mapGen(fig, gs[1, t], 
+												self.optLabels[t, ...],
+												timeAxis=True, 
+												#flareContour=self.mask_map, 
+												**kwargsDict)
+			ax.set_xlim([inset_bbox[0], inset_bbox[1]])
+			ax.set_ylim([inset_bbox[2], inset_bbox[3]])
+
+			cax = fig.add_subplot(gs[0, t])
+			ax.set_aspect("equal")
+
+			if not gs[1, t].is_first_col():
+				ax.set_yticklabels([])
+
+			#cbar = fig.colorbar(im, cax=cax, ticks=bounds_ticks)#, label='Binned Intensity')
+			cbar = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), spacing='proportional',
+									ticks=bound_ticks, orientation='horizontal',
+									cax=cax)
+			# cbar.ax.set_yticklabels(["{}XX".format(int(x)) for x in recountLst])
+
+			fig.savefig("./figure03_sequence.png")
 
 
 	@loggTimer
@@ -214,7 +263,7 @@ class Products:
 			ax0      = plt.subplot(gs[j, 0])
 			ax0 = self.spectralEntry(ax0, i0_indx, color, wavelambda, extent)
 			if gs[j,0].is_last_row():
-				ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [\AA]")									
+				ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")									
 			
 			ax0.tick_params(labelleft=True)
 
@@ -240,15 +289,14 @@ class Products:
 			
 				ax = self.spectralEntry(ax, o2_indx, color, wavelambda, extent, scores=score)
 				if gs[j,k+1].is_last_row():
-					ax.set_xlabel(r"$\lambda-\lambda_{0}$ [\AA]")					
+					ax.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")					
 										
 				ax.tick_params(labelleft=False)
 				if not gs[j, k+1].is_last_row():
 					ax.tick_params(labelbottom=False)		
 
 
-		#fig.savefig(self.figDir + "{}_alt.pdf".format(catalogType))
-		fig.savefig("./clusterLabels.png")
+			fig.savefig("./clusterLabels.png")
 
 	def spectralEntry(self, ax, indx, color, wavelambda, extent, scores=None):
 #> detail: 
@@ -263,8 +311,18 @@ class Products:
 #> test-method:
 		ii, jj = [self.ii, self.jj]
 		raw_dat = self.epochObj.prepSquare[indx.astype(np.uint32), ii:jj+1]
-		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]		
-		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_i, color='black')
+		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]	
+		resolvingIndex = baseAtom._calcSingleresolvingIndex(raw_dat).compute()	
+
+
+		centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)
+
+		axR = ax.twinx()
+		axR.set_ylim([-1, 1])
+		axR.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_i, color='black', linewidth=0.75)
+		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_min, color='blue', linewidth=0.75)
+		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_max, color='blue', linewidth=0.75)
 
 		temp_im 	= auxAtom.density_hist2d(raw_dat.compute(), 0.01, extent[3], extent[2])
 		im = ax.imshow(temp_im.T, 
@@ -282,11 +340,11 @@ class Products:
 
 		if scores == None:
 			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-						"{}\nN={}\n".format(label, len(indx)),
+						"{}\nN={}\nf={:.3f}\n".format(label, len(indx), np.mean(np.abs(resolvingIndex))),
 						fontname='Times New Roman')
 		else:
 			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-					"{}\nN={}\nS={:.3f}".format(label, len(indx), float(scores)),
+					"{}\nN={}\nS={:.3f}\nf={:.3f}\n".format(label, len(indx), float(scores), np.mean(np.abs(resolvingIndex))),
 					fontname='Times New Roman')
 			
 		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=0.2))

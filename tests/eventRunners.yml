@@ -20,11 +20,11 @@
           - label: 'continuum'
             layerConfig: {'bins': [0, 0.75, 1.0]}
           - label: 'window'
-            layerConfig: {'bins': [0, 0.42, 0.55, 0.84]}
+            layerConfig: {'bins': [0, 0.42, 0.55, 1]}
           S1: 
           - layerGroups: [1, 1, 2, 1, 1, 2]
             layerConfig: {'converge': 0, similarity: 'dist', ss_thresh: [0, 0.66, 0, 0, 0.53]}
-          - layerGroups: [1,1,4,4,1,4,4,3]
+          - layerGroups: [1,1,4,4,1,4,3,4]
             layerConfig: {'converge': 0, similarity: 'dist', ss_thresh: [0,0.74, 0.77,0,0.7,0.53, 0.56]}
         axis_fit: {coeff: [18.8546e-3, 8531.8541], unit: "A"}
         lines:
@@ -134,7 +134,7 @@
         overwrite: True
         alignment_dir: "aligned_x5bin"
         config: {frames: [-1, 3, 1],
-              keepI0: [2],
+              keepI0: [3],
               bbox: [0, 125, 1188, 1629],
               primary: {src: 'AEVEG-SPD', S1: [1, 5, 2, 4, 1], lines: {'AEVEG-SPD': ['main']}}, 
         }
@@ -144,7 +144,7 @@
         residual: False
         clustering:
           S0: 
-            - {label: 'window', layerConfig: {'bins': [0, 0.51, 0.61, 0.94]}}
+            - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 2]}}
           S1: 
             - {layerGroups: 5, layerConfig: {'converge': 1e-6, ss_thresh: [0, 0, 0, 0, 0, 0]}}
         axis_fit: {coeff: [-2.81754321e-8  1.91621915e-3  8.53133874e+2], unit: "A"}

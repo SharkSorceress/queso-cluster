@@ -90,13 +90,15 @@ class instrument:
 			self.dataSquare = self.dataCube.reshape(numRaster, flat_axis//numRaster, spectral_len)
 
 		self.alongSlitSize 	= np.max(test)
-		self.rasterSize 	= (self.dataSquare.shape[0] // self.alongSlitSize) // numRaster
+		print(self.dataSquare.shape)
+		self.rasterSize 	= (flat_axis // self.alongSlitSize) // numRaster
 
 		self.spaceInfo = {
 			"maxRasters": numRaster,
 			"rasterSize": self.rasterSize,
 			"alongSlitSize": self.alongSlitSize,
 		}
+		print(self.spaceInfo)
 
 		self.waveInfo = {
 			"lineLabel": "Ca II IRT",#dataset.headers['WAVEBAND'][0],

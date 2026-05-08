@@ -134,7 +134,7 @@ def _runLabelSort(dataSquare, labelLine):
 		lindx = np.where(labelLine == labelLst[l])[0]
 		m0Lst[l] = (dataSquare[lindx, :].sum(axis=0)/lindx.size).mean()
 
-	sortIndx = np.argsort(m0Lst)
+	sortIndx = np.argsort(m0Lst)[::-1]
 	sortedLabelLst = labelLst[sortIndx]
 	
 	sortedLabelLine = np.zeros(labelLine.shape, dtype=labelLine.dtype)

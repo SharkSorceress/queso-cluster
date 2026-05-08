@@ -32,6 +32,14 @@ def main(config):
 	#config.runners.alignmentDir
 	#print(config.srcLst)
 	evoDev = approach.timeDependent(config, config.runners.label, ViSPobj)
+	bboxMask = np.zeros((evoDev.rasterSize, evoDev.alongSlitSize))
+
+
+	bEx = config.runners.config['bbox']
+	bboxMask[bEx[0]:bEx[1], bEx[2]:bEx[3]] = 1
+
+	bboxMask = bboxMask.reshape(bboxMask.shape[0]*bboxMask.shape[1])
+
 	# if not config.runners.overwrite:
 	# 	frameLst, _, timeLst = evoDev.clustering()
 	# 	try:
@@ -54,29 +62,29 @@ def main(config):
 
 
 	intrinsicLine = base._mainIntrinsic(config.srcLst, 
-										np.floor(evoDev.dataSquare[tLst[1], ...]*100)/100., 0, intrinsicSkip=False)
+										np.floor(timeFrames[1, ...]*100)/100., 0, intrinsicSkip=False)
 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
 
+	maskLine = bboxMask.astype(bool)#np.ones(prepSquare.shape[0]).astype(bool)
+	if not (keepI0 is None):
+		i0Mask = np.zeros(timeFrames.shape[1], dtype=bool)
+		print(i0Mask.shape)
+		for i in keepI0:
+			i0Mask[(intrinsicLine == i)] = 1
+		maskLine *= i0Mask
+
+	print(np.unique(intrinsicLine))
+
 	klst = config.runners.config['primary']['S1']
+	labelSquare = np.zeros((timeFrames.shape[0], timeFrames.shape[1]))
 	for t in range(timeFrames.shape[0]):
 		prepSquare = runBase.runPrep(timeFrames[t,...], norm='continuum', continuumIndx=evoDev.continuum)
 		print(prepSquare.shape)
-		maskLine = np.ones(prepSquare.shape[0]).astype(bool)
-		print(maskLine.shape)
-		print(intrinsicLine.shape)
-		if not (keepI0 is None):
-			i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
-			for i in keepI0:
-				#print(np.unique(intrinsicLine[(intrinsicLine == i)]))
-				#print(np.unique(intrinsicLine[(intrinsicLine == i)*maskLine]))
-				i0Mask[(intrinsicLine == i)] = 1
-			maskLine *= i0Mask
-
-		print(maskLine.shape)
 		
-		frameLst, labelLst = evoDev.clusterPerFrame(prepSquare, maskLine, kLst=[klst[t]], intrinsicLine=intrinsicLine)
+		labelLine, scores = evoDev.clusterPerFrame(prepSquare, maskLine, kLst=[klst[t]], intrinsicLine=intrinsicLine)
+		labelSquare[t, :] = labelLine
 	
-	return(evoDev, labelLst)
+	return(evoDev, labelSquare)
 
 
 
@@ -88,6 +96,10 @@ if __name__ == '__main__':
 	
 	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=1, runner=2)
 
-	evoDev, labelLine = main(eventManager.event)
+	evoDev, labelSquare= main(eventManager.event)
+
+	from queso_cluster.addon import products
+	p = products.Products(evoDev, labelSquare)
+	p.figure03_sequence()
 	#p02 = paper02.paper02_products(evoDev, labelLst, frameLst)
 	#p02.run()

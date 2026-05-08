@@ -7,6 +7,37 @@ import dask.array as da
 import numba as nb
 
 
+
+def _calcResolvingIndex(dataSquare, labelLine):
+	labelLst = np.unique(labelLine)
+	resolveSquare = np.zeros((len(labelLst), dataSquare.shape[1]))
+	for l in range(labelLst.size):
+		lindx = np.where(labelLine == labelLst[l])[0]
+		resolveSquare[l, :] = _calcResolvingIndex(dataSquare[lindx, :])
+
+	return(resolveSquare)		
+
+
+def _calcSingleresolvingIndex(dataSquare):
+
+	centroid_mins, centroid_plus = np.quantile(dataSquare, [0.25, 0.75], axis=0)
+	centroid = dataSquare.sum(axis=0)/dataSquare.shape[0]
+	# centroid_plus = dataSquare.max(axis=0)
+	# centroid_mins = dataSquare.min(axis=0)
+	
+	plusIndx = np.where(dataSquare > centroid_plus)[0]
+	centroid_plus = dataSquare[plusIndx, :].sum()/plusIndx.size
+
+	minsIndx = np.where(dataSquare < centroid_mins)[0]
+	centroid_mins = dataSquare[minsIndx, :].sum()/minsIndx.size
+
+	delta_plus = np.abs(centroid_plus - centroid)
+	delta_mins = np.abs(centroid_mins - centroid)
+
+	return((delta_plus - delta_mins)/(delta_plus + delta_mins))
+	
+
+
 def normZ(dataSquare):
 	#> detail: 
 	#> param type dataSquare:

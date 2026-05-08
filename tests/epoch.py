@@ -48,7 +48,7 @@ def main(config):
 		#noMaskLabelLine, _ = epochDev.clustering(epochDev.dataSquare)#
 
 		maskLine = np.ones(prepSquare.shape[0]).astype(bool)
-		if False:
+		if True:
 			_, _, _, maskLine = aia.delayAIA("/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(aiaUse), epochDev)
 	
 		keepI0 = None
@@ -88,8 +88,8 @@ if __name__ == '__main__':
 
 	from queso_cluster.addon import products
 	p = products.Products(epochDev, labelLine)
-	p.figure03()
-	#p.figure04_template()
+	#p.figure03()
+	p.figure04_template()
 
 	#p01 = paper01_products(epochDev, labelLine.astype(float), 
 	#						keepI0=keepI0, noMask_labels=noMaskLabelLine.astype(float))
