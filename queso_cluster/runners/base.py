@@ -31,38 +31,21 @@ def _runOptimalKSearch(dataSquare, funcLst, checkLst):
 # from ..base import _mainIntrinsic
 # from ..atom import aux as auxAtom
 
-def runPrep(dataSquare, norm='continuum', keepI0=None, maskLine=None, quSquare=None, **kwargs):
-	match norm:
-		case 'continuum':
-			prepSquare = baseAtom.normContinuum(dataSquare, **kwargs)
-		case 'maximum':
-			prepSquare = baseAtom.normMaximum(dataSquare)
-		case 'Z':
-			prepSquare = baseAtom.normZ(dataSquare)
+def runPrep(dataSquare, norm, keepI0=None,  quSquare=None, **kwargs):
+	
+	prepSquare = norm(dataSquare, **kwargs)
+	
+	# match norm:
+	# 	case 'continuum':
+	# 		prepSquare = baseAtom.normContinuum(dataSquare, **kwargs)
+	# 	case 'maximum':
+	# 		prepSquare = baseAtom.normMaximum(dataSquare)
+	# 	case 'Z':
+	# 		prepSquare = baseAtom.normZ(dataSquare)
 
 	if not (quSquare is None):
 		#> TODO: Implement quSquare normalization
 		prepSquare -= quSquare
-
-	# if intrinsicLine is None:
-	# 	intrinsicLine = _mainIntrinsic(self.config.srcLst, dataSquare, 0, intrinsicSkip=False)
-	# 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
-		
-	# baseMask = np.ones(prepSquare.shape[0], dtype=bool)
-	# if not (keepI0 is None):
-	# 	baseMask *= False
-	# 	for i in keepI0:
-	# 		baseMask += (intrinsicLine == i)
-
-	# 	prepSquare = prepSquare[baseMask, :] #*= np.broadcast_to(keepMask, prepSquare.shape)
-	# 	intrinsicLine = intrinsicLine[baseMask]
-
-	#if not (maskLine is None):
-		#print(maskLine.shape)
-		#print(dataSquare.shape)
-		#maskSquare = np.broadcast_to(maskLine, dataSquare.shape)
-		#prepSquare[~maskLine.astype(bool), :] = 0
-
 
 	return(prepSquare)
 

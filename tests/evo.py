@@ -5,7 +5,9 @@
 from queso_cluster import base, approach, base, loader
 from queso_cluster import writer
 from queso_cluster.atoms import aux as auxAtom
+from queso_cluster.atoms import norm as normAtom
 from queso_cluster.runners import base as runBase
+
 
 import numpy as np
 
@@ -78,10 +80,10 @@ def main(config):
 	klst = config.runners.config['primary']['S1']
 	labelSquare = np.zeros((timeFrames.shape[0], timeFrames.shape[1]))
 	for t in range(timeFrames.shape[0]):
-		prepSquare = runBase.runPrep(timeFrames[t,...], norm='continuum', continuumIndx=evoDev.continuum)
+		prepSquare = runBase.runPrep(timeFrames[t,...], norm=normAtom.normContinuum, continuumIndx=evoDev.continuum)
 		print(prepSquare.shape)
 		
-		labelLine, scores = evoDev.clusterPerFrame(prepSquare, maskLine, kLst=[klst[t]], intrinsicLine=intrinsicLine)
+		labelLine, scores = evoDev.cluster(prepSquare, maskLine, kLst=[klst[t]], intrinsicLine=intrinsicLine)
 		labelSquare[t, :] = labelLine
 	
 	return(evoDev, labelSquare)
@@ -101,5 +103,3 @@ if __name__ == '__main__':
 	from queso_cluster.addon import products
 	p = products.Products(evoDev, labelSquare)
 	p.figure03_sequence()
-	#p02 = paper02.paper02_products(evoDev, labelLst, frameLst)
-	#p02.run()

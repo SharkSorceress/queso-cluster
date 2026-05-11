@@ -142,7 +142,7 @@ class timeDependent:
 
 
 	@loggTimer
-	def clusterPerFrame(self, prepSquare, maskLine, intrinsicLine=None, kLst=None):
+	def cluster(self, prepSquare, maskLine, intrinsicLine=None, kLst=None):
 		#> detail: 
 		#> param type self:
 		#> param type prepSquare:
@@ -179,35 +179,35 @@ class timeDependent:
 		
 		return(labelLine, scoreTuple)
 
-	def clustering(self, prepCube, tlst, groups, intrinsicSquare=None):
-		#> detail: low temporal resolution clustering
-		#> param type self:
-		#> param type prepCube:
-		#> param type tlst:
-		#> param type groups:
-		#> param type [None] intrinsicSquare:
-		#> return (type): 
-		#> test-method:
+	# def clustering(self, prepCube, tlst, groups, intrinsicSquare=None):
+	# 	#> detail: low temporal resolution clustering
+	# 	#> param type self:
+	# 	#> param type prepCube:
+	# 	#> param type tlst:
+	# 	#> param type groups:
+	# 	#> param type [None] intrinsicSquare:
+	# 	#> return (type): 
+	# 	#> test-method:
 
 
-		peakPrepSquare = baseAtom._calcDynamicFrame(self.dataCube, peakTimeSquare).reshape(self.dataFrame.shape[1:])
-		peakIntrinsicSquare = baseMain._mainIntrinsic(self.config.srcLst, peakPrepSquare, 0)
+	# 	peakPrepSquare = baseAtom._calcDynamicFrame(self.dataCube, peakTimeSquare).reshape(self.dataFrame.shape[1:])
+	# 	peakIntrinsicSquare = baseMain._mainIntrinsic(self.config.srcLst, peakPrepSquare, 0)
 
-		labelSquare 		= np.zeros((prepCube.shape[0], prepCube.shape[1]*prepCube.shape[2])) + np.nan
-		for dt in range(prepCube.shape[0]):
-			epochLabel 	= np.ones(labelSquare.shape[1]) * 111
-			with ProgressBar(total=int(labelSquare.shape[1]), ascii=False, leave=True, desc='Epoch Frame {:+}'.format(tlst[dt]),
-							bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as epochProgress:	
-				prepSquare 	= baseAtom._calcDynamicFrame(prepCube, peakTimeSquare, progress=epochProgress, delta=tlst[dt]).reshape(prepCube.shape[1:]) 
-			if groups[dt] > 1:
-				# util.logg("msg", "Time delta Runner (peak{:+})".format(tlst[dt]))				
-				if intrinsicSquare is None:
-					intrinsicSquare = baseMain._mainIntrinsic(self.config.srcLst, self.dataCube, 0, intrinsicSkip=True)
-					intrinsicSquare = auxAtom.pick_jth_label(intrinsicSquare, 0).astype(int)
+	# 	labelSquare 		= np.zeros((prepCube.shape[0], prepCube.shape[1]*prepCube.shape[2])) + np.nan
+	# 	for dt in range(prepCube.shape[0]):
+	# 		epochLabel 	= np.ones(labelSquare.shape[1]) * 111
+	# 		with ProgressBar(total=int(labelSquare.shape[1]), ascii=False, leave=True, desc='Epoch Frame {:+}'.format(tlst[dt]),
+	# 						bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as epochProgress:	
+	# 			prepSquare 	= baseAtom._calcDynamicFrame(prepCube, peakTimeSquare, progress=epochProgress, delta=tlst[dt]).reshape(prepCube.shape[1:]) 
+	# 		if groups[dt] > 1:
+	# 			# util.logg("msg", "Time delta Runner (peak{:+})".format(tlst[dt]))				
+	# 			if intrinsicSquare is None:
+	# 				intrinsicSquare = baseMain._mainIntrinsic(self.config.srcLst, self.dataCube, 0, intrinsicSkip=True)
+	# 				intrinsicSquare = auxAtom.pick_jth_label(intrinsicSquare, 0).astype(int)
 				
-				labelLine, scoreTuple = baseMain._mainOptimization(self.config.srcLst, prepSquare*peakIntrinsicSquare[:, None], intrinsicSquare)
+	# 			labelLine, scoreTuple = baseMain._mainOptimization(self.config.srcLst, prepSquare*peakIntrinsicSquare[:, None], intrinsicSquare)
 
-			filter_indx = np.where(np.logical_not(np.isnan(prepSquare.sum(axis=-1))))[0]
-			#prepCube[dt, ...] 					= prepSquare
-			labelSquare[dt, filter_indx] 		= epochLabel.reshape(labelLine.shape[1:])[filter_indx]	
-		return(labelLine, score)
+	# 		filter_indx = np.where(np.logical_not(np.isnan(prepSquare.sum(axis=-1))))[0]
+	# 		#prepCube[dt, ...] 					= prepSquare
+	# 		labelSquare[dt, filter_indx] 		= epochLabel.reshape(labelLine.shape[1:])[filter_indx]	
+	# 	return(labelLine, score)

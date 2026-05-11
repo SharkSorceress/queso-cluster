@@ -7,6 +7,8 @@ from queso_cluster import writer
 from queso_cluster.runners import base as runBase
 from queso_cluster.addon import aia
 
+from queso_cluster.atoms import norm as normAtom
+
 # import sys
 #import argparse
 from netCDF4 import Dataset
@@ -44,7 +46,8 @@ def main(config):
 	else:
 	
 		prepSquare = runBase.runPrep(epochDev.dataSquare,
-							   norm='continuum', continuumIndx=epochDev.continuum)#maskSquare=epochDev.maskSquare)
+							   			norm=normAtom.normContinuum, 
+							   			continuumIndx=epochDev.continuum)
 		#noMaskLabelLine, _ = epochDev.clustering(epochDev.dataSquare)#
 
 		maskLine = np.ones(prepSquare.shape[0]).astype(bool)
@@ -65,14 +68,6 @@ def main(config):
 
 
 if __name__ == '__main__':
-
-	# parser = argparse.ArgumentParser()
-	# parser.add_argument('-e', '--event')
-	# parser.add_argument('-r', '--run')
-	# args = parser.parse_args()	
-
-
-	#from paper01 import paper01_products
 	quesoInstance = loader.QuESO("/disk/data/DKIST/" ,
 							 	"/disk/data/sriley/",
 							 	"./dev/fig/")
@@ -83,14 +78,9 @@ if __name__ == '__main__':
 	#quesoInstance.aiaFname 	=  "/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(eventManager.event.runners.config['aia'])
 	#quesoInstance.instrumentDir = quesoInstance.datDir + '/20221227/CSYRML/'
 
-
 	epochDev, labelLine = main(eventManager.event)
 
 	from queso_cluster.addon import products
 	p = products.Products(epochDev, labelLine)
 	#p.figure03()
 	p.figure04_template()
-
-	#p01 = paper01_products(epochDev, labelLine.astype(float), 
-	#						keepI0=keepI0, noMask_labels=noMaskLabelLine.astype(float))
-	#p01.run()
