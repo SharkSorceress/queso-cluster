@@ -1,18 +1,19 @@
 import numpy as np
-import dask.array as da
+#import dask.array as da
 import numba as nb
 
-def _calcResolvingIndex(dataSquare, labelLine):
+from . import base as baseAtom
+
+def calcResolvingIndex(dataSquare, labelLine):
 	labelLst = np.unique(labelLine)
 	resolveSquare = np.zeros((len(labelLst), dataSquare.shape[1]))
 	for l in range(labelLst.size):
 		lindx = np.where(labelLine == labelLst[l])[0]
-		resolveSquare[l, :] = _calcResolvingIndex(dataSquare[lindx, :])
+		resolveSquare[l, :] = calcSingleResolvingIndex(dataSquare[lindx, :])
 
 	return(resolveSquare)		
 
-
-def _calcSingleresolvingIndex(dataSquare):
+def calcSingleResolvingIndex(dataSquare):
 
 	centroid_mins, centroid_plus = np.quantile(dataSquare, [0.25, 0.75], axis=0)
 	centroid = dataSquare.sum(axis=0)/dataSquare.shape[0]
@@ -32,7 +33,7 @@ def _calcSingleresolvingIndex(dataSquare):
 	
 
 @nb.njit()
-def _calcElbowEntry(data, labels):
+def calcElbowEntry(data, labels):
 	#> detail: 
 	#> param type data:
 	#> param type labels:
@@ -57,7 +58,7 @@ def _calcElbowEntry(data, labels):
 	return(localDistance)#, _calcScore)
 
 @nb.njit()
-def _calcVarianceScore(data):
+def calcVarianceScore(data):
 	#> detail: 
 	#> param type data:
 	#> return (type): 
@@ -67,18 +68,18 @@ def _calcVarianceScore(data):
 	centroid = data.sum(axis=0)/data.shape[0]
 
 @nb.njit()
-def _criteriaInertiaScore(score):
+def criteriaInertiaScore(score):
 	#> detail: 
 	#> param type score:
 	#> return (type): 
 	#> test-method:
-	diff = np_gradient(score)
+	diff = baseAtom.np_gradient(score)
 	for d in range(diff.size):
 		if diff[d] < diff[0]*0.8:
 			return d		
 
 @nb.njit()
-def _calcInertiaScore(dataSquare, labelLine):
+def calcInertiaScore(dataSquare, labelLine):
 	#> detail: 
 	#> param type dataSquare:
 	#> param type labelLine:
@@ -95,7 +96,7 @@ def _calcInertiaScore(dataSquare, labelLine):
 	return(inertia)	
 
 @nb.njit()
-def _criteriaSilhouetteScore(score):
+def criteriaSilhouetteScore(score):
 	#> detail: 
 	#> param type score:
 	#> return (type): 
@@ -103,7 +104,7 @@ def _criteriaSilhouetteScore(score):
 	return(score.argmax())
 
 @nb.njit()
-def _calcSilhouetteScore(dataSquare, labelLine):
+def calcSilhouetteScore(dataSquare, labelLine):
 	#> detail: 
 	#> param type dataSquare:
 	#> param type labelLine:
@@ -116,7 +117,7 @@ def _calcSilhouetteScore(dataSquare, labelLine):
 	scoreLine = np.zeros(labelLst.size)
 	if len(labelLst) > 1:
 		for j in range(labelLst.size):
-			scoreLine[j] = _calcSingleSilhouetteScore(dataSquare, labelLine, labelLst[j])
+			scoreLine[j] = calcSingleSilhouetteScore(dataSquare, labelLine, labelLst[j])
 			# intraIndx = np.where(labelLine == labelLst[j])[0]
 			# interIndx = np.where(labelLine != labelLst[j])[0]
 
@@ -138,7 +139,7 @@ def _calcSilhouetteScore(dataSquare, labelLine):
 
 
 @nb.njit()
-def _calcSingleSilhouetteScore(data, labels, lab):
+def calcSingleSilhouetteScore(data, labels, lab):
 	#> detail: 
 	#> param type data:
 	#> param type labels:
@@ -177,7 +178,7 @@ def _calcSingleSilhouetteScore(data, labels, lab):
 	return(1 - intraDistance/interDistance)
 
 @nb.njit()
-def _calcCHindex(data, labels):
+def calcCHindex(data, labels):
 	#> detail: 
 	#> param type data:
 	#> param type labels:

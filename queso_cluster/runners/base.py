@@ -1,16 +1,17 @@
+from ..atoms import base as baseAtom
+from ..atoms import scores as scoresAtom
+
+
+import sys
 import numba as nb
 import numpy as np
-from ..atoms import base as baseAtom
+import matplotlib.pyplot as plt
 from numba_progress import ProgressBar
 
-
-
-import matplotlib.pyplot as plt
-import sys
-def _runOptimalKSearch(dataSquare, funcLst, checkLst):
+def runOptimalKSearch(dataSquare, funcLst, checkLst):
 	# labelLst = np.unique(labelLine)
 	# for l in range(labelLst.size):
-	scores, optimalK = _findOptimalK(dataSquare, funcLst, checkLst)
+	scores, optimalK = findOptimalK(dataSquare, funcLst, checkLst)
 
 	fig = plt.figure(layout='constrained')
 	ax = fig.add_subplot(111)
@@ -28,21 +29,10 @@ def _runOptimalKSearch(dataSquare, funcLst, checkLst):
 	return(optimalK[0])
 
 
-# from ..base import _mainIntrinsic
-# from ..atom import aux as auxAtom
-
-def runPrep(dataSquare, norm, keepI0=None,  quSquare=None, **kwargs):
+def runPrep(dataSquare, norm, quSquare=None, **kwargs):
 	
 	prepSquare = norm(dataSquare, **kwargs)
 	
-	# match norm:
-	# 	case 'continuum':
-	# 		prepSquare = baseAtom.normContinuum(dataSquare, **kwargs)
-	# 	case 'maximum':
-	# 		prepSquare = baseAtom.normMaximum(dataSquare)
-	# 	case 'Z':
-	# 		prepSquare = baseAtom.normZ(dataSquare)
-
 	if not (quSquare is None):
 		#> TODO: Implement quSquare normalization
 		prepSquare -= quSquare
@@ -50,7 +40,7 @@ def runPrep(dataSquare, norm, keepI0=None,  quSquare=None, **kwargs):
 	return(prepSquare)
 
 
-def _runIntrinsic(nbins, data, edgeOverride=None):
+def runIntrinsic(nbins, data, edgeOverride=None):
 	init_label  = np.ones(data.shape[0], dtype=np.uint16)
 	edges = edgeOverride
 	if edgeOverride is None:
@@ -75,15 +65,15 @@ def runStart(k, data, start='max'):
 	return(initial_condition)
 
 @nb.njit()
-def _runOptimization(k, sub_data, converge):
+def runOptimization(k, sub_data, converge):
 	ic                      = runStart(k, sub_data)
 	_, data_label           = baseAtom._calcOptimization(k, sub_data, ic, converge)
-	scoreLine 				= baseAtom._calcSilhouetteScore(sub_data, data_label)
+	scoreLine 				= scoresAtom.calcSilhouetteScore(sub_data, data_label)
 	return(data_label+1, scoreLine)
 
 
 @nb.njit()
-def _findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
+def findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	with ProgressBar(total=30, ascii=False, leave=False, 
 					desc='findOptimalK',
 					bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as p:
@@ -92,7 +82,7 @@ def _findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 		while k < scores.shape[1]:
 			ff = 0
 			for f in funcLst:
-				labelLine = _runOptimization(k+1, dataSquare, converge)
+				labelLine = runOptimization(k+1, dataSquare, converge)
 				scores[ff, k] = f(dataSquare, labelLine)	
 				ff += 1
 			k += 1
@@ -109,7 +99,7 @@ def _findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	return(scores, kLst)
 
 
-def _runLabelSort(dataSquare, labelLine):
+def runLabelSort(dataSquare, labelLine):
 	labelLst = np.unique(labelLine)
 
 	m0Lst = np.zeros(labelLst.size)

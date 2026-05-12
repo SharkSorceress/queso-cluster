@@ -2,18 +2,19 @@
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from ..atoms import base as baseAtom
-from ..atoms import aux as auxAtom
+#from ..atoms import base as baseAtom
+
 from . import style as sty
-from  ..runners import base as baseRun
 from .logg import loggTimer
+from ..atoms import aux as auxAtom
+from ..atoms import scores as scoresAtom
+from  ..runners import base as baseRun
 
 import numpy as np
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.colors import LinearSegmentedColormap
-
 
 
 class Products:
@@ -119,7 +120,7 @@ class Products:
 						bins = intrinsicConfig[i]['layerConfig']['bins']
 						cbar_label = "Continuum Intensity"
 
-				intrinsicLayerMap = baseRun._runIntrinsic(len(np.diff(bins)), np.floor(moment0*100)/100., 
+				intrinsicLayerMap = baseRun.runIntrinsic(len(np.diff(bins)), np.floor(moment0*100)/100., 
 											  edgeOverride=np.array(bins).astype(float))
 				_, color_pallet = sty._genColorPallet(len(np.unique(intrinsicLayerMap)))
 
@@ -209,30 +210,18 @@ class Products:
 
 	@loggTimer
 	def figure04_template(self):
-#> detail: 
-#> param type self:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> return (type): 
+		#> test-method:
+		
 		ii, jj = [self.ii, self.jj]
 		
 		wavelambda  = self.epochObj.waveFit
 
-
 		validLabels = self.optLabels[self.vindx]
-		print(np.unique(validLabels))
-
-		# selectiveIndx = []
-		# for k in range(len(self.keepI0)):
-		# 	selectiveIndx += vindx[np.where(auxAtom.pick_jth_label(self.optLabels[vindx], 0) == self.keepI0[k])[0]].tolist()
-
-
-		# valid_indx = np.array(selectiveIndx).astype(int)
-
-
 		i0Arr = auxAtom.pick_jth_label(validLabels, 0)
-		i0Lst = np.unique(i0Arr)
 
-		print(np.unique(self.optLabels))
 		i0o1Arr = auxAtom.pick_jth_label(validLabels, 0)*10 + auxAtom.pick_jth_label(validLabels, 1)
 
 		i0o1Lst = np.unique(i0o1Arr)
@@ -250,9 +239,7 @@ class Products:
 
 		raw_max = (np.ceil(self.epochObj.prepSquare[:, ii:jj+1].max()*10)/10.).compute()
 		raw_min = (np.floor(self.epochObj.prepSquare[:, ii:jj+1].min()*10)/10.).compute()	
-		extent  	= wavelambda[ii]-wavelambda[self.lineCenter], wavelambda[jj]-wavelambda[self.lineCenter], raw_min, raw_max
-
-		x0 = extent[0]
+		extent  	= (wavelambda[ii]-wavelambda[self.lineCenter]).magnitude, (wavelambda[jj]-wavelambda[self.lineCenter]).magnitude, raw_min, raw_max
 
 		color = "black"
 		panel_bounds = []
@@ -261,12 +248,12 @@ class Products:
 			i0_indx = np.where(i0o1Arr == i0o1Lst[j])[0]
 
 			ax0      = plt.subplot(gs[j, 0])
-			ax0 = self.spectralEntry(ax0, i0_indx, color, wavelambda, extent)
+			ax0, axR0 = self.spectralEntry(ax0, i0_indx, color, wavelambda.magnitude, extent)
 			if gs[j,0].is_last_row():
-				ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")									
-			
+				#ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")
+				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(wavelambda.units))
 			ax0.tick_params(labelleft=True)
-
+			axR0.tick_params(labelright=False)
 			if not gs[j, 0].is_last_row():
 				ax0.tick_params(labelbottom=False)
 		
@@ -285,36 +272,40 @@ class Products:
 				sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
 				sindx = np.where(i0Arr == sArr[0])[0]
 
-				score = baseAtom._calcSingleSilhouetteScore(self.epochObj.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
+				score = scoresAtom.calcSingleSilhouetteScore(self.epochObj.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
 			
-				ax = self.spectralEntry(ax, o2_indx, color, wavelambda, extent, scores=score)
+				ax, axR = self.spectralEntry(ax, o2_indx, color, wavelambda.magnitude, extent, scores=score)
 				if gs[j,k+1].is_last_row():
-					ax.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")					
+					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(wavelambda.units))	
+				else:
+					ax.tick_params(labelbottom=False)				
 										
 				ax.tick_params(labelleft=False)
-				if not gs[j, k+1].is_last_row():
-					ax.tick_params(labelbottom=False)		
+				if gs[j, k+1].is_last_col():
+					axR.tick_params(labelright=True)
+				else:
+					axR.tick_params(labelright=False)
+
+
 
 
 			fig.savefig("./clusterLabels.png")
 
 	def spectralEntry(self, ax, indx, color, wavelambda, extent, scores=None):
-#> detail: 
-#> param type self:
-#> param type ax:
-#> param type indx:
-#> param type color:
-#> param type wavelambda:
-#> param type extent:
-#> param type [None] scores:
-#> return (type): 
-#> test-method:
+		#> detail: 
+		#> param type self:
+		#> param type ax:
+		#> param type indx:
+		#> param type color:
+		#> param type wavelambda:
+		#> param type extent:
+		#> param type [None] scores:
+		#> return (type): 
+		#> test-method:
 		ii, jj = [self.ii, self.jj]
-		raw_dat = self.epochObj.prepSquare[indx.astype(np.uint32), ii:jj+1]
+		raw_dat = self.epochObj.prepSquare[indx.astype(np.uint32), ii:jj+1].compute()
 		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]	
-		resolvingIndex = baseAtom._calcSingleresolvingIndex(raw_dat).compute()	
-
-
+		resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
 		centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)
 
 		axR = ax.twinx()
@@ -324,29 +315,34 @@ class Products:
 		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_min, color='blue', linewidth=0.75)
 		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_max, color='blue', linewidth=0.75)
 
-		temp_im 	= auxAtom.density_hist2d(raw_dat.compute(), 0.01, extent[3], extent[2])
-		im = ax.imshow(temp_im.T, 
-		extent=extent, aspect='auto', origin='lower')    
-		im.set_cmap(LinearSegmentedColormap.from_list('', ['white', color]))
+
+		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
+
+		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, extent[3], extent[2])
+
+		ww, insty = np.meshgrid((wavelambda[ii:jj+1+1]-wavelambda[self.lineCenter]), np.arange(extent[2], extent[3], 0.01))
+		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', color]))
+		# im = ax.imshow(temp_im.T, 
+		# 			extent=extent, aspect='auto', origin='lower')    
 
 		ax.axvline(x = 0, linestyle='dashed', color='black')
-		ax.set_ylim([extent[2], extent[3]])
+		# ax.set_ylim([extent[2], extent[3]])
 
-		label = int(np.unique(self.optLabels[self.vindx[indx]])[0])
-		if len(np.unique(self.optLabels[self.vindx[indx]])) > 1:
-			print(np.unique(self.optLabels[self.vindx[indx]]))
-			tmp = np.unique(auxAtom.pick_jth_label(self.optLabels[self.vindx[indx]], 0))*10 + np.unique(auxAtom.pick_jth_label(self.optLabels[self.vindx[indx]], 1))
-			label = "{}X".format(int(tmp[0]))
+
+		labelLst = np.unique(self.optLabels[self.vindx[indx]]).astype(int).astype(str)
+		commonLabel = [labelLst[0][j] for j in range(len(labelLst[0])) if np.unique([a[j] for a in [list(x) for x in labelLst]]).size == 1]
+		print(commonLabel)
+		label = "{}{}".format(int("".join(commonLabel)), "X"*(len(labelLst[0]) - len(commonLabel)))
 
 		if scores == None:
 			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-						"{}\nN={}\nf={:.3f}\n".format(label, len(indx), np.mean(np.abs(resolvingIndex))),
-						fontname='Times New Roman')
+						"{}\nN={}\nf={:.3f}\n".format(label, len(indx), np.mean(np.abs(resolvingIndex))))
+#						fontname='Times New Roman')
 		else:
 			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-					"{}\nN={}\nS={:.3f}\nf={:.3f}\n".format(label, len(indx), float(scores), np.mean(np.abs(resolvingIndex))),
-					fontname='Times New Roman')
+					"{}\nN={}\nS={:.3f}\nf={:.3f}\n".format(label, len(indx), float(scores), np.mean(np.abs(resolvingIndex))))
+#					fontname='Times New Roman')
 			
 		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=0.2))
 
-		return(ax)
+		return(ax, axR)

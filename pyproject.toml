@@ -12,19 +12,6 @@ maintainers = [
 	{name = "Sarah Riley", email="sarah.riley1@montana.edu"}
 ]
 
-classifers = [
-# How mature is this project? Common values are
-#	1 - Planning
-#	2 - Pre-Alpha
-#   3 - Alpha
-#   4 - Beta
-#   5 - Production/Stable
-	"Development Status :: 2 - Pre-Alpha",
-	"Intended Audience :: Science/Research",
-	"Natural Language :: English",
-	"Programming Language :: Python :: 3.11",
-	"Topic :: Scientific/Engineering :: Astronomy",
-]
 
 description = "Quantifying the Evolution of Spectra with Optimization"
 readme = "README.md"
@@ -42,6 +29,21 @@ dependencies = [
 	"dask",
 	"pyyaml",
 	"tol-colors",
+	"pint"
+]
+
+classifiers = [
+	# How mature is this project? Common values are
+	#	1 - Planning
+	#	2 - Pre-Alpha
+	#   3 - Alpha
+	#   4 - Beta
+	#   5 - Production/Stable
+	"Development Status :: 2 - Pre-Alpha",
+	"Intended Audience :: Science/Research",
+	"Natural Language :: English",
+	"Programming Language :: Python :: 3.11",
+	"Topic :: Scientific/Engineering :: Astronomy",
 ]
 
 [project.urls]

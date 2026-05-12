@@ -9,7 +9,8 @@ from .atoms import base as baseAtom
 from .addon.logg import loggTimer
 
 import numpy as np
-import os
+# import os
+# import pint
 
 class timeIndependent:
 	def __init__(self, config, catalogName, instrumentObj):
@@ -17,27 +18,22 @@ class timeIndependent:
 		self.instrumentObj = instrumentObj
 
 		#self.figDir 	 = './tests/dev/fig/{}/'.format(self.catalogBase)
-		self.qsBase 	= config.runners.qs_config + '-' + config.runners.config['aia']
+		#self.qsBase 	= config.runners.qs_config + '-' + config.runners.config['aia']
 		#self.qsFigDir 	 = './tests/dev/fig/{}/'.format(self.qsBase) 
 		#os.makedirs(self.figDir, exist_ok=True)
 
-
 		self.config = config 
 		self.dirid = ''.join(config.date.split('-'))
-
 
 		spectralConfig 			= self.config.srcLst.lines[0]
 		self.spectralWindow 	= spectralConfig['window']
 		self.lineCenter 		= spectralConfig['core']
 		self.continuum 			= spectralConfig['continuum']
-		self.waveCoeff			= self.config.srcLst.waveCoeff
-
-		self.stepCadence = 15.67
-		self.mapCadence = np.inf
 
 		self.prepSquare = None
 
-		self.waveFit = np.poly1d(self.waveCoeff)(np.arange(self.instrumentObj.shape[-1]))
+		if hasattr(self.config.srcLst, "waveFitFunc"):
+			self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1)
 
 	def __getattr__(self, name):
 		parentLst = [self.config, self.instrumentObj]
@@ -58,42 +54,34 @@ class timeIndependent:
 		
 		ii, jj = self.spectralWindow
 		if intrinsicLine is None:
-			intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, 
+			intrinsicLine = baseMain.mainIntrinsic(self.config.srcLst, 
 										   np.floor(self.dataSquare*100)/100., 0, intrinsicSkip=False)
 			intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
 		
 		if not (keepI0 is None):
 			i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
 			for i in keepI0:
-				#print(np.unique(intrinsicLine[(intrinsicLine == i)]))
-				#print(np.unique(intrinsicLine[(intrinsicLine == i)*maskLine]))
 				i0Mask[(intrinsicLine == i)] = 1
 			maskLine *= i0Mask
 
 		self.prepSquare = prepSquare[maskLine, :]
 		intrinsicLine = intrinsicLine[maskLine]
 
-		labelLine, scoreTuple = baseMain._mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst)
-		print(np.unique(labelLine))
+		labelLine, scoreTuple = baseMain.mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst)
 
 		if not maskLine.all():
-			print(labelLine.shape)
-			print(maskLine.shape)
 			unmaskLabelLine = np.zeros(maskLine.shape)
 			unmaskLabelLine[maskLine] = labelLine
 			return(unmaskLabelLine, scoreTuple)
 		
 		return(labelLine, scoreTuple)
 
-
-from numba_progress import ProgressBar
 class timeDependent:
 	def __init__(self, config, catalogBase, instrumentObj):
 
 		self.config = config
 
 		self.catalogBase = catalogBase
-		#self.figDir 	 = './fig/{}/'.format(self.catalogBase)
 
 		self.instrumentObj = instrumentObj
 
@@ -101,14 +89,8 @@ class timeDependent:
 		self.spectralWindow 	= spectralConfig['window']
 		self.lineCenter 		= spectralConfig['core']
 		self.continuum 			= spectralConfig['continuum']
-		#self.waveCoeff			= self.config.srcLst.waveCoeff
-
-		self.stepCadence = 1.5
-		self.mapCadence = 3.11*60
 
 		self.prepSquare = None
-
-		#self.waveFit = np.poly1d(self.waveCoeff)(np.arange(self.instrumentObj.shape[-1]))
 
 	def __getattr__(self, name):
 		parentLst = [self.config, self.instrumentObj]
@@ -131,10 +113,8 @@ class timeDependent:
 
 		rangeMin = np.max([0, peakTime-nframes//2])
 		rangeMax = np.min([self.dataSquare.shape[0], peakTime + nframes//2])
-		print([rangeMin, rangeMax])
 
 		tLst = np.arange(int(rangeMin), int(rangeMax)+1)
-		print(tLst)
 		timeFrames = np.zeros((len(tLst), self.dataSquare.shape[1], self.dataSquare.shape[2]))
 		for t in range(len(tLst)):
 			timeFrames[t, ...] = self.dataCube[tLst[t], ...].reshape(self.dataSquare.shape[1], self.dataSquare.shape[2])
@@ -167,8 +147,7 @@ class timeDependent:
 		self.prepSquare = prepSquare[maskLine, :]
 		intrinsicLine = intrinsicLine[maskLine]
 
-		labelLine, scoreTuple = baseMain._mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst, stageMax=1)
-		print(np.unique(labelLine))
+		labelLine, scoreTuple = baseMain.mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst, stageMax=1)
 
 		if not maskLine.all():
 			print(labelLine.shape)

@@ -14,6 +14,17 @@ from queso_cluster.atoms import norm as normAtom
 from netCDF4 import Dataset
 import numpy as np
 
+import logging
+logger = logging.getLogger("queso_cluster")
+logger.setLevel(logging.DEBUG)
+
+# logFormatter = logging.Formatter("!> [%(asctime)s]%(message)s")
+
+consoleHandler = logging.StreamHandler()
+# consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
+
+
 def main(config):
 #> detail: 
 #> param type config:

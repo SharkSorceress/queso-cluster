@@ -1,16 +1,16 @@
 from .atoms import base as baseAtom
-from .atoms import aux as auxAtom
+#from .atoms import aux as auxAtom
 from .runners import base as baseRun
 from .addon.logg import loggTimer
 import numpy as np
-import dask.array as da
-import numba as nb
-
+#import dask.array as da
+#import numba as nb
 
 from numba_progress import ProgressBar
 
+
 @loggTimer
-def _mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
+def mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
 	intrinsicLine = np.zeros(prepSquare.shape[0])
 	if not intrinsicSkip:
 		intrinsicConfig = config.clusterConfig['intrinsic']
@@ -24,14 +24,14 @@ def _mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
 			if 'layerConfig' in list(intrinsicConfig[i].keys()):
 				if 'bins' in list(intrinsicConfig[i]['layerConfig'].keys()):
 					bins = intrinsicConfig[i]['layerConfig']['bins']
-					intrinsicLine_tmp 	= baseRun._runIntrinsic(len(np.diff(bins)), iframe, edgeOverride=np.array(bins).astype(float))
+					intrinsicLine_tmp 	= baseRun.runIntrinsic(len(np.diff(bins)), iframe, edgeOverride=np.array(bins).astype(float))
 
 				if 'nbins' in list(intrinsicConfig[i]['layerConfig'].keys()):
 					nbins = intrinsicConfig[i]['layerConfig']['nbins']
-					intrinsicLine_tmp 	= baseRun._runIntrinsic(nbins, iframe)
+					intrinsicLine_tmp 	= baseRun.runIntrinsic(nbins, iframe)
 
 			else:
-				intrinsicLine_tmp 	= baseRun._runIntrinsic(1, iframe)
+				intrinsicLine_tmp 	= baseRun.runIntrinsic(1, iframe)
 			intrinsicLine += intrinsicLine_tmp * 10**i
 		s0_Lst = np.unique(intrinsicLine)
 		for i in range(len(s0_Lst)):
@@ -44,7 +44,7 @@ def _mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
 
 
 @loggTimer
-def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
+def mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 	if not (kLst is None):
 		if type(kLst[0]) == dict:
 			k_lst  	= [x['layerGroups'] for x in kLst]
@@ -53,8 +53,8 @@ def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 			k_lst = kLst
 
 	else:
-		validationFuncLst = [baseAtom._calcInertiaScore, baseAtom._calcSilhouetteScore]
-		criteriaFuncLst = [baseAtom._criteriaInertiaScore, baseAtom._criteriaSilhouetteScore]
+		validationFuncLst = [baseAtom.calcInertiaScore, baseAtom.calcSilhouetteScore]
+		criteriaFuncLst = [baseAtom.criteriaInertiaScore, baseAtom.criteriaSilhouetteScore]
 	print(k_lst)
 	pwrSeq = (10**(stageMax - np.arange(stageMax+1))).astype(np.uint16)
 	labelLine *= pwrSeq[0]
@@ -88,9 +88,9 @@ def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 							k = k_lst[l]
 
 					else:
-						k = baseRun._runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
-					nxtLabelLineUnsorted, scoreLine = baseRun._runOptimization(k, prepSquare[indx, :], 1e-6)
-					nxtLabelLineSorted, sortIndx 	= baseRun._runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted) 
+						k = baseRun.runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
+					nxtLabelLineUnsorted, scoreLine = baseRun.runOptimization(k, prepSquare[indx, :], 1e-6)
+					nxtLabelLineSorted, sortIndx 	= baseRun.runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted) 
 
 					scoreLst.append(scoreLine[sortIndx])
 					labelLine[indx] += nxtLabelLineSorted*pwrSeq[stageCounter]
@@ -98,7 +98,7 @@ def _mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 					p.update(1)
 			pS.update(1)
 			stageCounter += 1
-	return(labelLine, scoreLst)
+	return(labelLine.astype(int), scoreLst)
 	
 
 

@@ -20,5 +20,6 @@ setup(
 		"dask",
 		"pyyaml",
 		"tol-colors",
+		"pint"
     ],
 )
