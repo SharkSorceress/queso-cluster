@@ -2,7 +2,7 @@
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from queso_cluster import base, approach, base, loader
+from queso_cluster import base, approach, base, loader1
 from queso_cluster import writer
 from queso_cluster.atoms import aux as auxAtom
 from queso_cluster.atoms import norm as normAtom
@@ -28,7 +28,7 @@ def main(config):
 	# config.srcLst = [srcConfigPrimary, srcConfigSecondary]
 #	catalogName = 'alt'
 
-	ViSPobj = loader.instrument('/disk/data/DKIST/20230503/AEVEG/')
+	ViSPobj = loader1.instrument('/disk/data/DKIST/20230503/AEVEG/')
 	ViSPobj.vispLoad()
 
 	#config.runners.alignmentDir
@@ -92,7 +92,7 @@ def main(config):
 
 if __name__ == '__main__':
 	#from paper02 import paper02_products
-	quesoInstance = loader.QuESO("/disk/data/DKIST/" ,
+	quesoInstance = loader1.QuESO("/disk/data/DKIST/" ,
 							 	"/disk/data/sriley/",
 							 	"./dev/fig/")
 	

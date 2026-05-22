@@ -2,7 +2,7 @@
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from queso_cluster import approach, base, loader
+from queso_cluster import approach, base
 from queso_cluster import writer
 from queso_cluster.runners import base as runBase
 from queso_cluster.addon import aia
@@ -38,7 +38,7 @@ def main(config):
 	config.srcLst = srcConfig
 
 	c = config.runners.label + '-' + aiaUse
-	ViSPobj = loader.instrument('/disk/data/DKIST/20221227/CSYRML/')
+	ViSPobj = loader1.instrument('/disk/data/DKIST/20221227/CSYRML/')
 	ViSPobj.vispLoad()
 
 	epochDev = approach.timeIndependent(config, c, ViSPobj)
@@ -79,11 +79,13 @@ def main(config):
 
 
 if __name__ == '__main__':
-	quesoInstance = loader.QuESO("/disk/data/DKIST/" ,
-							 	"/disk/data/sriley/",
-							 	"./dev/fig/")
+	# quesoInstance = loader1.QuESO("/disk/data/DKIST/" ,
+	# 						 	"/disk/data/sriley/",
+	# 						 	"./dev/fig/")
 	
-	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=0, runner=0)
+	# eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=0, runner=0)
+
+	eventManager = loader1.eventInput("./eventRunner.yml", 0,0)
 
 
 	#quesoInstance.aiaFname 	=  "/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(eventManager.event.runners.config['aia'])

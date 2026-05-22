@@ -1,13 +1,9 @@
-from .atoms import base as baseAtom
-#from .atoms import aux as auxAtom
-from .runners import base as baseRun
-from .addon.logg import loggTimer
 import numpy as np
-#import dask.array as da
-#import numba as nb
 
+from .addon.logg import loggTimer
+from .atoms import base as baseAtom
+from .runners import base as baseRun
 from numba_progress import ProgressBar
-
 
 @loggTimer
 def mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
