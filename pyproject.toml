@@ -8,6 +8,11 @@ authors = [
 	{name = "Sarah Riley", email="sarah.riley1@montana.edu"}
 ]
 
+maintainers = [
+	{name = "Sarah Riley", email="sarah.riley1@montana.edu"}
+]
+
+
 description = "Quantifying the Evolution of Spectra with Optimization"
 readme = "README.md"
 requires-python=">=3.9"
@@ -23,9 +28,25 @@ dependencies = [
 	"numba_progress",
 	"dask",
 	"pyyaml",
-	"argparse",
 	"tol-colors",
+	"pint"
+]
+
+classifiers = [
+	# How mature is this project? Common values are
+	#	1 - Planning
+	#	2 - Pre-Alpha
+	#   3 - Alpha
+	#   4 - Beta
+	#   5 - Production/Stable
+	"Development Status :: 2 - Pre-Alpha",
+	"Intended Audience :: Science/Research",
+	"Natural Language :: English",
+	"Programming Language :: Python :: 3.11",
+	"Topic :: Scientific/Engineering :: Astronomy",
 ]
 
 [project.urls]
 Homepage = "https://queso.sriley.dev"
+Documentation = "https://queso.sriley.dev"
+Repository = "https://github.com/SharkSorceress/queso-cluster"

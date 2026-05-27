@@ -2,15 +2,28 @@
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from QuESO import approach, base, loader
-from QuESO import writer
-from QuESO.runners import base as runBase
-from QuESO.addon import aia
+from queso_cluster import approach, base
+from queso_cluster import writer
+from queso_cluster.runners import base as runBase
+from queso_cluster.addon import aia
+
+from queso_cluster.atoms import norm as normAtom
 
 # import sys
-import argparse
+#import argparse
 from netCDF4 import Dataset
 import numpy as np
+
+import logging
+logger = logging.getLogger("queso_cluster")
+logger.setLevel(logging.DEBUG)
+
+# logFormatter = logging.Formatter("!> [%(asctime)s]%(message)s")
+
+consoleHandler = logging.StreamHandler()
+# consoleHandler.setFormatter(logFormatter)
+logger.addHandler(consoleHandler)
+
 
 def main(config):
 #> detail: 
@@ -25,7 +38,7 @@ def main(config):
 	config.srcLst = srcConfig
 
 	c = config.runners.label + '-' + aiaUse
-	ViSPobj = loader.instrument('/disk/data/DKIST/20221227/CSYRML/')
+	ViSPobj = loader1.instrument('/disk/data/DKIST/20221227/CSYRML/')
 	ViSPobj.vispLoad()
 
 	epochDev = approach.timeIndependent(config, c, ViSPobj)
@@ -44,11 +57,12 @@ def main(config):
 	else:
 	
 		prepSquare = runBase.runPrep(epochDev.dataSquare,
-							   norm='continuum', continuumIndx=epochDev.continuum)#maskSquare=epochDev.maskSquare)
+							   			norm=normAtom.normContinuum, 
+							   			continuumIndx=epochDev.continuum)
 		#noMaskLabelLine, _ = epochDev.clustering(epochDev.dataSquare)#
 
 		maskLine = np.ones(prepSquare.shape[0]).astype(bool)
-		if False:
+		if True:
 			_, _, _, maskLine = aia.delayAIA("/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(aiaUse), epochDev)
 	
 		keepI0 = None
@@ -65,32 +79,21 @@ def main(config):
 
 
 if __name__ == '__main__':
-
-	parser = argparse.ArgumentParser()
-	parser.add_argument('-e', '--event')
-	parser.add_argument('-r', '--run')
-	args = parser.parse_args()	
-
-
-	#from paper01 import paper01_products
-	quesoInstance = loader.QuESO("/disk/data/DKIST/" ,
-							 	"/disk/data/sriley/",
-							 	"./dev/fig/")
+	# quesoInstance = loader1.QuESO("/disk/data/DKIST/" ,
+	# 						 	"/disk/data/sriley/",
+	# 						 	"./dev/fig/")
 	
-	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", args)
+	# eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=0, runner=0)
+
+	eventManager = loader1.eventInput("./eventRunner.yml", 0,0)
 
 
 	#quesoInstance.aiaFname 	=  "/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(eventManager.event.runners.config['aia'])
 	#quesoInstance.instrumentDir = quesoInstance.datDir + '/20221227/CSYRML/'
 
-
 	epochDev, labelLine = main(eventManager.event)
 
-	from QuESO.addon import products
+	from queso_cluster.addon import products
 	p = products.Products(epochDev, labelLine)
-	p.figure03()
-	#p.figure04_template()
-
-	#p01 = paper01_products(epochDev, labelLine.astype(float), 
-	#						keepI0=keepI0, noMask_labels=noMaskLabelLine.astype(float))
-	#p01.run()
+	#p.figure03()
+	p.figure04_template()

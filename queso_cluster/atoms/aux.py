@@ -5,6 +5,40 @@
 import numpy as np
 import numba as nb
 
+import datetime
+from  datetime import datetime as dt
+
+
+def convertTime(dates, ref=False):
+	calc_diff_wF = lambda t: (dt.strptime(t, "%Y-%m-%dT%H:%M:%S.%f") - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
+
+	calc_diff_woF = lambda t: (dt.strptime(t, "%Y-%m-%dT%H:%M:%S") - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
+	#print([dates, len(dates)])
+	if type(dates) != np.str_:
+		unixTime = np.zeros(len(dates))
+		for T in range(len(dates)):
+	#		print(dates[T])
+			try:
+				unixTime[T] = calc_diff_wF(dates[T]) * 1e-6
+			except:
+				unixTime[T] = calc_diff_woF(dates[T]) * 1e-6	
+
+		#print("duration: {}".format(unixTime[-1]-unixTime[0]))
+		if ref:
+			reference_time = dates[0]
+			unixTime -= unixTime[0]
+			return(unixTime, reference_time)
+
+	else:
+		try:
+			unixTime = calc_diff_wF(dates) * 1e-6
+		except:
+			unixTime = calc_diff_woF(dates) * 1e-6	
+
+
+	return(unixTime)
+
+
 
 def _gen_dataID(Input):
 	#> detail: 

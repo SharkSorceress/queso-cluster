@@ -1,16 +1,17 @@
+from ..atoms import base as baseAtom
+from ..atoms import scores as scoresAtom
+
+
+import sys
 import numba as nb
 import numpy as np
-from ..atoms import base as baseAtom
+import matplotlib.pyplot as plt
 from numba_progress import ProgressBar
 
-
-
-import matplotlib.pyplot as plt
-import sys
-def _runOptimalKSearch(dataSquare, funcLst, checkLst):
+def runOptimalKSearch(dataSquare, funcLst, checkLst):
 	# labelLst = np.unique(labelLine)
 	# for l in range(labelLst.size):
-	scores, optimalK = _findOptimalK(dataSquare, funcLst, checkLst)
+	scores, optimalK = findOptimalK(dataSquare, funcLst, checkLst)
 
 	fig = plt.figure(layout='constrained')
 	ax = fig.add_subplot(111)
@@ -28,46 +29,18 @@ def _runOptimalKSearch(dataSquare, funcLst, checkLst):
 	return(optimalK[0])
 
 
-# from ..base import _mainIntrinsic
-# from ..atom import aux as auxAtom
-
-def runPrep(dataSquare, norm='continuum', keepI0=None, maskLine=None, quSquare=None, **kwargs):
-	match norm:
-		case 'continuum':
-			prepSquare = baseAtom.normContinuum(dataSquare, **kwargs)
-		case 'maximum':
-			prepSquare = baseAtom.normMaximum(dataSquare)
-		case 'Z':
-			prepSquare = baseAtom.normZ(dataSquare)
-
+def runPrep(dataSquare, norm, quSquare=None, **kwargs):
+	
+	prepSquare = norm(dataSquare, **kwargs)
+	
 	if not (quSquare is None):
 		#> TODO: Implement quSquare normalization
 		prepSquare -= quSquare
 
-	# if intrinsicLine is None:
-	# 	intrinsicLine = _mainIntrinsic(self.config.srcLst, dataSquare, 0, intrinsicSkip=False)
-	# 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
-		
-	# baseMask = np.ones(prepSquare.shape[0], dtype=bool)
-	# if not (keepI0 is None):
-	# 	baseMask *= False
-	# 	for i in keepI0:
-	# 		baseMask += (intrinsicLine == i)
-
-	# 	prepSquare = prepSquare[baseMask, :] #*= np.broadcast_to(keepMask, prepSquare.shape)
-	# 	intrinsicLine = intrinsicLine[baseMask]
-
-	#if not (maskLine is None):
-		#print(maskLine.shape)
-		#print(dataSquare.shape)
-		#maskSquare = np.broadcast_to(maskLine, dataSquare.shape)
-		#prepSquare[~maskLine.astype(bool), :] = 0
-
-
 	return(prepSquare)
 
 
-def _runIntrinsic(nbins, data, edgeOverride=None):
+def runIntrinsic(nbins, data, edgeOverride=None):
 	init_label  = np.ones(data.shape[0], dtype=np.uint16)
 	edges = edgeOverride
 	if edgeOverride is None:
@@ -92,15 +65,15 @@ def runStart(k, data, start='max'):
 	return(initial_condition)
 
 @nb.njit()
-def _runOptimization(k, sub_data, converge):
+def runOptimization(k, sub_data, converge):
 	ic                      = runStart(k, sub_data)
 	_, data_label           = baseAtom._calcOptimization(k, sub_data, ic, converge)
-	scoreLine 				= baseAtom._calcSilhouetteScore(sub_data, data_label)
+	scoreLine 				= scoresAtom.calcSilhouetteScore(sub_data, data_label)
 	return(data_label+1, scoreLine)
 
 
 @nb.njit()
-def _findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
+def findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	with ProgressBar(total=30, ascii=False, leave=False, 
 					desc='findOptimalK',
 					bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as p:
@@ -109,7 +82,7 @@ def _findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 		while k < scores.shape[1]:
 			ff = 0
 			for f in funcLst:
-				labelLine = _runOptimization(k+1, dataSquare, converge)
+				labelLine = runOptimization(k+1, dataSquare, converge)
 				scores[ff, k] = f(dataSquare, labelLine)	
 				ff += 1
 			k += 1
@@ -126,7 +99,7 @@ def _findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	return(scores, kLst)
 
 
-def _runLabelSort(dataSquare, labelLine):
+def runLabelSort(dataSquare, labelLine):
 	labelLst = np.unique(labelLine)
 
 	m0Lst = np.zeros(labelLst.size)
@@ -134,7 +107,7 @@ def _runLabelSort(dataSquare, labelLine):
 		lindx = np.where(labelLine == labelLst[l])[0]
 		m0Lst[l] = (dataSquare[lindx, :].sum(axis=0)/lindx.size).mean()
 
-	sortIndx = np.argsort(m0Lst)
+	sortIndx = np.argsort(m0Lst)[::-1]
 	sortedLabelLst = labelLst[sortIndx]
 	
 	sortedLabelLine = np.zeros(labelLine.shape, dtype=labelLine.dtype)
@@ -143,6 +116,21 @@ def _runLabelSort(dataSquare, labelLine):
 		sortedLabelLine[lindx] = l+1
 
 	return(sortedLabelLine, sortIndx)
+
+# def intrinsicMask(dataSquare, intrinsicLine, keepI0=None):
+# 	intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, 
+# 									np.floor(dataSquare*100)/100., 0, intrinsicSkip=False)
+# 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
+		
+# 	i0Mask = np.ones(dataSquare.shape[0])
+# 	if not (keepI0 is None):
+# 		i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
+# 		for i in keepI0:
+# 			#print(np.unique(intrinsicLine[(intrinsicLine == i)]))
+# 			#print(np.unique(intrinsicLine[(intrinsicLine == i)*maskLine]))
+# 			i0Mask[(intrinsicLine == i)] = 1
+# 	return(i0Mask)
+
 
 # @nb.njit()
 # def _findOptimalK(data, converge, zindx, func1, func2):
