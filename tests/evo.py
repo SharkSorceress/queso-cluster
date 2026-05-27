@@ -96,7 +96,7 @@ if __name__ == '__main__':
 							 	"/disk/data/sriley/",
 							 	"./dev/fig/")
 	
-	eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=1, runner=2)
+	eventManager = quesoInstance._loadEventConfig("./eventManager.yml", event=1, runner=2)
 
 	evoDev, labelSquare= main(eventManager.event)
 
