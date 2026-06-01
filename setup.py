@@ -7,11 +7,10 @@ setup(
     author_email='sarah.riley1@montana.edu',
     packages=['queso_cluster', 'queso_cluster.atoms', 'queso_cluster.runners', 'queso_cluster.addon', 'queso_cluster.loaders', 'tests'],
     url='https://queso.sriley.dev',
-    license='LICENSE',
     description='Quantifying the Evolution of Spectra with Optimization',
     long_description=open('README.md').read(),
     install_requires=[
-        "numpy ",
+        "numpy<2.4",
         "dkist ",
 		"scipy",
 		"numba",

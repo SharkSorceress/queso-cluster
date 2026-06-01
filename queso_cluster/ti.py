@@ -6,6 +6,9 @@ import numpy as np
 from . import base as baseMain
 from .atoms import aux as auxAtom
 
+from .addon.logg import logger
+from .atoms import mask as maskAtom
+
 class timeIndependent:
 	def __init__(self, config, catalogName, instrumentObj):
 		self.catalogBase = catalogName
@@ -19,15 +22,24 @@ class timeIndependent:
 		self.config = config 
 		self.dirid = ''.join(config.date.split('-'))
 
+		#lineIndx = 0
+
+		#print(self.config.srcLst)
 		spectralConfig 			= self.config.srcLst.lines[0]
 		self.spectralWindow 	= spectralConfig['window']
-		self.lineCenter 		= spectralConfig['core']
-		self.continuum 			= spectralConfig['continuum']
+		print(self.spectralWindow)
+		self.lineCenter 		= spectralConfig['center']
+		self.continuum 			= self.config.srcLst.continuum
 
 		self.prepSquare = None
 
+		self.timeFrames = np.arange(1)
+
 		if hasattr(self.config.srcLst, "waveFitFunc"):
-			self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1)
+			print(self.dataSquare.shape[-1]+1)
+			self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
+
+			print(self.waveFit[self.lineCenter])
 
 	def __getattr__(self, name):
 		parentLst = [self.config, self.instrumentObj]
@@ -38,7 +50,7 @@ class timeIndependent:
 				continue
 		raise AttributeError("No parents have object with attribute '%s'" % name)
 
-	def cluster(self, prepSquare, maskLine, intrinsicLine=None, keepI0=None, kLst=None):
+	def cluster(self, prepSquare, intrinsicLine=None, kLst=None):
 		#> detail: 
 		#> param type self:
 		#> param type prepSquare:
@@ -48,24 +60,27 @@ class timeIndependent:
 		
 		ii, jj = self.spectralWindow
 		if intrinsicLine is None:
-			intrinsicLine = baseMain.mainIntrinsic(self.config.srcLst, 
-										   np.floor(self.dataSquare*100)/100., 0, intrinsicSkip=False)
+			intrinsicLine = baseMain.mainIntrinsic(self.config, 
+										   np.floor(self.dataSquare*100)/100., intrinsicSkip=False)
 			intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
 		
-		if not (keepI0 is None):
-			i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
-			for i in keepI0:
-				i0Mask[(intrinsicLine == i)] = 1
-			maskLine *= i0Mask
+		if "keepI0" in list(self.config.runners.config.keys()):
+			# i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
+			# for i in self.config.runners.config['keepI0']:
+			# 	i0Mask[(intrinsicLine == i)] = 1
+			
+			self.maskLine *= maskAtom.maskIntrinsic(self.config.runners.config['keepI0'], 
+										   			prepSquare, intrinsicLine,
+													(self.timeFrames.size, self.rasterSize, self.alongSlitSize), self.timeFrames.size)
 
-		self.prepSquare = prepSquare[maskLine, :]
-		intrinsicLine = intrinsicLine[maskLine]
+		self.prepSquare = prepSquare[self.maskLine, :]
+		intrinsicLine = intrinsicLine[self.maskLine]
 
 		labelLine, scoreTuple = baseMain.mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst)
 
-		if not maskLine.all():
-			unmaskLabelLine = np.zeros(maskLine.shape)
-			unmaskLabelLine[maskLine] = labelLine
+		if not self.maskLine.all():
+			unmaskLabelLine = np.zeros(self.maskLine.shape)
+			unmaskLabelLine[self.maskLine] = labelLine
 			return(unmaskLabelLine, scoreTuple)
 		
 		return(labelLine, scoreTuple)

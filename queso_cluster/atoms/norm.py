@@ -2,7 +2,6 @@ import numpy as np
 import dask.array as da
 import numba as nb
 
-
 def normFunc(dataSquare, func):
 	#> detail: 
 	#> param type dataSquare:

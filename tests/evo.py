@@ -2,12 +2,11 @@
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from queso_cluster import base, approach, base, loader1
-from queso_cluster import writer
+from queso_cluster import base, writer, td
 from queso_cluster.atoms import aux as auxAtom
 from queso_cluster.atoms import norm as normAtom
 from queso_cluster.runners import base as runBase
-
+from queso_cluster.loaders.visp import visp
 
 import numpy as np
 
@@ -28,8 +27,8 @@ def main(config):
 	# config.srcLst = [srcConfigPrimary, srcConfigSecondary]
 #	catalogName = 'alt'
 
-	ViSPobj = loader1.instrument('/disk/data/DKIST/20230503/AEVEG/')
-	ViSPobj.vispLoad()
+	ViSPobj = visp('/disk/data/DKIST/20230503/AEVEG/')
+	ViSPobj.load()
 
 	#config.runners.alignmentDir
 	#print(config.srcLst)
@@ -92,11 +91,8 @@ def main(config):
 
 if __name__ == '__main__':
 	#from paper02 import paper02_products
-	quesoInstance = loader1.QuESO("/disk/data/DKIST/" ,
-							 	"/disk/data/sriley/",
-							 	"./dev/fig/")
-	
-	eventManager = quesoInstance._loadEventConfig("./eventManager.yml", event=1, runner=2)
+	from queso_cluster.loaders.event import eventInput
+	eventManager = eventInput("./eventManager.yml", 1, 0)
 
 	evoDev, labelSquare= main(eventManager.event)
 

@@ -3,56 +3,76 @@
     label: 'Priority Dataset'
     run: 
       - label: 'timeIndependent'
-        approach: 'epoch'
         overwrite: True
-        config: {src: 'CSYRML-P01_1', aia: 'bas_more', keepI0: [3, 5, 6], useMask: True}
+        config: {src: 'CSYRML', aia: 'bas_more', keepI0: [3, 5, 6], useMask: True, line: 'main'}
     src:
-      - id: {'instrument': 'ViSP', 'data': 'CSYRML', mod: "P01_1"}
+      - id: {'instrument': 'ViSP', 'data': 'CSYRML', mod: ""}
         theme: '#057BBB'
         clustering:
-          S0: 
-          - label: 'continuum'
-            layerConfig: {'bins': [0, 0.75, 1.0]}
-          - label: 'window'
-            layerConfig: {'bins': [0, 0.42, 0.55, 1]}
-          S1: 
-          - layerGroups: [1, 1, 2, 1, 1, 2]
-            layerConfig: {'converge': 0, similarity: 'dist', ss_thresh: [0, 0.66, 0, 0, 0.53]}
-          - layerGroups: [1,1,4,4,1,4,3,4]
-            layerConfig: {'converge': 0, similarity: 'dist', ss_thresh: [0,0.74, 0.77,0,0.7,0.53, 0.56]}
-        axis_fit: {coeff: [18.8546e-3, 8531.8541], unit: "angstrom"}
-        lines:
-          - {label: 'main', continuum: 26, window: [484, 603], core: 544}
+          main:
+            intrinsic: 
+              - {label: 'continuum', layerConfig: {'bins': [0, 0.75, 1.0]}}
+              - {label: 'window', layerConfig: {'bins': [0, 0.42, 0.55, 1]}}
+            optimized: 
+              - {layerGroups: [1, 1, 2, 1, 1, 2]}   
+              - {layerGroups: [1,1,4,4,1,4,3,4]} 
+        axisFit: {coeff: [18.8546e-3, 8531.8541], unit: "angstrom"}
+        spectralParams:
+          continuum: 26
+          lineList:
+            - {label: 'main', window: [484, 603], center: 544}
+            - {label: 'H2O', window: [464, 484], center: 544}
 - event:
     date: '2023-05-03'
     label: 'Strong flare signatures'
     run: 
-      - label: 'timeDependent'
-        approach: 'evo'
+      - label: 'timeIndependent'
         overwrite: True
-        alignment_dir: "aligned_x5bin"
-        config: {frames: [-1, 3, 1],
-              keepI0: [3],
-              bbox: [0, 125, 1188, 1629],
-              primary: {src: 'AEVEG-SPD', S1: [1, 5, 2, 4, 1], lines: {'AEVEG-SPD': ['main']}}, 
-        }
+        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
     src: 
-      - id: {'instrument': 'ViSP', 'data': 'AEVEG', mod: "SPD"}
-        theme: '#527A00'
-        residual: False
+      - id: {'instrument': 'ViSP', 'data': 'AEVEG', mod: ""}
         clustering:
-          S0: 
-            - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 2]}}
-          S1: 
-            - {layerGroups: 5, layerConfig: {'converge': 1e-6, ss_thresh: [0, 0, 0, 0, 0, 0]}}
-        axis_fit: {coeff: [-2.81754321e-8  1.91621915e-3  8.53133874e+2], unit: "angstrom"}
-        lines:
-          - {label: 'main', window: [462, 568], continuum: 26, core: 515}
-      - id: {'instrument': 'ViSP', 'data': 'BZNNG', mod: "SPD"}
+          main:
+            intrinsic: 
+              - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 2]}}
+            optimized: 
+              - {layerGroups: [1, 1, 2]}
+              - {layerGroups: [1, 1, 5, 5]}
+        axisFit: {coeff: [-2.81754321e-8, 1.91621915e-3,  8.53133874e+2], unit: "nm"}
+        spectralParams:
+          continuum: 26
+          lineList:
+            - {label: 'main?', window: [462, 568], center: 515, theme: '#527A00'}
+            - {label: 'main', window: [525, 611], center: 568, theme: '#527A00'}
+
+      - id: {'instrument': 'ViSP', 'data': 'BZNNG', mod: ""}
         theme: {'D1': '#0000FF', 'D2': '#FF0000', 'Ni': '#FF0000'}
         residual: True
-        axis_fit: {coeff: [-1.60283877e-8  1.42050858e-3  5.88875195e+2], unit: "angstrom"}
-        lines:
-          - {label: 'D2', continuum: 375, core: 86,  window: [51, 121]}
-          - {label: 'D1', continuum: 375, core: 509, window: [473, 545]}
-          - {label: 'Ni', continuum: 375, core: 291, window: [256, 327]}
+        axisFit: {coeff: [-1.60283877e-8, 1.42050858e-3,  5.88875195e+2], unit: "nm"}
+        spectralParams:
+          continuum: 375
+          lineList:
+            - {label: 'D2', center: 86,  window: [51, 121]}
+            - {label: 'D1', center: 509, window: [473, 545]}
+            - {label: 'Ni', center: 291, window: [256, 327]}
+- event:
+    date: '2024-08-08'
+    label: 'Strong flare signatures'
+    run: 
+      - label: 'timeIndependent'
+        overwrite: True
+        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'BWVCXN', line: 'main'}
+    src: 
+      - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}
+        clustering:
+          main:
+            intrinsic: 
+              - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 2]}}
+            optimized: 
+              - {layerGroups: [1, 1, 2]}
+              - {layerGroups: [1, 1, 5, 5]}
+        spectralParams:
+          continuum: 26
+          lineList:
+            - {label: 'main?', window: [462, 568], center: 515, theme: '#527A00'}
+            - {label: 'main', window: [525, 611], center: 568, theme: '#527A00'}

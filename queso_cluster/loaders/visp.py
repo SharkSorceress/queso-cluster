@@ -1,4 +1,8 @@
 import dkist
+import numpy as np
+import pint
+
+from ..atoms import aux as auxAtom
 
 class visp:
 	def __init__(self, dataPath):
@@ -14,11 +18,13 @@ class visp:
 		dataCube = dataset.data
 		if 'polarization state' in dataset.wcs.pixel_axis_names:
 			dataCube = dataCube[stokes, ...] 
+		print(dataCube.shape)
 		#axisInfo = [dataset.wcs.pixel_axis_names[::-1], dataset.data.shape]
 		flat_axis = 1
 		numRaster = 1
 		test = []
 		crval = []
+
 		
 		for n in range(dataset.headers['DNAXIS'][0]):
 			dnaxis_entry = dataset.headers['DNAXIS' + str(n+1)][0]
@@ -69,13 +75,13 @@ class visp:
 			"alongSlitSize": self.alongSlitSize,
 		}
 		self.waveInfo = {
-			"waveDelta": waveAxisDelta,
+			#"waveDelta": waveAxisDelta,
 			"waveExtrema": (dataset.headers['WAVEMIN'][0], 
 							dataset.headers['LINEWAV'][0], 
 							dataset.headers['WAVEMAX'][0])
 		}
 
-		datetime = convertTime(dataset.headers['DATE-BEG'])
+		datetime = auxAtom.convertTime(dataset.headers['DATE-BEG'])
 
 		#> Note: The start datetime of the observations
 		self.zeroDate = dataset.headers['DATE-BEG'][0]

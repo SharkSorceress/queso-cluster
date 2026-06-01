@@ -20,6 +20,7 @@ def exportFITS(spectralDataset, labelLine, fname):
 	data = spectralDataset.dataSquare.reshape(spectralDataset.shape)
 	#[t, x, y, lambda, label]
 	# > TODO: Add mask
+	#mask 
 
 	labelSquare = labelLine.reshape(data.shape[:-1])
 

@@ -16,80 +16,120 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.colors import LinearSegmentedColormap
 
+from ..addon.logg import logger
 
 class Products:
 
-	def __init__(self, epochObj, optLabels):
+	def __init__(self, quesoOut, optLabels):
 #> detail: 
 #> param type self:
-#> param type epochObj:
+#> param type quesoOut:
 #> param type optLabels:
 #> return (type): 
 #> test-method:
-		self.epochObj = epochObj
-		self.config 			= self.epochObj.config
+		self.quesoOut = quesoOut
+		self.config 			= self.quesoOut.config
 		self.keepI0 = self.config.runners.config['keepI0']
-		self.ii, self.jj = self.epochObj.spectralWindow
-		self.lineCenter = self.epochObj.lineCenter
-		self.continuum = self.epochObj.continuum
+		self.ii, self.jj = self.quesoOut.spectralWindow
+		self.lineCenter = self.quesoOut.lineCenter
+		self.continuum = self.quesoOut.continuum
 		
 
-		#self.waveFit 	= self.epochObj.waveFit 
+		#self.waveFit 	= self.quesoOut.waveFit 
 		self.optLabels 	= optLabels
 		self.optLabels[self.optLabels == 0] = np.nan
-		self.vindx 	= np.where(~np.isnan(self.optLabels))[0]
+		self.vindx 	= np.where(~np.isnan(self.optLabels))#[0]
+		#print(np.where(~np.isnan(self.optLabels)))
 
-		self.mapMake = sty.mapMaker(self.epochObj.spaceInfo, self.epochObj.deltas)
+		self.mapMake = sty.mapMaker(self.quesoOut.spaceInfo, self.quesoOut.deltas)
 
 	@loggTimer
-	def figure03_sequence(self):
-		ncols = self.optLabels.shape[0]
-		fig = plt.figure(layout='compressed', figsize=(2*ncols, ncols), dpi=300)
-		gs = GridSpec(2, ncols, figure=fig, height_ratios=[0.025, 1], hspace=0, wspace=0)
+	def clusterMapSequence(self, orientation='vertical'):
+		ncols = self.optLabels.shape[0] + 1
+		#> Error?: Maximum number of clients reached		
+		fig = plt.figure(layout='compressed', figsize=(ncols, 2*ncols), dpi=300)
+		
+		if orientation == 'vertical':
+			nrows = ncols
+			ncols = 2
+			height_ratios = [1 for x in range(nrows)]
+			width_ratios = [1, 0.025]
+		else:
+			nrows = 2
+			height_ratios=[0.025, 1]
+			width_ratios = [1 for x in range(ncols)]
+		gs = GridSpec(nrows, ncols, figure=fig, 
+				height_ratios=height_ratios, width_ratios=width_ratios, hspace=0, wspace=0)
 
-		indx = np.where(~np.isnan(self.optLabels[0, ...]))[0]
+		#xx = (self.vindx % self.quesoOut.rasterSize)#, self.quesoOut.alongSlitSize])
+		#yy = (self.vindx // self.quesoOut.rasterSize)#, self.quesoOut.alongSlitSize])
 
-		xx = indx % self.epochObj.shape[1]
-		yy = indx // self.epochObj.shape[1]
+		#inset_bbox = [xx0, xx1, yy0, yy1]
+
+		xlim = np.array([self.vindx[1].min(), 
+		  		self.vindx[1].max()]) 
+		ylim = np.array([self.vindx[2].min(), 
+		  		self.vindx[2].max()]) 
 
 
-		xx0, xx1, yy0, yy1 = self.config.runners.config['bbox']
+		labelLst = np.unique(self.optLabels[self.vindx]).astype(int)#.astype(str)
+		print(labelLst)
+		print(labelLst[~np.isnan(labelLst)])
+		# tLabels = np.unique(self.optLabels)
+		actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list(labelLst[~np.isnan(labelLst)]))
+		cmap = mpl.colors.ListedColormap(color_pallet)
+		norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
 
-		inset_bbox = [xx0*self.epochObj.deltas['pxlSlitWidth'], 
-				xx1*self.epochObj.deltas['pxlSlitWidth'], 
-				yy0*self.epochObj.deltas['pxlAlongSlit'], 
-				yy1*self.epochObj.deltas['pxlAlongSlit']]
+		compoundLabels = np.zeros(self.optLabels.shape[1:], dtype=str)
 
-		for t in range(ncols):
-			tLabels = np.unique(self.optLabels[t, ...])
+		recountedLabels = np.zeros(self.optLabels.shape) + np.nan
+		for l in range(labelLst.size):
+			#for t in range(self.optLabels.shape[0]):
+			lindx = np.where(self.optLabels == labelLst[l])
+			recountedLabels[lindx] = l+1
 
-			actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list(tLabels[~np.isnan(tLabels)]))
-			cmap = mpl.colors.ListedColormap(color_pallet)
-			norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
-
-			kwargsDict = {'cmap': cmap}
-			ax, im, tax = self.mapMake._mapGen(fig, gs[1, t], 
-												self.optLabels[t, ...],
+		for t in range(self.optLabels.shape[0]):
+			print(np.unique(self.optLabels[t, ...]))
+			kwargsDict = {'cmap': cmap, 'norm': norm}
+			ax, im  = self.mapMake._mapGen(fig, gs[t, 0], 
+												recountedLabels[t, ...],
 												timeAxis=True, 
 												#flareContour=self.mask_map, 
 												**kwargsDict)
-			ax.set_xlim([inset_bbox[0], inset_bbox[1]])
-			ax.set_ylim([inset_bbox[2], inset_bbox[3]])
+			ax.set_xlim(xlim* self.quesoOut.deltas['pxlSlitWidth'].magnitude)
+			ax.set_ylim(ylim* self.quesoOut.deltas['pxlAlongSlit'].magnitude)
 
-			cax = fig.add_subplot(gs[0, t])
 			ax.set_aspect("equal")
 
-			if not gs[1, t].is_first_col():
-				ax.set_yticklabels([])
+			if not gs[t, 0].is_last_row():
+				ax.set_xticklabels([])
 
 			#cbar = fig.colorbar(im, cax=cax, ticks=bounds_ticks)#, label='Binned Intensity')
-			cbar = fig.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), spacing='proportional',
-									ticks=bound_ticks, orientation='horizontal',
-									cax=cax)
+				#
 			# cbar.ax.set_yticklabels(["{}XX".format(int(x)) for x in recountLst])
+			compoundLabels = np.strings.add(compoundLabels, self.optLabels[t, ...].astype(np.uint).astype(str))
+		cax = fig.add_subplot(gs[:-1, 1])
+		cbar = fig.colorbar(im, spacing='uniform',
+									ticks=bound_ticks, orientation=orientation,
+									cax=cax)
+		cbar.ax.set_yticklabels(["{}".format(int(x)) for x in np.unique(labelLst)])
+		
+		compoundLabels[~np.strings.isalnum(compoundLabels)] = np.nan
 
-			fig.savefig("./figure03_sequence.png")
+		kwargsDict = {'cmap': "rainbow_r"}
+		ax, im  = self.mapMake._mapGen(fig, gs[-1, 0], 
+												compoundLabels.astype(int),
+												timeAxis=True, 
+												#flareContour=self.mask_map, 
+												**kwargsDict)
+		ax.set_xlim(xlim* self.quesoOut.deltas['pxlSlitWidth'].magnitude)
+		ax.set_ylim(ylim* self.quesoOut.deltas['pxlAlongSlit'].magnitude)
+		ax.set_aspect("equal")
 
+		cax = fig.add_subplot(gs[-1, 1])
+		cbar = fig.colorbar(im, spacing='uniform', orientation=orientation,
+									cax=cax)
+		return(fig)
 
 	@loggTimer
 	def figure03(self):
@@ -100,7 +140,6 @@ class Products:
 
 		width = [2, 0.025]
 		types = ['intensity', 'labels']
-
 		for t in range(len(types)):
 
 			fig = plt.figure(layout='compressed', figsize=(2*4, 3.25*4), dpi=300)
@@ -112,11 +151,11 @@ class Products:
 			for i in range(len(intrinsicConfig)):
 				match intrinsicConfig[i]['label']:
 					case 'window':
-						moment0 = self.epochObj.instrumentObj.dataSquare[:, self.ii:self.jj+1].mean(axis=-1).compute()
+						moment0 = self.quesoOut.instrumentObj.dataSquare[:, self.ii:self.jj+1].mean(axis=-1).compute()
 						bins = intrinsicConfig[i]['layerConfig']['bins']
 						cbar_label = "Mean Window Intensity"
 					case 'continuum':
-						moment0 = self.epochObj.instrumentObj.dataSquare[:, self.epochObj.continuum].compute()
+						moment0 = self.quesoOut.instrumentObj.dataSquare[:, self.quesoOut.continuum].compute()
 						bins = intrinsicConfig[i]['layerConfig']['bins']
 						cbar_label = "Continuum Intensity"
 
@@ -165,7 +204,7 @@ class Products:
 						im_cbar = im
 					case 'labels':
 						im_cbar = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
-				cbar = fig.colorbar(im_cbar, cax=cax, spacing='proportional', label=cbar_label)
+				cbar = fig.colorbar(im_cbar, cax=cax, spacing='uniform', label=cbar_label)
 
 			intrinsicLayerMap_oldCount = auxAtom.pick_jth_label(self.optLabels[self.vindx], 0).astype(float)
 			intrinsicLayerMap = np.zeros(self.optLabels.shape) + np.nan
@@ -209,7 +248,7 @@ class Products:
 
 
 	@loggTimer
-	def figure04_template(self):
+	def clusterProfiles(self, dev=False):
 		#> detail: 
 		#> param type self:
 		#> return (type): 
@@ -217,8 +256,7 @@ class Products:
 		
 		ii, jj = [self.ii, self.jj]
 		
-		wavelambda  = self.epochObj.waveFit
-
+		wavelambda  = self.quesoOut.waveFit
 		validLabels = self.optLabels[self.vindx]
 		i0Arr = auxAtom.pick_jth_label(validLabels, 0)
 
@@ -237,8 +275,8 @@ class Products:
 					height_ratios=[1 for x in range(nrows)],
 					figure=fig)			
 
-		raw_max = (np.ceil(self.epochObj.prepSquare[:, ii:jj+1].max()*10)/10.).compute()
-		raw_min = (np.floor(self.epochObj.prepSquare[:, ii:jj+1].min()*10)/10.).compute()	
+		raw_max = (np.ceil(self.quesoOut.prepSquare[:, ii:jj+1].max()*10)/10.).compute()
+		raw_min = (np.floor(self.quesoOut.prepSquare[:, ii:jj+1].min()*10)/10.).compute()	
 		extent  	= (wavelambda[ii]-wavelambda[self.lineCenter]).magnitude, (wavelambda[jj]-wavelambda[self.lineCenter]).magnitude, raw_min, raw_max
 
 		color = "black"
@@ -248,12 +286,12 @@ class Products:
 			i0_indx = np.where(i0o1Arr == i0o1Lst[j])[0]
 
 			ax0      = plt.subplot(gs[j, 0])
-			ax0, axR0 = self.spectralEntry(ax0, i0_indx, color, wavelambda.magnitude, extent)
+			ax0 = self.spectralEntry(ax0, i0_indx, color, wavelambda.magnitude, extent)
 			if gs[j,0].is_last_row():
 				#ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")
 				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(wavelambda.units))
 			ax0.tick_params(labelleft=True)
-			axR0.tick_params(labelright=False)
+			#axR0.tick_params(labelright=False)
 			if not gs[j, 0].is_last_row():
 				ax0.tick_params(labelbottom=False)
 		
@@ -272,26 +310,23 @@ class Products:
 				sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
 				sindx = np.where(i0Arr == sArr[0])[0]
 
-				score = scoresAtom.calcSingleSilhouetteScore(self.epochObj.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
+				score = 0#scoresAtom.calcSingleSilhouetteScore(self.quesoOut.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
 			
-				ax, axR = self.spectralEntry(ax, o2_indx, color, wavelambda.magnitude, extent, scores=score)
+				ax = self.spectralEntry(ax, o2_indx, color, wavelambda.magnitude, extent, scores=score)
 				if gs[j,k+1].is_last_row():
 					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(wavelambda.units))	
 				else:
 					ax.tick_params(labelbottom=False)				
 										
 				ax.tick_params(labelleft=False)
-				if gs[j, k+1].is_last_col():
-					axR.tick_params(labelright=True)
-				else:
-					axR.tick_params(labelright=False)
+				# if dev and not gs[j, k+1].is_last_col():
+				# 	axR.tick_params(labelright=False)
 
 
 
+		return(fig)
 
-			fig.savefig("./clusterLabels.png")
-
-	def spectralEntry(self, ax, indx, color, wavelambda, extent, scores=None):
+	def spectralEntry(self, ax, indx, color, wavelambda, extent, scores=None, dev=False):
 		#> detail: 
 		#> param type self:
 		#> param type ax:
@@ -303,46 +338,48 @@ class Products:
 		#> return (type): 
 		#> test-method:
 		ii, jj = [self.ii, self.jj]
-		raw_dat = self.epochObj.prepSquare[indx.astype(np.uint32), ii:jj+1].compute()
+		raw_dat = self.quesoOut.prepSquare[indx.astype(np.uint32), ii:jj+1].compute()
 		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]	
-		resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
-		centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)
 
-		axR = ax.twinx()
-		axR.set_ylim([-1, 1])
-		axR.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+
+		if dev:
+			resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
+			centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
+			axR = ax.twinx()
+			axR.set_ylim([-1, 1])
+			axR.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+			ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_min, color='blue', linewidth=0.75)
+			ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_max, color='blue', linewidth=0.75)
+			logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
+
 		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_i, color='black', linewidth=0.75)
-		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_min, color='blue', linewidth=0.75)
-		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_max, color='blue', linewidth=0.75)
-
-
+		
 		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
 
 		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, extent[3], extent[2])
 
 		ww, insty = np.meshgrid((wavelambda[ii:jj+1+1]-wavelambda[self.lineCenter]), np.arange(extent[2], extent[3], 0.01))
 		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', color]))
-		# im = ax.imshow(temp_im.T, 
-		# 			extent=extent, aspect='auto', origin='lower')    
 
 		ax.axvline(x = 0, linestyle='dashed', color='black')
-		# ax.set_ylim([extent[2], extent[3]])
 
-
-		labelLst = np.unique(self.optLabels[self.vindx[indx]]).astype(int).astype(str)
+		tindx = self.vindx[0][indx]
+		xindx = self.vindx[1][indx]
+		yindx = self.vindx[2][indx]
+		labelLst = np.unique(self.optLabels[tindx, xindx, yindx]).astype(int).astype(str)
 		commonLabel = [labelLst[0][j] for j in range(len(labelLst[0])) if np.unique([a[j] for a in [list(x) for x in labelLst]]).size == 1]
-		print(commonLabel)
+		#print(commonLabel)
 		label = "{}{}".format(int("".join(commonLabel)), "X"*(len(labelLst[0]) - len(commonLabel)))
 
 		if scores == None:
 			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-						"{}\nN={}\nf={:.3f}\n".format(label, len(indx), np.mean(np.abs(resolvingIndex))))
+						"{}\nN={}\n".format(label, len(indx)))
 #						fontname='Times New Roman')
 		else:
 			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-					"{}\nN={}\nS={:.3f}\nf={:.3f}\n".format(label, len(indx), float(scores), np.mean(np.abs(resolvingIndex))))
+					"{}\nN={}\nS={:.3f}\n".format(label, len(indx), float(scores)))
 #					fontname='Times New Roman')
 			
 		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=0.2))
 
-		return(ax, axR)
+		return(ax)

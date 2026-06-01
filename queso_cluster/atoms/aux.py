@@ -9,6 +9,16 @@ import datetime
 from  datetime import datetime as dt
 
 
+
+
+def strLst(stringList):
+	if type(stringList) == str:
+		out = [stringList]
+	elif type(stringList) == list:
+		out = stringList
+	return(out)
+
+
 def convertTime(dates, ref=False):
 	calc_diff_wF = lambda t: (dt.strptime(t, "%Y-%m-%dT%H:%M:%S.%f") - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
 

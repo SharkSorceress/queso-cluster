@@ -6,13 +6,16 @@ from .runners import base as baseRun
 from numba_progress import ProgressBar
 
 @loggTimer
-def mainIntrinsic(config, prepSquare, lineIndx, intrinsicSkip=False):
+def mainIntrinsic(config, prepSquare, intrinsicSkip=False):
 	intrinsicLine = np.zeros(prepSquare.shape[0])
 	if not intrinsicSkip:
 		intrinsicConfig = config.clusterConfig['intrinsic']
 		for i in range(len(intrinsicConfig)):
 			key =  intrinsicConfig[i]['label']
-			indxs = config.lines[lineIndx][key]
+			if key == 'continuum':
+				indxs = config.srcLst.continuum
+			else:
+				indxs = config.srcLst.lines[0][key]
 			if type(indxs) == list:
 				iframe = prepSquare[:, indxs[0]:indxs[1]].mean(axis=-1)#.astype(np.float64).compute()
 			else:
@@ -51,7 +54,7 @@ def mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 	else:
 		validationFuncLst = [baseAtom.calcInertiaScore, baseAtom.calcSilhouetteScore]
 		criteriaFuncLst = [baseAtom.criteriaInertiaScore, baseAtom.criteriaSilhouetteScore]
-	print(k_lst)
+
 	pwrSeq = (10**(stageMax - np.arange(stageMax+1))).astype(np.uint16)
 	labelLine *= pwrSeq[0]
 

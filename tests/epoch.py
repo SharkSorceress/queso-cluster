@@ -1,28 +1,23 @@
-#> file:  ./tests/epoch
+#> file:  ./tests/ti
 #> lang:  python
 #> synopsis: 
 #> author:   <>
-from queso_cluster import approach, base
-from queso_cluster import writer
+
+import numpy as np
+
+from queso_cluster import writer, ti
 from queso_cluster.runners import base as runBase
 from queso_cluster.addon import aia
-
+from queso_cluster.loaders.visp import visp
 from queso_cluster.atoms import norm as normAtom
+from queso_cluster.atoms import mask as maskAtom
 
-# import sys
-#import argparse
-from netCDF4 import Dataset
-import numpy as np
 
 import logging
 logger = logging.getLogger("queso_cluster")
-logger.setLevel(logging.DEBUG)
+logging.basicConfig(format="!> [%(asctime)s]%(message)s", level=logging.INFO)
 
-# logFormatter = logging.Formatter("!> [%(asctime)s]%(message)s")
-
-consoleHandler = logging.StreamHandler()
-# consoleHandler.setFormatter(logFormatter)
-logger.addHandler(consoleHandler)
+dkistDir = '/disk/data/DKIST/'
 
 
 def main(config):
@@ -30,70 +25,73 @@ def main(config):
 #> param type config:
 #> return (type): 
 #> test-method:
-
-	srcUse = config.runners.config['src']
 	aiaUse = config.runners.config['aia']
 
-	srcConfig 	= config.srcLst[config.srcLabelLst.index(srcUse)]
-	config.srcLst = srcConfig
-
 	c = config.runners.label + '-' + aiaUse
-	ViSPobj = loader1.instrument('/disk/data/DKIST/20221227/CSYRML/')
-	ViSPobj.vispLoad()
+	ViSPobj = visp(dkistDir + config.dirid + '/CSYRML/')
+	ViSPobj.load()
 
-	epochDev = approach.timeIndependent(config, c, ViSPobj)
-	if not config.runners.overwrite:
-		#__loadLog__ = util.logg("start", 'Reading from file...')
-		try:
-			saveFile = Dataset(epochDev.figDir + '/epochCCS_{}_sorted.nc'.format(c), 'r', format="NETCDF4")	
-		except FileNotFoundError:
-			saveFile = Dataset(epochDev.figDir + '/epochCCS_{}.nc'.format(c), 'r', format="NETCDF4")
-		
-		labelLine = saveFile.variables['labelMap'][...].data.astype(float)
-		noMasklabelLine = saveFile.variables['noMask_labels'][...].data.astype(float)
+	tiDev = ti.timeIndependent(config, c, ViSPobj)
 
-		writer.exportFITS(epochDev, labelLine)
-		#util.logg('stop', _log=__loadLog__)
-	else:
+	prepSquare = runBase.runPrep(tiDev.dataSquare,
+									norm=normAtom.normContinuum, 
+									continuumIndx=tiDev.continuum)
+	#noMaskLabelLine, _ = tiDev.clustering(tiDev.dataSquare)#
+
+	tiDev.maskLine = np.ones(prepSquare.shape[0]).astype(bool)
+	if True:
+		_, _, _, tiDev.maskLine = aia.delayAIA("/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(aiaUse), tiDev)
+
+	labelLine, scoreTuple,  = tiDev.cluster(prepSquare, kLst=config.clusterConfig['optimized'])
+	#writer.exportFITS(tiDev, labelLine, c)
+	return(tiDev, labelLine)
+
+
+def main_time(config):
+	c = config.runners.label
+	ViSPobj = visp(dkistDir + config.dirid + '/BWVCXN/')
+	ViSPobj.load()
+
+	tiDev = ti.timeIndependent(config, c, ViSPobj)
+	#startFrame = config.runners.config['timeFrames'][0]
+	#endFrame = config.runners.config['timeFrames'][1]
+
+	#tiDev.timeFrames = np.arange(startFrame, endFrame+1).astype(int)
+	#tiDev.dataSquare = ViSPobj.dataSquare[tiDev.timeFrames, ...].reshape((ViSPobj.dataSquare.shape[1]*tiDev.timeFrames.size, ViSPobj.shape[-1]))
 	
-		prepSquare = runBase.runPrep(epochDev.dataSquare,
-							   			norm=normAtom.normContinuum, 
-							   			continuumIndx=epochDev.continuum)
-		#noMaskLabelLine, _ = epochDev.clustering(epochDev.dataSquare)#
+	# if config.runners.overwrite:
+	# 	prepSquare = runBase.runPrep(tiDev.dataSquare,
+	# 									norm=normAtom.normContinuum, 
+	# 									continuumIndx=tiDev.continuum)
 
-		maskLine = np.ones(prepSquare.shape[0]).astype(bool)
-		if True:
-			_, _, _, maskLine = aia.delayAIA("/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(aiaUse), epochDev)
-	
-		keepI0 = None
-		if "keepI0" in list(config.runners.config.keys()):
-			keepI0 = config.runners.config['keepI0']
-		
-		#epochDev.prepSquare = prepSquare
-		labelLine, scoreTuple,  = epochDev.cluster(prepSquare, maskLine, 
-											 keepI0=keepI0, kLst=config.srcLst.clusterConfig['optimized'])
-		print(epochDev.prepSquare)
-		print(labelLine.shape)
-		#writer.exportFITS(epochDev, labelLine, c)
-	return(epochDev, labelLine)
+	# 	#> Note: Creates a mask for data within a specific coordinate range
+	# 	tiDev.maskLine = np.ones(prepSquare.shape[0]).astype(bool)
+	# 	if 'bbox' in list(config.runners.config.keys()):
+	# 		tiDev.maskLine = maskAtom.maskCoordinate(config.runners.config['bbox'], (tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
 
+	# 	labelLine, scoreTuple,  = tiDev.cluster(prepSquare, kLst=config.clusterConfig['optimized'])
+	# 	labelSquare = labelLine.reshape((tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
+	# 	np.savez("./{}.npz".format(c), labelSquare=labelSquare, maskLine=tiDev.maskLine)
+	# else:
+	# 	loading = np.load("./{}.npz".format(c))
+	# 	print(loading)
+	# 	labelSquare 	= loading['labelSquare']
+	# 	tiDev.maskLine 	= loading['maskLine']
+	# 	loading.close()
+	return(tiDev, labelSquare)
 
 if __name__ == '__main__':
-	# quesoInstance = loader1.QuESO("/disk/data/DKIST/" ,
-	# 						 	"/disk/data/sriley/",
-	# 						 	"./dev/fig/")
-	
-	# eventManager = quesoInstance._loadEventConfig("./eventRunners.yml", event=0, runner=0)
+	from queso_cluster.loaders.event import eventInput
+	eventManager = eventInput("./eventManager.yml", eventIndx=2, runIndx=0)
+	tiDev, labelLine = main_time(eventManager.event)
 
-	eventManager = loader1.eventInput("./eventRunner.yml", 0,0)
+	# from queso_cluster.addon import products
+	# p = products.Products(tiDev, labelLine)
+	# #p.figure03()
+	# fig3 = p.clusterMapSequence()
+	# fig3.savefig("./figure03_sequence.png")
+	# #plt.close()
 
+	# fig4 = p.clusterProfiles()
+	# fig4.savefig("./clusterLabels.png")
 
-	#quesoInstance.aiaFname 	=  "/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(eventManager.event.runners.config['aia'])
-	#quesoInstance.instrumentDir = quesoInstance.datDir + '/20221227/CSYRML/'
-
-	epochDev, labelLine = main(eventManager.event)
-
-	from queso_cluster.addon import products
-	p = products.Products(epochDev, labelLine)
-	#p.figure03()
-	p.figure04_template()

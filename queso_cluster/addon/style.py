@@ -110,7 +110,7 @@ class mapMaker:
 		self.bbox = np.array([0, self.spaceInfo['rasterSize'], 0, self.spaceInfo['alongSlitSize']])
 		# else:
 		# 	self.bbox = np.array(bbox)
-		self.extent = self.bbox * (0, self.deltas['pxlSlitWidth'], 0, self.deltas['pxlAlongSlit'])
+		self.extent = self.bbox * (0, self.deltas['pxlSlitWidth'].magnitude, 0, self.deltas['pxlAlongSlit'].magnitude)
 
 		self.correct = lambda x: x.reshape(self.spaceInfo['alongSlitSize'], self.spaceInfo['rasterSize']).T.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])
 
@@ -123,8 +123,8 @@ class mapMaker:
 
 		ax.set_anchor('NW')
 
-		yScale = self.deltas['pxlAlongSlit']
-		xScale = self.deltas['pxlSlitWidth']
+		yScale = self.deltas['pxlAlongSlit'].magnitude
+		xScale = self.deltas['pxlSlitWidth'].magnitude
 
 		# if bbox is None:
 		# 	xShift = self.bbox[0]
@@ -175,11 +175,11 @@ class mapMaker:
 						colors='black', 
 						linewidths=1)
 
-		if (not (timeAxis is None)) or timeAxis:
+		if ((not (timeAxis is None)) or timeAxis) and pos.is_last_row():
 			f = lambda x: (x*self.cadence/xScale)/3600.
 			g = lambda x: (x/self.cadence*xScale)*3600.
 			#-0.15
-			tax = ax.secondary_xaxis(-0.17, functions=(f, g))
-			return(ax, im, tax)
+			ax.secondary_xaxis(-0.17, functions=(f, g))
+			return(ax, im)
 
 		return(ax, im)
