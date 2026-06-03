@@ -57,22 +57,22 @@
             - {label: 'Ni', center: 291, window: [256, 327]}
 - event:
     date: '2024-08-08'
-    label: 'late decay of X-class flare'
+    label: 'Strong flare signatures'
     run: 
-      - label: 'timeIndependent'
-        overwrite: True
-        config: {keepI0: [3], timeFrames: [0, 151], bbox: [0, 125, 1188, 1629], src: 'BWVCXN', line: 'narrow'}
+      - label: 'timeIndependentXClass'
+        overwrite: False
+        config: {keepI0: [2, 3], timeFrames: [0, 3], bbox: [0, 91, 500, 2548], src: 'BWVCXN', line: 'narrow'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}
         clustering:
           narrow:
             intrinsic: 
-              - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 1]}}
+              - {label: 'window', layerConfig: {'bins': [0, 0.45, 0.55, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2]}
-              - {layerGroups: [1, 1, 5, 5]}
+              - {layerGroups: [1, 1, 4, 4]}
         spectralParams:
-          continuum: 26
+          continuum: 825
           lineList:
-            - {label: 'narrow', window: [440, 595], center: 517, theme: '#527A00'}
-            - {label: 'broad', window: [425, 505], center: 465, theme: '#527A00'}
+            - {label: 'narrow', window: [390, 545], center: 467, theme: '#527A00'}
+            - {label: 'broad', window: [375, 505], center: 517, theme: '#527A00'}
