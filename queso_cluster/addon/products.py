@@ -5,7 +5,7 @@
 #from ..atoms import base as baseAtom
 
 from . import style as sty
-from .logg import loggTimer
+from .logg import loggTimer, logger
 from ..atoms import aux as auxAtom
 from ..atoms import scores as scoresAtom
 from  ..runners import base as baseRun
@@ -16,7 +16,6 @@ import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from matplotlib.colors import LinearSegmentedColormap
 
-from ..addon.logg import logger
 
 class Products:
 
@@ -48,19 +47,59 @@ class Products:
 
 	@loggTimer
 	def clusterMapSequence(self, orientation='vertical'):
+		if orientation == 'vertical':
+			figA, compoundLabels = self.clusterMapSequenceVertical()
+			
+		else:
+			figA, compoundLabels = self.clusterMapSequenceHorizontal()
+
+		figB = self.clusterMapCompound(compoundLabels)
+		return(figA, figB)
+
+	def clusterMapCompound(self, compoundLabels):
+		xlim = np.array([self.vindx[1].min(), 
+		  		self.vindx[1].max()]) 
+		ylim = np.array([self.vindx[2].min(), 
+		  		self.vindx[2].max()]) 		
+		
+		compoundLabels[~np.char.isalnum(compoundLabels)] = np.nan
+
+		recountedCompoundLabels = np.zeros(compoundLabels.shape) + np.nan
+		labelLst = np.unique(compoundLabels[:-1])
+		for l in range(labelLst.size):
+			#for t in range(self.optLabels.shape[0]):
+			lindx = np.where(compoundLabels == labelLst[l])
+			recountedCompoundLabels[lindx] = l+1
+		fig2 = plt.figure(layout='compressed', figsize=(10, 7), dpi=300)
+		gs2 = GridSpec(1, 2, figure=fig2,  width_ratios=[1, 0.025], hspace=0, wspace=0)		
+		_, color_pallet = sty._genColorPallet(len(np.unique(labelLst)))
+		cmap = mpl.colors.ListedColormap(color_pallet)
+		#cmap = mpl.cm.get_cmap('rainbow_r', len(labelLst))
+		cmap.set_bad("#FFFFFF")
+		kwargsDict = {'cmap': cmap}
+		ax, im  = self.mapMake._mapGen(fig2, gs2[0, 0], 
+												recountedCompoundLabels.astype(int),
+												timeAxis=True, 
+												#flareContour=self.mask_map, 
+												**kwargsDict)
+		ax.set_xlim(xlim*self.quesoOut.deltas['pxlSlitWidth'].magnitude)
+		ax.set_ylim(ylim*self.quesoOut.deltas['pxlAlongSlit'].magnitude)
+		ax.set_aspect("equal")
+
+		cax = fig2.add_subplot(gs2[0, 1])
+		cbar = fig2.colorbar(im, spacing='uniform', orientation="vertical",
+									cax=cax)
+	@loggTimer
+	def clusterMapSequenceVertical(self):
 		ncols = self.optLabels.shape[0]
 		#> Error?: Maximum number of clients reached		
 		fig = plt.figure(layout='constrained', figsize=(ncols, 2*ncols), dpi=300)
 		
-		if orientation == 'vertical':
-			nrows = ncols
-			ncols = 2
-			height_ratios = [1 for x in range(nrows)]
-			width_ratios = [1, 0.025]
-		else:
-			nrows = 2
-			height_ratios=[0.025, 1]
-			width_ratios = [1 for x in range(ncols)]
+		
+		nrows = ncols
+		ncols = 2
+		height_ratios = [1 for x in range(nrows)]
+		width_ratios = [1, 0.025]		
 		gs = GridSpec(nrows, ncols, figure=fig, 
 				height_ratios=height_ratios, width_ratios=width_ratios, hspace=0, wspace=0)
 
@@ -76,8 +115,6 @@ class Products:
 
 
 		labelLst = np.unique(self.optLabels[self.vindx]).astype(int)#.astype(str)
-		print(labelLst)
-		print(labelLst[~np.isnan(labelLst)])
 		# tLabels = np.unique(self.optLabels)
 		actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list(labelLst[~np.isnan(labelLst)]))
 		cmap = mpl.colors.ListedColormap(color_pallet)
@@ -114,43 +151,76 @@ class Products:
 		
 		cax = fig.add_subplot(gs[:, 1])
 		cbar = fig.colorbar(im, spacing='uniform',
-									ticks=bound_ticks, orientation=orientation,
+									ticks=bound_ticks, orientation="vertical",
+									cax=cax)
+		cbar.ax.set_yticklabels(["{}".format(int(x)) for x in np.unique(labelLst)])
+		return(fig, compoundLabels)
+	
+	@loggTimer
+	def clusterMapSequenceHorizontal(self):
+		ncols = self.optLabels.shape[0]
+		#> Error?: Maximum number of clients reached		
+		fig = plt.figure(layout='constrained', figsize=(ncols, 2*ncols), dpi=300)
+		
+		nrows = 2
+		height_ratios=[0.025, 1]
+		width_ratios = [1 for x in range(ncols)]
+		gs = GridSpec(nrows, ncols, figure=fig, 
+				height_ratios=height_ratios, width_ratios=width_ratios, hspace=0, wspace=0)
+
+		#xx = (self.vindx % self.quesoOut.rasterSize)#, self.quesoOut.alongSlitSize])
+		#yy = (self.vindx // self.quesoOut.rasterSize)#, self.quesoOut.alongSlitSize])
+
+		#inset_bbox = [xx0, xx1, yy0, yy1]
+
+		xlim = np.array([self.vindx[1].min(), 
+		  		self.vindx[1].max()]) 
+		ylim = np.array([self.vindx[2].min(), 
+		  		self.vindx[2].max()]) 
+
+
+		labelLst = np.unique(self.optLabels[self.vindx]).astype(int)#.astype(str)
+		# tLabels = np.unique(self.optLabels)
+		actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list(labelLst[~np.isnan(labelLst)]))
+		cmap = mpl.colors.ListedColormap(color_pallet)
+		norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
+
+		compoundLabels = np.zeros(self.optLabels.shape[1:], dtype=str)
+
+		recountedLabels = np.zeros(self.optLabels.shape) + np.nan
+		for l in range(labelLst.size):
+			#for t in range(self.optLabels.shape[0]):
+			lindx = np.where(self.optLabels == labelLst[l])
+			recountedLabels[lindx] = l+1
+
+		for t in range(self.optLabels.shape[0]):
+			kwargsDict = {'cmap': cmap, 'norm': norm}
+			ax, im  = self.mapMake._mapGen(fig, gs[0, t], 
+												recountedLabels[t, ...],
+												timeAxis=True, 
+												#flareContour=self.mask_map, 
+												**kwargsDict)
+			ax.set_xlim(xlim* self.quesoOut.deltas['pxlSlitWidth'].magnitude)
+			ax.set_ylim(ylim* self.quesoOut.deltas['pxlAlongSlit'].magnitude)
+
+			ax.set_aspect("equal")
+
+			if not gs[t, 0].is_last_row():
+				ax.set_xticklabels([])
+
+			#cbar = fig.colorbar(im, cax=cax, ticks=bounds_ticks)#, label='Binned Intensity')
+				#
+			# cbar.ax.set_yticklabels(["{}XX".format(int(x)) for x in recountLst])
+			compoundLabels = np.char.add(compoundLabels, np.char.zfill(recountedLabels[t, ...].astype(np.uint).astype(str), 2))
+		
+		cax = fig.add_subplot(gs[1, :])
+		cbar = fig.colorbar(im, spacing='uniform',
+									ticks=bound_ticks, orientation="horizontal",
 									cax=cax)
 		cbar.ax.set_yticklabels(["{}".format(int(x)) for x in np.unique(labelLst)])
 		
 
-
-		print(np.unique(compoundLabels))
-		compoundLabels[~np.char.isalnum(compoundLabels)] = np.nan
-
-		recountedCompoundLabels = np.zeros(compoundLabels.shape) + np.nan
-		labelLst = np.unique(compoundLabels[:-1])
-		for l in range(labelLst.size):
-			#for t in range(self.optLabels.shape[0]):
-			lindx = np.where(compoundLabels == labelLst[l])
-			recountedCompoundLabels[lindx] = l+1
-		print(labelLst)
-		print(np.unique(recountedCompoundLabels))
-		fig2 = plt.figure(layout='compressed', figsize=(10, 7), dpi=300)
-		gs2 = GridSpec(1, 2, figure=fig2,  width_ratios=[1, 0.025], hspace=0, wspace=0)		
-		_, color_pallet = sty._genColorPallet(len(np.unique(labelLst)))
-		cmap = mpl.colors.ListedColormap(color_pallet)
-		#cmap = mpl.cm.get_cmap('rainbow_r', len(labelLst))
-		cmap.set_bad("#FFFFFF")
-		kwargsDict = {'cmap': cmap}
-		ax, im  = self.mapMake._mapGen(fig2, gs2[0, 0], 
-												recountedCompoundLabels.astype(int),
-												timeAxis=True, 
-												#flareContour=self.mask_map, 
-												**kwargsDict)
-		ax.set_xlim(xlim*self.quesoOut.deltas['pxlSlitWidth'].magnitude)
-		ax.set_ylim(ylim*self.quesoOut.deltas['pxlAlongSlit'].magnitude)
-		ax.set_aspect("equal")
-
-		cax = fig2.add_subplot(gs2[0, 1])
-		cbar = fig2.colorbar(im, spacing='uniform', orientation=orientation,
-									cax=cax)
-		return(fig, fig2)
+		return(fig, compoundLabels)
 
 	@loggTimer
 	def figure03(self):
@@ -293,8 +363,6 @@ class Products:
 		i0o1Arr = auxAtom.pick_jth_label(validLabels, 0)*10 + auxAtom.pick_jth_label(validLabels, 1)
 
 		i0o1Lst = np.unique(i0o1Arr)
-
-
 		nrows = len(i0o1Lst)
 		ncols = 1 + auxAtom.pick_jth_label(validLabels, 2).max()
 
@@ -308,7 +376,7 @@ class Products:
 
 		raw_max = (np.ceil(np.nanmax(self.quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()
 		raw_min = (np.floor(np.nanmin(self.quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()	
-		extent  	= (wavelambda[ii]), (wavelambda[jj]), raw_min, raw_max
+		extent  	= wavelambda[ii], wavelambda[jj], raw_min, raw_max
 
 		color = "black"
 		panel_bounds = []
