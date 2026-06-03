@@ -39,6 +39,9 @@ class Products:
 		self.optLabels 	= optLabels
 		self.optLabels[self.optLabels == 0] = np.nan
 		self.vindx 	= np.where(~np.isnan(self.optLabels))#[0]
+
+		self.vfindx = np.ravel_multi_index(self.vindx, self.optLabels.shape)
+		#self.vfindx = np.where(~np.isnan(self.optLabels.reshape(np.prod(self.optLabels.shape))))
 		#print(np.where(~np.isnan(self.optLabels)))
 
 		self.mapMake = sty.mapMaker(self.quesoOut.spaceInfo, self.quesoOut.deltas)
@@ -47,7 +50,7 @@ class Products:
 	def clusterMapSequence(self, orientation='vertical'):
 		ncols = self.optLabels.shape[0]
 		#> Error?: Maximum number of clients reached		
-		fig = plt.figure(layout='compressed', figsize=(ncols, 2*ncols), dpi=300)
+		fig = plt.figure(layout='constrained', figsize=(ncols, 2*ncols), dpi=300)
 		
 		if orientation == 'vertical':
 			nrows = ncols
@@ -274,13 +277,23 @@ class Products:
 		
 		ii, jj = [self.ii, self.jj]
 		
-		wavelambda  = self.quesoOut.waveFit
+		if hasattr(self.quesoOut, "waveFit"):
+			wavelambda  = self.quesoOut.waveFit.magnitude
+			wavelambda -= wavelambda[self.lineCenter]
+			waveUnit = self.quesoOut.waveFit.units
+		else:
+			print(self.quesoOut.shape)
+			wavelambda = np.arange(self.quesoOut.shape[3])
+			waveUnit = "index"
+
 		validLabels = self.optLabels[self.vindx]
+
 		i0Arr = auxAtom.pick_jth_label(validLabels, 0)
 
 		i0o1Arr = auxAtom.pick_jth_label(validLabels, 0)*10 + auxAtom.pick_jth_label(validLabels, 1)
 
 		i0o1Lst = np.unique(i0o1Arr)
+
 
 		nrows = len(i0o1Lst)
 		ncols = 1 + auxAtom.pick_jth_label(validLabels, 2).max()
@@ -293,9 +306,9 @@ class Products:
 					height_ratios=[1 for x in range(nrows)],
 					figure=fig)			
 
-		raw_max = (np.ceil(self.quesoOut.prepSquare[:, ii:jj+1].max()*10)/10.).compute()
-		raw_min = (np.floor(self.quesoOut.prepSquare[:, ii:jj+1].min()*10)/10.).compute()	
-		extent  	= (wavelambda[ii]-wavelambda[self.lineCenter]).magnitude, (wavelambda[jj]-wavelambda[self.lineCenter]).magnitude, raw_min, raw_max
+		raw_max = (np.ceil(np.nanmax(self.quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()
+		raw_min = (np.floor(np.nanmin(self.quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()	
+		extent  	= (wavelambda[ii]), (wavelambda[jj]), raw_min, raw_max
 
 		color = "black"
 		panel_bounds = []
@@ -304,10 +317,10 @@ class Products:
 			i0_indx = np.where(i0o1Arr == i0o1Lst[j])[0]
 
 			ax0      = plt.subplot(gs[j, 0])
-			ax0 = self.spectralEntry(ax0, i0_indx, color, wavelambda.magnitude, extent)
+			ax0 = self.spectralEntry(ax0, i0_indx, color, wavelambda, extent)
 			if gs[j,0].is_last_row():
 				#ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")
-				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(wavelambda.units))
+				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(waveUnit))
 			ax0.tick_params(labelleft=True)
 			#axR0.tick_params(labelright=False)
 			if not gs[j, 0].is_last_row():
@@ -325,14 +338,13 @@ class Products:
 				ax      	= plt.subplot(gs[j, k+1])
 				o2_indx 	= i0_indx[np.where(o2Arr == o2Lst[k])[0]]
 
-				sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
-				sindx = np.where(i0Arr == sArr[0])[0]
+				#sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
+				#sindx = np.where(i0Arr == sArr[0])[0]
 
 				score = 0#scoresAtom.calcSingleSilhouetteScore(self.quesoOut.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
-			
-				ax = self.spectralEntry(ax, o2_indx, color, wavelambda.magnitude, extent, scores=score)
+				ax = self.spectralEntry(ax, o2_indx, color, wavelambda, extent, scores=score)
 				if gs[j,k+1].is_last_row():
-					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(wavelambda.units))	
+					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(waveUnit))	
 				else:
 					ax.tick_params(labelbottom=False)				
 										
@@ -356,30 +368,27 @@ class Products:
 		#> return (type): 
 		#> test-method:
 		ii, jj = [self.ii, self.jj]
-		raw_dat = self.quesoOut.prepSquare[indx.astype(np.uint32), ii:jj+1].compute()
+		raw_dat = self.quesoOut.prepSquare[self.vfindx[indx.astype(np.uint32)], ii:jj+1]#.compute()
 		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]	
-
 
 		if dev:
 			resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
 			centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
 			axR = ax.twinx()
 			axR.set_ylim([-1, 1])
-			axR.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
-			ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_min, color='blue', linewidth=0.75)
-			ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_max, color='blue', linewidth=0.75)
+			axR.plot(wavelambda[ii:jj+1], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+			ax.plot(wavelambda[ii:jj+1], centroid_min, color='blue', linewidth=0.75)
+			ax.plot(wavelambda[ii:jj+1], centroid_max, color='blue', linewidth=0.75)
 			logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
+		ax.plot(wavelambda[ii:jj+1], centroid_i, color='black', linewidth=0.75)
 
-		ax.plot(wavelambda[ii:jj+1]-wavelambda[self.lineCenter], centroid_i, color='black', linewidth=0.75)
-		
 		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
-
 		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, extent[3], extent[2])
 
-		ww, insty = np.meshgrid((wavelambda[ii:jj+1+1]-wavelambda[self.lineCenter]), np.arange(extent[2], extent[3], 0.01))
+		ww, insty = np.meshgrid(wavelambda[ii:jj+1+1], np.arange(extent[2], extent[3], 0.01))
 		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', color]))
 
-		ax.axvline(x = 0, linestyle='dashed', color='black')
+		ax.axvline(x = wavelambda[self.lineCenter], linestyle='dashed', color='black')
 
 		tindx = self.vindx[0][indx]
 		xindx = self.vindx[1][indx]
@@ -390,14 +399,18 @@ class Products:
 		label = "{}{}".format(int("".join(commonLabel)), "X"*(len(labelLst[0]) - len(commonLabel)))
 
 		if scores == None:
-			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-						"{}\nN={}\n".format(label, len(indx)))
-#						fontname='Times New Roman')
+			ax.annotate("{}\nN={}\n".format(label, len(indx)),
+            		xy=(0.1, 1-0.05), xycoords='axes fraction',
+					xytext=(0.1, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
+            		va='center', ha='center')			
 		else:
-			ax.text(0.9*(wavelambda[ii]-wavelambda[self.lineCenter]), 0.8*extent[3],
-					"{}\nN={}\nS={:.3f}\n".format(label, len(indx), float(scores)))
-#					fontname='Times New Roman')
+			ax.annotate("{}\nN={}\nS={:.3f}\n".format(label, len(indx), float(scores)),
+            		xy=(0.1, 1-0.05), xycoords='axes fraction',
+					xytext=(0.1, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
+            		va='center', ha='center')				
+
 			
-		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=0.2))
+		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=1))
+		
 
 		return(ax)
