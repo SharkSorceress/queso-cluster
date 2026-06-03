@@ -45,7 +45,7 @@ class Products:
 
 	@loggTimer
 	def clusterMapSequence(self, orientation='vertical'):
-		ncols = self.optLabels.shape[0] + 1
+		ncols = self.optLabels.shape[0]
 		#> Error?: Maximum number of clients reached		
 		fig = plt.figure(layout='compressed', figsize=(ncols, 2*ncols), dpi=300)
 		
@@ -107,29 +107,47 @@ class Products:
 			#cbar = fig.colorbar(im, cax=cax, ticks=bounds_ticks)#, label='Binned Intensity')
 				#
 			# cbar.ax.set_yticklabels(["{}XX".format(int(x)) for x in recountLst])
-			compoundLabels = np.strings.add(compoundLabels, self.optLabels[t, ...].astype(np.uint).astype(str))
-		cax = fig.add_subplot(gs[:-1, 1])
+			compoundLabels = np.char.add(compoundLabels, np.char.zfill(recountedLabels[t, ...].astype(np.uint).astype(str), 2))
+		
+		cax = fig.add_subplot(gs[:, 1])
 		cbar = fig.colorbar(im, spacing='uniform',
 									ticks=bound_ticks, orientation=orientation,
 									cax=cax)
 		cbar.ax.set_yticklabels(["{}".format(int(x)) for x in np.unique(labelLst)])
 		
-		compoundLabels[~np.strings.isalnum(compoundLabels)] = np.nan
 
-		kwargsDict = {'cmap': "rainbow_r"}
-		ax, im  = self.mapMake._mapGen(fig, gs[-1, 0], 
-												compoundLabels.astype(int),
+
+		print(np.unique(compoundLabels))
+		compoundLabels[~np.char.isalnum(compoundLabels)] = np.nan
+
+		recountedCompoundLabels = np.zeros(compoundLabels.shape) + np.nan
+		labelLst = np.unique(compoundLabels[:-1])
+		for l in range(labelLst.size):
+			#for t in range(self.optLabels.shape[0]):
+			lindx = np.where(compoundLabels == labelLst[l])
+			recountedCompoundLabels[lindx] = l+1
+		print(labelLst)
+		print(np.unique(recountedCompoundLabels))
+		fig2 = plt.figure(layout='compressed', figsize=(10, 7), dpi=300)
+		gs2 = GridSpec(1, 2, figure=fig2,  width_ratios=[1, 0.025], hspace=0, wspace=0)		
+		_, color_pallet = sty._genColorPallet(len(np.unique(labelLst)))
+		cmap = mpl.colors.ListedColormap(color_pallet)
+		#cmap = mpl.cm.get_cmap('rainbow_r', len(labelLst))
+		cmap.set_bad("#FFFFFF")
+		kwargsDict = {'cmap': cmap}
+		ax, im  = self.mapMake._mapGen(fig2, gs2[0, 0], 
+												recountedCompoundLabels.astype(int),
 												timeAxis=True, 
 												#flareContour=self.mask_map, 
 												**kwargsDict)
-		ax.set_xlim(xlim* self.quesoOut.deltas['pxlSlitWidth'].magnitude)
-		ax.set_ylim(ylim* self.quesoOut.deltas['pxlAlongSlit'].magnitude)
+		ax.set_xlim(xlim*self.quesoOut.deltas['pxlSlitWidth'].magnitude)
+		ax.set_ylim(ylim*self.quesoOut.deltas['pxlAlongSlit'].magnitude)
 		ax.set_aspect("equal")
 
-		cax = fig.add_subplot(gs[-1, 1])
-		cbar = fig.colorbar(im, spacing='uniform', orientation=orientation,
+		cax = fig2.add_subplot(gs2[0, 1])
+		cbar = fig2.colorbar(im, spacing='uniform', orientation=orientation,
 									cax=cax)
-		return(fig)
+		return(fig, fig2)
 
 	@loggTimer
 	def figure03(self):

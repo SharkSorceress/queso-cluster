@@ -27,14 +27,14 @@
     label: 'Strong flare signatures'
     run: 
       - label: 'timeIndependent'
-        overwrite: True
+        overwrite: False
         config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'AEVEG', mod: ""}
         clustering:
           main:
             intrinsic: 
-              - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 2]}}
+              - {label: 'window', layerConfig: {'bins': [0, 0.45, 0.60, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2]}
               - {layerGroups: [1, 1, 5, 5]}
@@ -57,22 +57,22 @@
             - {label: 'Ni', center: 291, window: [256, 327]}
 - event:
     date: '2024-08-08'
-    label: 'Strong flare signatures'
+    label: 'late decay of X-class flare'
     run: 
       - label: 'timeIndependent'
         overwrite: True
-        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'BWVCXN', line: 'main'}
+        config: {keepI0: [3], timeFrames: [0, 151], bbox: [0, 125, 1188, 1629], src: 'BWVCXN', line: 'narrow'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}
         clustering:
-          main:
+          narrow:
             intrinsic: 
-              - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 2]}}
+              - {label: 'window', layerConfig: {'bins': [0, 0.52, 0.60, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2]}
               - {layerGroups: [1, 1, 5, 5]}
         spectralParams:
           continuum: 26
           lineList:
-            - {label: 'main?', window: [462, 568], center: 515, theme: '#527A00'}
-            - {label: 'main', window: [525, 611], center: 568, theme: '#527A00'}
+            - {label: 'narrow', window: [440, 595], center: 517, theme: '#527A00'}
+            - {label: 'broad', window: [425, 505], center: 465, theme: '#527A00'}

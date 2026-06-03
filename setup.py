@@ -10,7 +10,7 @@ setup(
     description='Quantifying the Evolution of Spectra with Optimization',
     long_description=open('README.md').read(),
     install_requires=[
-        "numpy<2.4",
+        "numpy>=1.25",
         "dkist ",
 		"scipy",
 		"numba",

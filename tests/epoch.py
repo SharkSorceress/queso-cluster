@@ -7,7 +7,7 @@ import numpy as np
 
 from queso_cluster import writer, ti
 from queso_cluster.runners import base as runBase
-from queso_cluster.addon import aia
+from queso_cluster.addon import aia, prep
 from queso_cluster.loaders.visp import visp
 from queso_cluster.atoms import norm as normAtom
 from queso_cluster.atoms import mask as maskAtom
@@ -49,35 +49,42 @@ def main(config):
 
 def main_time(config):
 	c = config.runners.label
-	ViSPobj = visp(dkistDir + config.dirid + '/BWVCXN/')
+	ViSPobj = visp(dkistDir + config.dirid + '/' + config.runners.config['src'] + '/')
 	ViSPobj.load()
 
 	tiDev = ti.timeIndependent(config, c, ViSPobj)
-	#startFrame = config.runners.config['timeFrames'][0]
-	#endFrame = config.runners.config['timeFrames'][1]
+	startFrame = config.runners.config['timeFrames'][0]
+	endFrame = config.runners.config['timeFrames'][1]
 
-	#tiDev.timeFrames = np.arange(startFrame, endFrame+1).astype(int)
-	#tiDev.dataSquare = ViSPobj.dataSquare[tiDev.timeFrames, ...].reshape((ViSPobj.dataSquare.shape[1]*tiDev.timeFrames.size, ViSPobj.shape[-1]))
-	
-	# if config.runners.overwrite:
-	# 	prepSquare = runBase.runPrep(tiDev.dataSquare,
-	# 									norm=normAtom.normContinuum, 
-	# 									continuumIndx=tiDev.continuum)
+	tiDev.timeFrames = np.arange(startFrame, endFrame+1).astype(int)
+	tiDev.dataSquare = ViSPobj.dataSquare[tiDev.timeFrames, ...].reshape((ViSPobj.dataSquare.shape[1]*tiDev.timeFrames.size, ViSPobj.shape[-1]))
 
-	# 	#> Note: Creates a mask for data within a specific coordinate range
-	# 	tiDev.maskLine = np.ones(prepSquare.shape[0]).astype(bool)
-	# 	if 'bbox' in list(config.runners.config.keys()):
-	# 		tiDev.maskLine = maskAtom.maskCoordinate(config.runners.config['bbox'], (tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
+	fig1 = prep.figureBackup01(tiDev)
+	fig1.savefig("./intrinsicHist.png")
 
-	# 	labelLine, scoreTuple,  = tiDev.cluster(prepSquare, kLst=config.clusterConfig['optimized'])
-	# 	labelSquare = labelLine.reshape((tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
-	# 	np.savez("./{}.npz".format(c), labelSquare=labelSquare, maskLine=tiDev.maskLine)
-	# else:
-	# 	loading = np.load("./{}.npz".format(c))
-	# 	print(loading)
-	# 	labelSquare 	= loading['labelSquare']
-	# 	tiDev.maskLine 	= loading['maskLine']
-	# 	loading.close()
+
+	if config.runners.overwrite:
+		prepSquare = runBase.runPrep(tiDev.dataSquare,
+										norm=normAtom.normContinuum, 
+										continuumIndx=tiDev.continuum)
+
+		#> Note: Creates a mask for data within a specific coordinate range
+		tiDev.maskLine = np.ones(prepSquare.shape[0]).astype(bool)
+		if 'bbox' in list(config.runners.config.keys()):
+			tiDev.maskLine = maskAtom.maskCoordinate(config.runners.config['bbox'], (tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
+
+		#fig1 = prep.figureBackup01(tiDev, dataSquare=tiDev.dataSquare[tiDev.maskLine, :])
+		#fig1.savefig("./intrinsicHist_flare.png")
+
+		labelLine, scoreTuple,  = tiDev.cluster(prepSquare, kLst=config.clusterConfig['optimized'])
+		labelSquare = labelLine.reshape((tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
+		np.savez("./{}.npz".format(c), labelSquare=labelSquare, maskLine=tiDev.maskLine)
+	else:
+		loading = np.load("./{}.npz".format(c))
+		print(loading)
+		labelSquare 	= loading['labelSquare']
+		tiDev.maskLine 	= loading['maskLine']
+		loading.close()
 	return(tiDev, labelSquare)
 
 if __name__ == '__main__':
@@ -85,11 +92,12 @@ if __name__ == '__main__':
 	eventManager = eventInput("./eventManager.yml", eventIndx=2, runIndx=0)
 	tiDev, labelLine = main_time(eventManager.event)
 
-	# from queso_cluster.addon import products
-	# p = products.Products(tiDev, labelLine)
-	# #p.figure03()
-	# fig3 = p.clusterMapSequence()
-	# fig3.savefig("./figure03_sequence.png")
+	from queso_cluster.addon import products
+	p = products.Products(tiDev, labelLine)
+	#p.figure03()
+	fig3a, fig3b = p.clusterMapSequence()
+	fig3a.savefig("./figure03_sequence.png")
+	fig3b.savefig("./figure03_compound.png")
 	# #plt.close()
 
 	# fig4 = p.clusterProfiles()
