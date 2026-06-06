@@ -1,3 +1,5 @@
 build/*
 queso_cluster.egg-info/*
-venv
+tests/*.png
+tests/*.npz
+tests/.*
