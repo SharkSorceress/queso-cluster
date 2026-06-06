@@ -40,6 +40,26 @@ def runPrep(dataSquare, norm, quSquare=None, **kwargs):
 	return(prepSquare)
 
 
+@nb.njit()
+def runLabelSort(dataSquare, labelLine):
+	labelLst = np.unique(labelLine)
+
+	m0Lst = np.zeros(labelLst.size)
+	for l in range(labelLst.size):
+		lindx = np.where(labelLine == labelLst[l])[0]
+		m0Lst[l] = (dataSquare[lindx, :].sum(axis=0)/lindx.size).mean()
+
+	sortIndx = np.argsort(m0Lst)[::-1]
+	sortedLabelLst = labelLst[sortIndx]
+	
+	sortedLabelLine = np.zeros(labelLine.shape, dtype=labelLine.dtype)
+	for l in range(sortedLabelLst.size):
+		lindx = np.where(labelLine == sortedLabelLst[l])[0]
+		sortedLabelLine[lindx] = l+1
+
+	return(sortedLabelLine, sortIndx)
+
+
 def runIntrinsic(nbins, data, edgeOverride=None):
 	init_label  = np.ones(data.shape[0], dtype=np.uint16)
 	edges = edgeOverride
@@ -67,7 +87,7 @@ def runStart(k, data, start='max'):
 @nb.njit()
 def runOptimization(k, sub_data, converge):
 	ic                      = runStart(k, sub_data)
-	_, data_label           = baseAtom._calcOptimization(k, sub_data, ic, converge)
+	_, data_label           = baseAtom.calcOptimization(k, sub_data, ic, converge)
 	scoreLine 				= scoresAtom.calcSilhouetteScore(sub_data, data_label)
 	return(data_label+1, scoreLine)
 
@@ -99,23 +119,7 @@ def findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	return(scores, kLst)
 
 
-def runLabelSort(dataSquare, labelLine):
-	labelLst = np.unique(labelLine)
 
-	m0Lst = np.zeros(labelLst.size)
-	for l in range(labelLst.size):
-		lindx = np.where(labelLine == labelLst[l])[0]
-		m0Lst[l] = (dataSquare[lindx, :].sum(axis=0)/lindx.size).mean()
-
-	sortIndx = np.argsort(m0Lst)[::-1]
-	sortedLabelLst = labelLst[sortIndx]
-	
-	sortedLabelLine = np.zeros(labelLine.shape, dtype=labelLine.dtype)
-	for l in range(sortedLabelLst.size):
-		lindx = np.where(labelLine == sortedLabelLst[l])[0]
-		sortedLabelLine[lindx] = l+1
-
-	return(sortedLabelLine, sortIndx)
 
 # def intrinsicMask(dataSquare, intrinsicLine, keepI0=None):
 # 	intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, 

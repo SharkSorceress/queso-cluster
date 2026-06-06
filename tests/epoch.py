@@ -64,42 +64,40 @@ def main_time(config):
 
 
 	if config.runners.overwrite:
-		prepSquare = runBase.runPrep(tiDev.dataSquare,
+		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare,
 										norm=normAtom.normContinuum, 
 										continuumIndx=tiDev.continuum)
 
 		#> Note: Creates a mask for data within a specific coordinate range
-		tiDev.maskLine = np.ones(prepSquare.shape[0]).astype(bool)
+		tiDev.maskLine = np.ones(tiDev.prepSquare.shape[0]).astype(bool)
 		if 'bbox' in list(config.runners.config.keys()):
-			tiDev.maskLine = maskAtom.maskCoordinate(config.runners.config['bbox'], (tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
+			tiDev.maskLine = maskAtom.maskCoordinate(config.runners.config['bbox'], (tiDev.timeFrames.size, tiDev.dimInfo['rasterSize'], tiDev.dimInfo['alongSlitSize']))
 
 		#fig1 = prep.figureBackup01(tiDev, dataSquare=tiDev.dataSquare[tiDev.maskLine, :])
 		#fig1.savefig("./intrinsicHist_flare.png")
 
-		labelLine, scoreTuple,  = tiDev.cluster(prepSquare, kLst=config.clusterConfig['optimized'])
-		labelSquare = labelLine.reshape((tiDev.timeFrames.size, tiDev.rasterSize, tiDev.alongSlitSize))
-		np.savez("./{}.npz".format(c), labelSquare=labelSquare, maskLine=tiDev.maskLine)
-	else:
-		loading = np.load("./{}.npz".format(c))
-		print(loading)
-		labelSquare 	= loading['labelSquare']
-		tiDev.maskLine 	= loading['maskLine']
-		loading.close()
-	return(tiDev, labelSquare)
+		labelLine, scoreTuple  = tiDev.cluster(kLst=config.clusterConfig['optimized'])
+		labelSquare = labelLine.reshape((tiDev.timeFrames.size, tiDev.dimInfo['rasterSize'], tiDev.dimInfo['alongSlitSize']))
+
+		logger.info("Save start")
+		np.savez("./{}.npz".format(c), labelSquare=labelSquare, maskLine=tiDev.maskLine, prepSquare=tiDev.prepSquare.compute())
+		logger.info("Save end")
+		
+	return(tiDev)
 
 if __name__ == '__main__':
 	from queso_cluster.loaders.event import eventInput
 	eventManager = eventInput("./eventManager.yml", eventIndx=2, runIndx=0)
-	tiDev, labelLine = main_time(eventManager.event)
+	tiDev  = main_time(eventManager.event)
 
 	from queso_cluster.addon import products
-	p = products.Products(tiDev, labelLine)
+	p = products.Products(tiDev)
 	#p.figure03()
-	fig3a, fig3b = p.clusterMapSequence()
+	fig3a, fig3b = p.clusterMapSequence(timeAxis=False)
 	fig3a.savefig("./figure03_sequence.png")
 	fig3b.savefig("./figure03_compound.png")
 	# #plt.close()
 
-	# fig4 = p.clusterProfiles()
-	# fig4.savefig("./clusterLabels.png")
+	fig4 = p.clusterProfiles()
+	fig4.savefig("./clusterLabels.png")
 

@@ -4,7 +4,7 @@ import numpy as np
 
 from . import style as sty
 def figureBackup01(analysisObj, dataSquare=None):
-    ii, jj = analysisObj.spectralWindow
+    ii, jj = [analysisObj.ii, analysisObj.jj]
     if dataSquare is None:
         dataSquare = analysisObj.dataSquare
     
@@ -21,16 +21,16 @@ def figureBackup01(analysisObj, dataSquare=None):
     binWidth = {'window': 0.01, 'continuum': 0.01}
 
     for i in range(i0_layerCount):
-        label = analysisObj.config.clusterConfig['intrinsic'][i]['label']
-        bins  = analysisObj.config.clusterConfig['intrinsic'][i]['layerConfig']['bins']
+        label = analysisObj.clusterConfig['intrinsic'][i]['label']
+        bins  = analysisObj.clusterConfig['intrinsic'][i]['layerConfig']['bins']
 
         ax = fig.add_subplot(1, i0_layerCount, i+1)
         histBins = np.arange(0, np.ceil(np.nanmax(moment0[label])*10)/10, step=binWidth[label])
         ax.hist(moment0[label], bins=histBins, range=histBins, rwidth=1, fill=False, histtype='step', color='black')
-        _, color_pallet =  sty._genColorPallet(len(np.diff(bins)))
+        #_, color_pallet =  sty._genColorPallet(len(np.diff(bins)))
 
-        for j in range(len(bins)-2):
-            ax.axvline(x = bins[j+1] , color=mpl.colors.rgb2hex(color_pallet[j+1]))
+        #for j in range(len(bins)-2):
+        #   ax.axvline(x = bins[j+1] , color=mpl.colors.rgb2hex(color_pallet[j+1]))
 
 
     return(fig)

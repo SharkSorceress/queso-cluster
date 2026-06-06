@@ -1,0 +1,23 @@
+.wy-side-nav-search {
+    background-color: #ECE2C6;
+}
+
+.wy-side-nav-search>div.version {
+    color: #d4a500;
+}
+
+.wy-side-scroll {
+    background-color: #0989a0;
+}
+
+.wy-menu-vertical>p.caption{
+    color: #d4a500;
+}
+
+.wy-side-nav-search a {
+	color: #000
+}
+
+.rst-content code.literal {
+    color: #0989a0;
+}

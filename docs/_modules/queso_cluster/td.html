@@ -1,0 +1,252 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>queso_cluster.td &mdash; QuESO Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=b6fd5f62" />
+
+  
+    <link rel="shortcut icon" href="../../_static/iconTeal_small.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=87801401"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/iconTeal_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../queso-tutorial.html"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributors.html">Project Contributors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QuESO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">queso_cluster.td</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for queso_cluster.td</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	:file:  queso_cluster/td.py</span>
+<span class="sd">	:lang:  python</span>
+<span class="sd">	:synopsis: </span>
+<span class="sd">	:author: Sarah Riley &lt;academic@sriley.dev&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">baseMain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">runBase</span>
+<span class="c1"># from .atoms import norm as normAtom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.addon.logg</span><span class="w"> </span><span class="kn">import</span> <span class="n">loggTimer</span>
+
+<div class="viewcode-block" id="timeDependent">
+<a class="viewcode-back" href="../../api-reference.html#queso_cluster.td.timeDependent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">timeDependent</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Time dependent clustering framework</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	config : :class:`~queso_cluster.loaders.event.eventInput`</span>
+<span class="sd">		object containing yaml configuration</span>
+<span class="sd">	catalogBase : str</span>
+<span class="sd">		base string for catalog name</span>
+<span class="sd">	instrumentObj : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` </span>
+<span class="sd">		A `loader` object for specific instruments</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">catalogName</span><span class="p">,</span> <span class="n">instrumentObj</span><span class="p">):</span>
+		<span class="n">baseMain</span><span class="o">.</span><span class="n">clusterBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">catalogName</span><span class="p">,</span> <span class="n">instrumentObj</span><span class="p">)</span>
+
+	<span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="n">baseMain</span><span class="o">.</span><span class="n">clusterBase</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+
+	<span class="nd">@loggTimer</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">timeFrames</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">peakTime</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">nframes</span> <span class="o">%</span> <span class="mi">2</span><span class="p">:</span>
+			<span class="n">nframes</span> <span class="o">+=</span> <span class="mi">1</span>
+		
+		<span class="k">if</span> <span class="n">peakTime</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="c1">#ii, jj = self.spectralWindow</span>
+			<span class="c1">#peakTimeSquare = self.dataCube[..., ii:jj].sum(axis=-1).argmax(axis=0)</span>
+			<span class="n">peakTime</span> <span class="o">=</span> <span class="mi">2</span>
+
+		<span class="n">rangeMin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="n">peakTime</span><span class="o">-</span><span class="n">nframes</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>
+		<span class="n">rangeMax</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">peakTime</span> <span class="o">+</span> <span class="n">nframes</span><span class="o">//</span><span class="mi">2</span><span class="p">])</span>
+
+		<span class="n">tLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">rangeMin</span><span class="p">),</span> <span class="nb">int</span><span class="p">(</span><span class="n">rangeMax</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+		<span class="n">timeFrames</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">tLst</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">tLst</span><span class="p">)):</span>
+			<span class="n">timeFrames</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataCube</span><span class="p">[</span><span class="n">tLst</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">timeFrames</span><span class="p">,</span> <span class="n">tLst</span><span class="p">)</span>
+
+
+	<span class="nd">@loggTimer</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prepSquare</span><span class="p">,</span> <span class="n">maskLine</span><span class="p">,</span> <span class="n">intrinsicLine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kLst</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="c1">#&gt; detail: </span>
+		<span class="c1">#&gt; param type self:</span>
+		<span class="c1">#&gt; param type prepSquare:</span>
+		<span class="c1">#&gt; param type maskLine:</span>
+		<span class="c1">#&gt; return (type): </span>
+		<span class="c1">#&gt; test-method:</span>
+		
+		<span class="n">ii</span><span class="p">,</span> <span class="n">jj</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">spectralWindow</span>
+		<span class="c1"># if intrinsicLine is None:</span>
+		<span class="c1"># 	intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, </span>
+		<span class="c1"># 								   np.floor(self.dataSquare*100)/100., 0, intrinsicSkip=False)</span>
+		<span class="c1"># 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)</span>
+		
+		<span class="c1"># if not (keepI0 is None):</span>
+		<span class="c1"># 	i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)</span>
+		<span class="c1"># 	for i in keepI0:</span>
+		<span class="c1"># 		#print(np.unique(intrinsicLine[(intrinsicLine == i)]))</span>
+		<span class="c1"># 		#print(np.unique(intrinsicLine[(intrinsicLine == i)*maskLine]))</span>
+		<span class="c1"># 		i0Mask[(intrinsicLine == i)] = 1</span>
+		<span class="c1"># 	maskLine *= i0Mask</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">prepSquare</span> <span class="o">=</span> <span class="n">prepSquare</span><span class="p">[</span><span class="n">maskLine</span><span class="p">,</span> <span class="p">:]</span>
+		<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">intrinsicLine</span><span class="p">[</span><span class="n">maskLine</span><span class="p">]</span>
+
+		<span class="n">labelLine</span><span class="p">,</span> <span class="n">scoreTuple</span> <span class="o">=</span> <span class="n">baseMain</span><span class="o">.</span><span class="n">mainOptimization</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prepSquare</span><span class="p">[:,</span> <span class="n">ii</span><span class="p">:</span><span class="n">jj</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">(),</span> <span class="n">intrinsicLine</span><span class="p">,</span> <span class="n">kLst</span><span class="o">=</span><span class="n">kLst</span><span class="p">,</span> <span class="n">stageMax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="n">maskLine</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+			<span class="nb">print</span><span class="p">(</span><span class="n">labelLine</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+			<span class="nb">print</span><span class="p">(</span><span class="n">maskLine</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+			<span class="n">unmaskLabelLine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">maskLine</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+			<span class="n">unmaskLabelLine</span><span class="p">[</span><span class="n">maskLine</span><span class="p">]</span> <span class="o">=</span> <span class="n">labelLine</span>
+			<span class="k">return</span><span class="p">(</span><span class="n">unmaskLabelLine</span><span class="p">,</span> <span class="n">scoreTuple</span><span class="p">)</span>
+		
+		<span class="k">return</span><span class="p">(</span><span class="n">labelLine</span><span class="p">,</span> <span class="n">scoreTuple</span><span class="p">)</span>
+
+
+	<span class="k">def</span><span class="w"> </span><span class="nf">prepSequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">timeFrames</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+		<span class="n">prepCube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">timeFrames</span><span class="o">.</span><span class="n">shape</span><span class="p">))</span>
+		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">timeFrames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+			<span class="n">prepCube</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="o">=</span> <span class="n">runBase</span><span class="o">.</span><span class="n">runPrep</span><span class="p">(</span><span class="n">timeFrames</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="o">...</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">prepCube</span><span class="p">)</span>
+
+
+
+	<span class="k">def</span><span class="w"> </span><span class="nf">clusterSequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">prepCube</span><span class="p">,</span> <span class="n">maskLine</span><span class="p">,</span> <span class="n">klst</span><span class="p">,</span> <span class="n">intrinsicLine</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+		<span class="n">labelSquare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">prepCube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">prepCube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+		<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">prepCube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+			<span class="c1">#prepSquare = runBase.runPrep(timeFrames[t,...], norm=normAtom.normContinuum, continuumIndx=self.continuum)			</span>
+			<span class="n">labelLine</span><span class="p">,</span> <span class="n">scores</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">prepCube</span><span class="p">[</span><span class="n">t</span><span class="p">],</span> <span class="n">maskLine</span><span class="p">,</span> <span class="n">kLst</span><span class="o">=</span><span class="p">[</span><span class="n">klst</span><span class="p">[</span><span class="n">t</span><span class="p">]],</span> <span class="n">intrinsicLine</span><span class="o">=</span><span class="n">intrinsicLine</span><span class="p">)</span>
+			<span class="n">labelSquare</span><span class="p">[</span><span class="n">t</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">labelLine</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">labelSquare</span><span class="p">)</span></div>
+
+
+	<span class="c1"># def clustering(self, prepCube, tlst, groups, intrinsicSquare=None):</span>
+	<span class="c1"># 	#&gt; detail: low temporal resolution clustering</span>
+	<span class="c1"># 	#&gt; param type self:</span>
+	<span class="c1"># 	#&gt; param type prepCube:</span>
+	<span class="c1"># 	#&gt; param type tlst:</span>
+	<span class="c1"># 	#&gt; param type groups:</span>
+	<span class="c1"># 	#&gt; param type [None] intrinsicSquare:</span>
+	<span class="c1"># 	#&gt; return (type): </span>
+	<span class="c1"># 	#&gt; test-method:</span>
+
+
+	<span class="c1"># 	peakPrepSquare = baseAtom._calcDynamicFrame(self.dataCube, peakTimeSquare).reshape(self.dataFrame.shape[1:])</span>
+	<span class="c1"># 	peakIntrinsicSquare = baseMain._mainIntrinsic(self.config.srcLst, peakPrepSquare, 0)</span>
+
+	<span class="c1"># 	labelSquare 		= np.zeros((prepCube.shape[0], prepCube.shape[1]*prepCube.shape[2])) + np.nan</span>
+	<span class="c1"># 	for dt in range(prepCube.shape[0]):</span>
+	<span class="c1"># 		epochLabel 	= np.ones(labelSquare.shape[1]) * 111</span>
+	<span class="c1"># 		with ProgressBar(total=int(labelSquare.shape[1]), ascii=False, leave=True, desc=&#39;Epoch Frame {:+}&#39;.format(tlst[dt]),</span>
+	<span class="c1"># 						bar_format=&#39;{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]&#39;) as epochProgress:	</span>
+	<span class="c1"># 			prepSquare 	= baseAtom._calcDynamicFrame(prepCube, peakTimeSquare, progress=epochProgress, delta=tlst[dt]).reshape(prepCube.shape[1:]) </span>
+	<span class="c1"># 		if groups[dt] &gt; 1:</span>
+	<span class="c1"># 			# util.logg(&quot;msg&quot;, &quot;Time delta Runner (peak{:+})&quot;.format(tlst[dt]))				</span>
+	<span class="c1"># 			if intrinsicSquare is None:</span>
+	<span class="c1"># 				intrinsicSquare = baseMain._mainIntrinsic(self.config.srcLst, self.dataCube, 0, intrinsicSkip=True)</span>
+	<span class="c1"># 				intrinsicSquare = auxAtom.pick_jth_label(intrinsicSquare, 0).astype(int)</span>
+				
+	<span class="c1"># 			labelLine, scoreTuple = baseMain._mainOptimization(self.config.srcLst, prepSquare*peakIntrinsicSquare[:, None], intrinsicSquare)</span>
+
+	<span class="c1"># 		filter_indx = np.where(np.logical_not(np.isnan(prepSquare.sum(axis=-1))))[0]</span>
+	<span class="c1"># 		#prepCube[dt, ...] 					= prepSquare</span>
+	<span class="c1"># 		labelSquare[dt, filter_indx] 		= epochLabel.reshape(labelLine.shape[1:])[filter_indx]	</span>
+	<span class="c1"># 	return(labelLine, score)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Sarah Riley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

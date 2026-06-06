@@ -1,7 +1,10 @@
-#> file:  ./QuESO/addon/style
-#> lang:  python
-#> synopsis: 
-#> author:   <>
+"""
+	:file:  queso_cluster/addon/style
+	:lang:  python
+	:synopsis: 
+	:author: Sarah Riley <academic@sriley.dev>
+"""
+
 import numpy as np
 import tol_colors as tc
 import matplotlib as mpl
@@ -13,94 +16,110 @@ from matplotlib.colors import LinearSegmentedColormap
 plt.rcParams.update({'font.size': 12})
 mpl.rcParams['mathtext.fontset'] = 'stix'
 mpl.rcParams['font.family'] = 'serif'
-#	mpl.rcParams["font.monospace"] = ["FreeMono"]
-def cbar_bounds(bounds):
-#> detail: 
-#> param type bounds:
-#> return (type): 
-#> test-method:
-	actual_bounds = []
-	for b in range(len(bounds)):
-		actual_bounds.append((b+1)-0.5)
-		actual_bounds.append((b+1)+0.5)
-	actual_bounds = np.unique(actual_bounds)
-	bound_ticks = [b+1 for b in range(len(bounds))]
-	_, color_pallet = _genColorPallet(len(bounds))
-	return(actual_bounds, bound_ticks, color_pallet)
-
-def _genColorPallet(n):
-#> detail: 
-#> param type n:
-#> return (type): 
-#> test-method:
-	# from . import  tol_colors as tol
-
-	cmap = tc.tol_cmap(colormap='rainbow_PuRd')
-	color_pallet = [cmap(i) for i in np.linspace(0, cmap.N, n).astype(int)]
-	color_pallet.reverse()
-	return(cmap, color_pallet)
 
 
-def rainbow_cmap(nrange, discrete=False, nan=False):
-#> detail: 
-#> param type nrange:
-#> param type [False] discrete:
-#> param type [False] nan:
-#> return (type): 
-#> test-method:
-
-	# from .tol_colors import tol_cmap
-
-	if nan:
-		return(tc.tol_cmap(colormap='rainbow_discrete', lut=nrange))
-
-	schemes = tc.tol_cmap(colormap='rainbow_PuRd').reversed()
-
-	if discrete:
-		final_cmap = cmap_discretize(schemes, nrange)
-	else:
-		final_cmap = schemes
-	return(final_cmap)
-
-def cmap_discretize(cmap, N):
-#> detail: 
-#> param type cmap:
-#> param type N:
-#> return (type): 
-#> test-method:
-	"""Return a discrete colormap from the continuous colormap cmap.
-
-		cmap: colormap instance, eg. cm.jet. 
-		N: number of colors.
+class clusterColormap:
 	"""
-	
+	Creates a colormap to be used with the cluster maps
 
-	if type(cmap) == str:
-		cmap = mpl.get_cmap(cmap)
-	colors_i = np.concatenate((np.linspace(0, 1., N), (0.,0.,0.,0.)))
-	colors_rgba = cmap(colors_i)
-	indices = np.linspace(0, 1., N+1)
-	cdict = {}
-	for ki, key in enumerate(('red','green','blue')):
-		cdict[key] = [(indices[i], colors_rgba[i-1,ki], colors_rgba[i,ki]) for i in range(N+1)]
-	# Return colormap object.
-	return LinearSegmentedColormap(cmap.name + "_%d"%N, cdict, 1024)
+	Parameters
+	----------
+	nbounds : int
+		the number of labels to use
+	tolColorLabel : str, optional
+		the name of the TOL colormap to use
+
+	Attributes
+	----------
+	cmap : ListedColormap
+		The matplotlib colormap to use
+	norm : BoundaryNorm
+		The matplotlib normalization to use
+	bound_ticks : ndarray
+		Tick locations for plt.colorbar
+	"""
+
+	def __init__(self, nbounds, tolColorLabel='rainbow_PuRd'):
+		self.tolColorLabel = tolColorLabel
+		self.nbounds = nbounds
+		#cleanLst = list(labelLst[~np.isnan(labelLst)])
+		
+		color_palette = self.genColorPalette()
+		actual_bounds, self.bound_ticks = self.cbar_bounds()
+
+		self.cmap = mpl.colors.ListedColormap(color_palette)
+		self.cmap.set_bad("#FFFFFF")
+		self.norm = mpl.colors.BoundaryNorm(actual_bounds, self.cmap.N+1)	
+
+
+	def cbar_bounds(self):
+		"""
+		Creates a list of uniform spaced tick locations 
+
+
+		Returns
+		-------
+		actual_bounds : ndarray
+			The edges of the bins to be used with mpl.colors.BoundaryNorm
+		bound_ticks : ndarray
+			Tick locations for plt.colorbar
+		
+		"""
+
+		actual_bounds = []
+		for b in range(self.nbounds):
+			actual_bounds.append((b+1)-0.5)
+			actual_bounds.append((b+1)+0.5)
+		actual_bounds = np.unique(actual_bounds)
+		bound_ticks = [b+1 for b in range(self.nbounds)]
+		return(actual_bounds, bound_ticks)
+
+	def genColorPalette(self):
+		"""
+		Creates a list of uniform spaced tick locations 
+
+		Returns
+		-------
+		color_palette : list
+			The hexcodes for the colors to be used in the colormap
+
+		"""
+		cmap = tc.tol_cmap(colormap=self.tolColorLabel)
+		color_palette = [cmap(i) for i in np.linspace(0, cmap.N, self.nbounds).astype(int)]
+		color_palette.reverse()
+		return(color_palette)
+
+
 
 class mapMaker:
+	"""
+	A class to format maps in a consistent way.
+
+	Parameters
+	----------
+	spaceInfo : dict
+		dictionary containing number of pixels in each spatial dimension 
+	deltas : dict
+		dictinary containing the raster pixel scale as 'pxlSlitWidth' and the along slit pixel scale as 'pxlAlongSlit'
+	
+	Attributes
+	----------
+	flatten : lambda function
+		creates a 1D array from a spatial 2D array
+	unflatten : lambda function
+		creates a spatial 2D array from a flattened 1D array
+	bbox : ndarray
+		1D array containing the extent of the region in pixel units
+	extent : ndarray
+		1D array containing the extent of the region in arcseconds
+	correct : lambda function
+		Flattens a transposed array (for IDL maps only)
+
+	"""
 	def __init__(self, spaceInfo, deltas):
-#> detail: 
-#> param type self:
-#> param type spaceInfo:
-#> param type deltas:
-#> return (type): 
-#> test-method:
-		# self.dataArr 	= arr
 		self.spaceInfo 	= spaceInfo
 		self.deltas 	= deltas
 		self.cadence 	= 15.667
-		print(deltas)
-
-		#self.aspect = self.deltas['pxlAlongSlit']/self.deltas['pxlSlitWidth']
 
 		self.flatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])  
 		self.unflatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize'], self.spaceInfo['alongSlitSize']) 
@@ -154,10 +173,6 @@ class mapMaker:
 		ax.yaxis.set_major_formatter(fmtr)
 
 		ax.set_aspect("equal")
-		# im = ax.imshow(self.unflatten(arr).T, origin='lower', aspect=aspect, 
-		# 		 #extent=self.extent, 
-		# 		 interpolation='nearest',
-		# 		 **kwargsDict)
 
 		if not (flareContour is None):
 		
@@ -175,7 +190,7 @@ class mapMaker:
 						colors='black', 
 						linewidths=1)
 
-		if ((not (timeAxis is None)) or timeAxis) and pos.is_last_row():
+		if (timeAxis) and pos.is_last_row():
 			f = lambda x: (x*self.cadence/xScale)/3600.
 			g = lambda x: (x/self.cadence*xScale)*3600.
 			#-0.15

@@ -1,0 +1,265 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>queso_cluster.loaders.event &mdash; QuESO Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=b6fd5f62" />
+
+  
+    <link rel="shortcut icon" href="../../../_static/iconTeal_small.png"/>
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=87801401"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html">
+            
+              <img src="../../../_static/iconTeal_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../queso-tutorial.html"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api-reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Project Contributors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">QuESO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">queso_cluster.loaders.event</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for queso_cluster.loaders.event</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	:file:  queso_cluster/loaders/event.py</span>
+<span class="sd">	:lang:  python</span>
+<span class="sd">	:synopsis: </span>
+<span class="sd">	:author: Sarah Riley &lt;academic@sriley.dev&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">yaml</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">..atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">aux</span> <span class="k">as</span> <span class="n">auxAtom</span>
+
+<div class="viewcode-block" id="eventRunner">
+<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.loaders.event.eventRunner">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">eventRunner</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">	Detail</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	inputLst : list</span>
+<span class="sd">		list</span>
+<span class="sd">	runIndx : int</span>
+<span class="sd">		integer for the order of the runner in the eventManager.yml</span>
+<span class="sd">	</span>
+<span class="sd">	Attributes</span>
+<span class="sd">	----------</span>
+<span class="sd">	date : str</span>
+<span class="sd">		the date in YYYY-MM-DD</span>
+<span class="sd">	dirid : str</span>
+<span class="sd">		the date in YYYYMMDD</span>
+<span class="sd">	runners : :class:`~queso_cluster.loaders.runnerMeta`</span>
+<span class="sd">		object containing runner metadata</span>
+<span class="sd">	</span>
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">inputLst</span><span class="p">,</span> <span class="n">runIndx</span><span class="p">):</span>
+		<span class="c1">#stokes_lst 		= [&#39;I&#39;, &#39;Q&#39;, &#39;U&#39;, &#39;V&#39;]</span>
+
+		<span class="n">eventRaw</span> 	<span class="o">=</span> <span class="n">inputLst</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span>
+		<span class="n">runRaw</span> 		<span class="o">=</span> <span class="n">eventRaw</span><span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">][</span><span class="n">runIndx</span><span class="p">]</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">date</span> <span class="o">=</span> <span class="n">eventRaw</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">dirid</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">date</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">))</span>
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">runners</span> <span class="o">=</span> <span class="n">runnerMeta</span><span class="p">(</span><span class="n">runRaw</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">flavor</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">label</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">loadSource</span><span class="p">(</span><span class="n">eventRaw</span><span class="p">)</span>
+
+
+<div class="viewcode-block" id="eventRunner.loadSource">
+<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.loaders.event.eventRunner.loadSource">[docs]</a>
+	<span class="k">def</span><span class="w"> </span><span class="nf">loadSource</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">eventInput</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Loads source configuration from eventManager.yml</span>
+
+<span class="sd">		Parameters</span>
+<span class="sd">		----------</span>
+<span class="sd">		eventInput : dict</span>
+<span class="sd">			dictionary containing event specific configuration from eventManager.yml</span>
+<span class="sd">		</span>
+<span class="sd">		Attributes</span>
+<span class="sd">		----------</span>
+<span class="sd">		srcLst : :class:`~queso_cluster.loaders.event.srcMeta`</span>
+<span class="sd">			Specific source metadata referenced in the active runner </span>
+<span class="sd">		srcLabelLst : str</span>
+<span class="sd">			string identifier for a listed source set by the active runner</span>
+<span class="sd">		clusterConfig : dict</span>
+<span class="sd">			dictionary of the clustering configuration for the listed source set by the active runner</span>
+
+<span class="sd">		&quot;&quot;&quot;</span>
+		<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">eventInput</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])):</span>
+			<span class="n">srcInput</span> <span class="o">=</span> <span class="n">eventInput</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">]</span>
+			<span class="n">srcObj</span> <span class="o">=</span> <span class="n">srcMeta</span><span class="p">(</span><span class="n">srcInput</span><span class="p">)</span>
+			<span class="n">id_mod</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="n">srcObj</span><span class="o">.</span><span class="n">id_mod</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="n">srcObj</span><span class="o">.</span><span class="n">id_mod</span><span class="p">))</span>
+			<span class="k">if</span> <span class="p">(</span><span class="n">srcObj</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">id_mod</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">]:</span>
+				<span class="n">srcObj</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">srcObj</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]]</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">srcLst</span> <span class="o">=</span> <span class="n">srcObj</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">srcLabelLst</span> <span class="o">=</span> <span class="n">srcObj</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">id_mod</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">clusterConfig</span> <span class="o">=</span> <span class="n">srcObj</span><span class="o">.</span><span class="n">srcCluster</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;line&#39;</span><span class="p">]]</span>
+				<span class="k">break</span></div>
+</div>
+
+
+<div class="viewcode-block" id="srcMeta">
+<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.loaders.event.srcMeta">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">srcMeta</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		:param srcInput:</span>
+<span class="sd">		:type srcInput:</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">srcInput</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">instrument</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;instrument&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="s1">&#39;mod&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;mod&#39;</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+						
+		<span class="c1"># if &#39;theme&#39; in list(srcInput.keys()):</span>
+		<span class="c1"># 	self.theme = srcInput[&#39;theme&#39;]</span>
+		<span class="c1"># else:</span>
+		<span class="c1"># 	self.theme = &#39;#0000FF&#39;</span>
+
+		<span class="k">if</span> <span class="s1">&#39;clustering&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">srcCluster</span> 	<span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span>
+		<span class="k">else</span><span class="p">:</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">srcCluster</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;main&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;S0&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;window&#39;</span><span class="p">,</span> <span class="s1">&#39;layerConfig&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">999</span><span class="p">]}}],</span> 
+						<span class="s1">&#39;S1&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;layerGroups&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">],</span> <span class="s1">&#39;layerConfig&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;converge&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s1">&#39;similarity&#39;</span><span class="p">:</span> <span class="s1">&#39;dist&#39;</span><span class="p">}}]}}</span>
+
+
+		<span class="k">if</span> <span class="s1">&#39;residual&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;residual&#39;</span><span class="p">])</span>
+
+		<span class="c1"># self.clusterConfig = {&#39;intrinsic&#39;: srcCluster[&#39;S0&#39;],</span>
+		<span class="c1"># 						&#39;optimized&#39;: srcCluster[&#39;S1&#39;]}</span>
+
+
+		<span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;spectralParams&#39;</span><span class="p">][</span><span class="s1">&#39;lineList&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">continuum</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;spectralParams&#39;</span><span class="p">][</span><span class="s1">&#39;continuum&#39;</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="s2">&quot;axisFit&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="n">waveCoeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;coeff&#39;</span><span class="p">])</span>
+			<span class="c1">#self.waveUnit = srcInput[&#39;axisFit&#39;][&#39;unit&#39;]</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">waveFitFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">waveCoeff</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="o">*</span><span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span></div>
+
+
+<span class="k">class</span><span class="w"> </span><span class="nc">runnerMeta</span><span class="p">:</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">runnerInput</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="n">runnerInput</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">config</span> <span class="o">=</span> <span class="n">runnerInput</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">overwrite</span> <span class="o">=</span> <span class="n">runnerInput</span><span class="p">[</span><span class="s1">&#39;overwrite&#39;</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="s1">&#39;alignment_dir&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">runnerInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">alignmentDir</span> <span class="o">=</span> <span class="n">runnerInput</span><span class="p">[</span><span class="s1">&#39;alignment_dir&#39;</span><span class="p">]</span>
+
+		<span class="k">if</span> <span class="s1">&#39;qs&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">runnerInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="bp">self</span><span class="o">.</span><span class="n">qs_config</span> <span class="o">=</span> <span class="n">runnerInput</span><span class="p">[</span><span class="s1">&#39;qs&#39;</span><span class="p">]</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">eventInput</span><span class="p">:</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">eventIndx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">runIndx</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">configList</span> <span class="o">=</span> <span class="p">[]</span>
+		<span class="n">configLst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">eventRunner</span><span class="p">(</span><span class="n">configLst</span><span class="p">[</span><span class="n">eventIndx</span><span class="p">],</span> <span class="n">runIndx</span><span class="p">)</span>
+
+
+	<span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+		<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">configFile</span><span class="p">:</span>
+			<span class="k">try</span><span class="p">:</span>
+				<span class="n">configInput</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
+				<span class="k">return</span><span class="p">(</span><span class="n">configInput</span><span class="p">)</span> 
+			<span class="k">except</span> <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+				<span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Sarah Riley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

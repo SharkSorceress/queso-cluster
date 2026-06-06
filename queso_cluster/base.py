@@ -1,44 +1,138 @@
 import numpy as np
+from numba_progress import ProgressBar
+import functools
+
 
 from .addon.logg import loggTimer
 from .atoms import base as baseAtom
+from .atoms import aux as auxAtom
+from .atoms import error as errAtom
+from .atoms import mask as maskAtom
 from .runners import base as baseRun
-from numba_progress import ProgressBar
 
+
+class clusterBase:
+	"""
+	Parent class to :class:`~queso_cluster.ti.timeIndependent` and :class:`~queso_cluster.td.timeDependent`
+
+	Parameters
+	----------
+	config : :class:`~queso_cluster.loaders.event.eventInput`
+		object containing yaml configuration
+	catalogBase : str
+		base string for catalog name
+	instrumentObj : :class:`~queso_cluster.loaders.visp.visp` :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
+		A `loader` object for specific instruments
+	
+	Attributes
+	----------
+	ii, jj : int, int
+		1D array containing the index for the beginning and end of the spectral window used for clustering
+	lineCenter : int
+		The index for a center position in the window. This may coinside with the line center of the spectrum
+	continuum : int
+		The index of the continuum for the spectrum. This may be used for normalization
+	waveFit : ndarray
+		If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms
+	"""
+	def __init__(self, config, catalogName, instrumentObj):
+		self.config 		= config 
+		self.catalogBase 	= catalogName
+		self.instrumentObj 	= instrumentObj
+
+		self.dirid = ''.join(self.config.date.split('-'))
+
+		spectralConfig 			= self.config.srcLst.lines[0]
+		self.ii, self.jj 		= spectralConfig['window']
+		self.lineCenter 		= spectralConfig['center']
+		self.continuum 			= self.config.srcLst.continuum
+
+		if hasattr(self.config.srcLst, "waveFitFunc"):
+			self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
+
+	def __getattr__(self, name):
+		parentLst = [self.config, self.instrumentObj]
+		for p in parentLst:
+			if hasattr(p, name):
+				return getattr(p, name)
+			else:
+				continue
+		raise AttributeError("No parents have object with attribute '%s'" % name)
+
+
+class interface:
+
+	def __init__(self, config, instrument, framework):
+		self.flavor = config.flavor
+
+		self.config = config
+		self.framework = framework(self.config, self.flavor, instrument)
+	
+	def run(self, prepConfig):
+		if self.config.runners.overwrite:
+			self.framework.prepSquare = baseRun.runPrep(self.framework.dataSquare, **prepConfig)
+		
+			self.framework.maskLine = np.ones(self.framework.prepSquare.shape[0]).astype(bool)
+			if 'bbox' in list(self.config.runners.config.keys()):
+				self.framework.maskLine = maskAtom.maskCoordinate(self.config.runners.config['bbox'], 
+													(self.framework.timeFrames.size, 
+			  											self.framework.dimInfo['rasterSize'], 
+														self.framework.dimInfo['alongSlitSize']))
+			
+			labelLine, scoreTuple,  = self.framework.cluster(kLst=self.config.clusterConfig['optimized'])
+			labelSquare = labelLine.reshape((self.framework.timeFrames.size, self.framework.dimInfo['rasterSize'], 
+										self.framework.dimInfo['alongSlitSize']))
+			return(labelSquare)
+		else:
+			#returnself.load()
+			raise errAtom.LoadError()
+	
+	def write(self, labelSquare):
+		np.savez("./{}.npz".format(), 
+		   			labelSquare=labelSquare, 
+		   			maskLine=self.framework.maskLine, 
+					prepSquare=self.framework.prepSquare)
+
+	def load(self):
+		loading = np.load("./{}.npz".format(self.flavor))
+		print(loading)
+		labelSquare 				= loading['labelSquare']
+		self.framework.maskLine 	= loading['maskLine']
+		self.framework.prepSquare 	= loading['prepSquare']
+		loading.close()
+		return(self.framework, labelSquare)
+	
 @loggTimer
-def mainIntrinsic(config, prepSquare, intrinsicSkip=False):
+def mainIntrinsic(config, prepSquare):
 	intrinsicLine = np.zeros(prepSquare.shape[0])
-	if not intrinsicSkip:
-		intrinsicConfig = config.clusterConfig['intrinsic']
-		for i in range(len(intrinsicConfig)):
-			key =  intrinsicConfig[i]['label']
-			if key == 'continuum':
-				indxs = config.srcLst.continuum
-			else:
-				indxs = config.srcLst.lines[0][key]
-			if type(indxs) == list:
-				iframe = prepSquare[:, indxs[0]:indxs[1]].mean(axis=-1)#.astype(np.float64).compute()
-			else:
-				iframe = prepSquare[:, indxs]#.astype(np.float64).compute()
-			if 'layerConfig' in list(intrinsicConfig[i].keys()):
-				if 'bins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-					bins = intrinsicConfig[i]['layerConfig']['bins']
-					intrinsicLine_tmp 	= baseRun.runIntrinsic(len(np.diff(bins)), iframe, edgeOverride=np.array(bins).astype(float))
+	intrinsicConfig = config.clusterConfig['intrinsic']
+	for i in range(len(intrinsicConfig)):
+		key =  intrinsicConfig[i]['label']
+		if key == 'continuum':
+			indxs = config.srcLst.continuum
+		else:
+			indxs = config.srcLst.lines[0][key]
+		if type(indxs) == list:
+			iframe = prepSquare[:, indxs[0]:indxs[1]].mean(axis=-1)#.astype(np.float64).compute()
+		else:
+			iframe = prepSquare[:, indxs]#.astype(np.float64).compute()
+		if 'layerConfig' in list(intrinsicConfig[i].keys()):
+			if 'bins' in list(intrinsicConfig[i]['layerConfig'].keys()):
+				bins = intrinsicConfig[i]['layerConfig']['bins']
+				intrinsicLine_tmp 	= baseRun.runIntrinsic(len(np.diff(bins)), iframe, edgeOverride=np.array(bins).astype(float))
 
-				if 'nbins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-					nbins = intrinsicConfig[i]['layerConfig']['nbins']
-					intrinsicLine_tmp 	= baseRun.runIntrinsic(nbins, iframe)
+			if 'nbins' in list(intrinsicConfig[i]['layerConfig'].keys()):
+				nbins = intrinsicConfig[i]['layerConfig']['nbins']
+				intrinsicLine_tmp 	= baseRun.runIntrinsic(nbins, iframe)
 
-			else:
-				intrinsicLine_tmp 	= baseRun.runIntrinsic(1, iframe)
-			intrinsicLine += intrinsicLine_tmp * 10**i
-		s0_Lst = np.unique(intrinsicLine)
-		for i in range(len(s0_Lst)):
-			indx = np.where(intrinsicLine == s0_Lst[i])[0]
-			intrinsicLine[indx.astype(int)] = i+1
-	else:
-		intrinsicLine += 1
-	#print(np.unique(intrinsicLine))
+		else:
+			intrinsicLine_tmp 	= baseRun.runIntrinsic(1, iframe)
+		intrinsicLine += intrinsicLine_tmp * 10**i
+	s0_Lst = np.unique(intrinsicLine)
+	for i in range(len(s0_Lst)):
+		indx = np.where(intrinsicLine == s0_Lst[i])[0]
+		intrinsicLine[indx.astype(int)] = i+1
+	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
 	return(intrinsicLine)
 
 

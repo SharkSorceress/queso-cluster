@@ -1,0 +1,488 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>queso-cluster Tutorial &mdash; QuESO Documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=b6fd5f62" />
+
+  
+    <link rel="shortcut icon" href="_static/iconTeal_small.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=87801401"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api-reference.html" />
+    <link rel="prev" title="Introduction to k-means clustering of spectra" href="intro-clustering.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/iconTeal_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#i-a-brief-introduction">I. A brief introduction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-getting-started">A. Getting started</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#b-instrument-loader-objects">B. Instrument Loader Objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#ii-time-independent-clustering">II. Time-independent clustering</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#iii-time-dependent-clustering">III. Time-dependent clustering</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">Project Contributors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">QuESO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="queso-cluster-tutorial">
+<h1><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial<a class="headerlink" href="#queso-cluster-tutorial" title="Link to this heading"></a></h1>
+<p><strong>This is a work in progress!!!</strong></p>
+<section id="i-a-brief-introduction">
+<h2>I. A brief introduction<a class="headerlink" href="#i-a-brief-introduction" title="Link to this heading"></a></h2>
+<p>This package is still under active development!! I am working on it.</p>
+<p>For package installation:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## For Juypter</span>
+<span class="o">%</span><span class="k">pip</span> install queso-cluster
+
+<span class="c1">## For pip</span>
+<span class="c1"># pip3 install /disk/data/sriley/queso-cluster</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Yellow">WARNING: Ignoring invalid distribution ~ueso-cluster (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages)</span>
+<span class=" -Color -Color-Yellow">WARNING: Ignoring invalid distribution ~ueso-cluster (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages)</span>
+
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Yellow">WARNING: Ignoring invalid distribution ~ueso-cluster (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages)</span>
+Requirement already satisfied: queso-cluster in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (0.0.2)
+Requirement already satisfied: numpy&gt;=1.25 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.26.0)
+Requirement already satisfied: dkist in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.16.0)
+Requirement already satisfied: scipy in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.15.2)
+Requirement already satisfied: numba in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (0.65.1)
+Requirement already satisfied: astropy in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (7.0.1)
+Requirement already satisfied: numba_progress in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.1.3)
+Requirement already satisfied: dask in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (2025.3.0)
+Requirement already satisfied: pyyaml in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (6.0.2)
+Requirement already satisfied: tol-colors in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (2.2.0)
+Requirement already satisfied: pint in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (0.25.3)
+Requirement already satisfied: pyerfa&gt;=2.0.1.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (2.0.1.5)
+Requirement already satisfied: astropy-iers-data&gt;=0.2025.1.31.12.41.4 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (0.2025.4.7.0.35.30)
+Requirement already satisfied: packaging&gt;=22.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (24.2)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: click&gt;=8.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (8.1.8)
+Requirement already satisfied: cloudpickle&gt;=3.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (3.1.1)
+Requirement already satisfied: fsspec&gt;=2021.09.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (2025.3.2)
+Requirement already satisfied: partd&gt;=1.4.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (1.4.2)
+Requirement already satisfied: toolz&gt;=0.10.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (1.0.0)
+Requirement already satisfied: importlib_metadata&gt;=4.13.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (8.6.1)
+Requirement already satisfied: zipp&gt;=3.20 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from importlib_metadata&gt;=4.13.0-&gt;dask-&gt;queso-cluster) (3.21.0)
+Requirement already satisfied: locket in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from partd&gt;=1.4.0-&gt;dask-&gt;queso-cluster) (1.0.0)
+Requirement already satisfied: aiohttp&gt;=3.9 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (3.11.16)
+Requirement already satisfied: asdf&gt;=3.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (4.1.0)
+Requirement already satisfied: asdf-astropy&gt;=0.5.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.7.1)
+Requirement already satisfied: asdf-coordinates-schemas&gt;=0.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.3.0)
+Requirement already satisfied: asdf-standard&gt;=1.1.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (1.1.1)
+Requirement already satisfied: asdf-transform-schemas&gt;=0.6.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.6.0)
+Requirement already satisfied: asdf-wcs-schemas&gt;=0.4.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.4.0)
+Requirement already satisfied: globus-sdk&gt;=3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (3.54.0)
+Requirement already satisfied: gwcs&gt;=0.24.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.24.0)
+Requirement already satisfied: matplotlib&gt;=3.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (3.10.1)
+Requirement already satisfied: ndcube&gt;=2.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (2.3.1)
+Requirement already satisfied: parfive&gt;=2.2.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from parfive[ftp]&gt;=2.2.0-&gt;dkist-&gt;queso-cluster) (2.2.0)
+Requirement already satisfied: platformdirs&gt;=3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (4.3.7)
+Requirement already satisfied: sunpy&gt;=5.0.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (6.1.1)
+Requirement already satisfied: tqdm&gt;=4.65 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (4.67.1)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: aiohappyeyeballs&gt;=2.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (2.6.1)
+Requirement already satisfied: aiosignal&gt;=1.1.2 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (1.3.2)
+Requirement already satisfied: attrs&gt;=17.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (25.3.0)
+Requirement already satisfied: frozenlist&gt;=1.1.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (1.5.0)
+Requirement already satisfied: multidict&lt;7.0,&gt;=4.5 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (6.3.2)
+Requirement already satisfied: propcache&gt;=0.2.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (0.3.1)
+Requirement already satisfied: yarl&lt;2.0,&gt;=1.17.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (1.19.0)
+Requirement already satisfied: idna&gt;=2.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from yarl&lt;2.0,&gt;=1.17.0-&gt;aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (3.10)
+Requirement already satisfied: jmespath&gt;=0.6.2 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from asdf&gt;=3.3.0-&gt;dkist-&gt;queso-cluster) (1.0.1)
+Requirement already satisfied: semantic_version&gt;=2.8 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from asdf&gt;=3.3.0-&gt;dkist-&gt;queso-cluster) (2.10.0)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: requests&lt;3.0.0,&gt;=2.19.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.32.3)
+Requirement already satisfied: pyjwt&lt;3.0.0,&gt;=2.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from pyjwt[crypto]&lt;3.0.0,&gt;=2.0.0-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.10.1)
+Requirement already satisfied: cryptography!=3.4.0,&gt;=3.3.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (44.0.2)
+Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from requests&lt;3.0.0,&gt;=2.19.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (3.4.1)
+Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from requests&lt;3.0.0,&gt;=2.19.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.3.0)
+Requirement already satisfied: certifi&gt;=2017.4.17 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from requests&lt;3.0.0,&gt;=2.19.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2025.1.31)
+Requirement already satisfied: cffi&gt;=1.12 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from cryptography!=3.4.0,&gt;=3.3.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (1.17.1)
+Requirement already satisfied: pycparser in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from cffi&gt;=1.12-&gt;cryptography!=3.4.0,&gt;=3.3.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.22)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: contourpy&gt;=1.0.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.3.1)
+Requirement already satisfied: cycler&gt;=0.10 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (0.12.1)
+Requirement already satisfied: fonttools&gt;=4.22.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (4.57.0)
+Requirement already satisfied: kiwisolver&gt;=1.3.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.4.8)
+Requirement already satisfied: pillow&gt;=8 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (11.1.0)
+Requirement already satisfied: pyparsing&gt;=2.3.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (3.2.3)
+Requirement already satisfied: python-dateutil&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (2.9.0.post0)
+Requirement already satisfied: mpl_animators&gt;=1.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (1.2.1)
+Requirement already satisfied: reproject&gt;=0.7.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (0.14.1)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: aioftp&gt;=0.17.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from parfive[ftp]&gt;=2.2.0-&gt;dkist-&gt;queso-cluster) (0.24.1)
+Requirement already satisfied: six&gt;=1.5 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.17.0)
+Requirement already satisfied: astropy-healpix&gt;=1.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (1.1.2)
+Requirement already satisfied: zarr in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (3.0.6)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: beautifulsoup4&gt;=4.11.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (4.13.3)
+Requirement already satisfied: drms&gt;=0.7.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (0.9.0)
+Requirement already satisfied: zeep&gt;=4.1.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (4.3.1)
+Requirement already satisfied: soupsieve&gt;1.2 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from beautifulsoup4&gt;=4.11.0-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (2.6)
+Requirement already satisfied: typing-extensions&gt;=4.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from beautifulsoup4&gt;=4.11.0-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (4.13.1)
+Requirement already satisfied: pandas&gt;=1.5.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from drms&gt;=0.7.1-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (2.2.3)
+Requirement already satisfied: pytz&gt;=2020.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from pandas&gt;=1.5.1-&gt;drms&gt;=0.7.1-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (2025.2)
+Requirement already satisfied: tzdata&gt;=2022.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from pandas&gt;=1.5.1-&gt;drms&gt;=0.7.1-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (2025.2)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: isodate&gt;=0.5.4 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from zeep&gt;=4.1.0-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (0.7.2)
+Requirement already satisfied: lxml&gt;=4.6.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from zeep&gt;=4.1.0-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (5.3.2)
+Requirement already satisfied: requests-toolbelt&gt;=0.7.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from zeep&gt;=4.1.0-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (1.0.0)
+Requirement already satisfied: requests-file&gt;=1.5.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from zeep&gt;=4.1.0-&gt;sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (2.1.0)
+Requirement already satisfied: llvmlite&lt;0.48,&gt;=0.47.0dev0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from numba-&gt;queso-cluster) (0.47.0)
+Requirement already satisfied: flexcache&gt;=0.3 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from pint-&gt;queso-cluster) (0.3)
+Requirement already satisfied: flexparser&gt;=0.4 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from pint-&gt;queso-cluster) (0.4)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: donfig&gt;=0.8 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from zarr-&gt;reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (0.8.1.post1)
+Requirement already satisfied: numcodecs&gt;=0.14 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from numcodecs[crc32c]&gt;=0.14-&gt;zarr-&gt;reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (0.16.0)
+Requirement already satisfied: crc32c&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from numcodecs[crc32c]&gt;=0.14-&gt;zarr-&gt;reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (2.7.1)
+<span class=" -Color -Color-Yellow">WARNING: Ignoring invalid distribution ~ueso-cluster (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages)</span>
+
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Yellow">WARNING: Ignoring invalid distribution ~ueso-cluster (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages)</span>
+
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Note: you may need to restart the kernel to use updated packages.
+</pre></div>
+</div>
+</div>
+</div>
+<p>There is one additional picece that is required for this version of QuESO: the <code class="docutils literal notranslate"><span class="pre">eventManager.yml</span></code> file. This file will contain the user defined configuration for not just the clustering but also extra bits of data calibration. An entry looks like</p>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">event</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">date</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;2023-05-03&#39;</span>
+<span class="w">    </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Strong</span><span class="nv"> </span><span class="s">flare</span><span class="nv"> </span><span class="s">signatures&#39;</span>
+<span class="w">    </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;timeDependent&#39;</span>
+<span class="w">        </span><span class="nt">approach</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;evo&#39;</span>
+<span class="w">        </span><span class="nt">overwrite</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">        </span><span class="nt">alignment_dir</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;aligned_x5bin&quot;</span>
+<span class="w">        </span><span class="nt">config</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">frames</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">3</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">],</span>
+<span class="nt">              keepI0</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">3</span><span class="p p-Indicator">],</span>
+<span class="nt">              bbox</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">125</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1188</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1629</span><span class="p p-Indicator">],</span>
+<span class="nt">              primary</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">src</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;AEVEG-SPD&#39;</span><span class="p p-Indicator">,</span><span class="nt"> S1</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">1</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">4</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">1</span><span class="p p-Indicator">],</span><span class="nt"> lines</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;AEVEG-SPD&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&#39;main&#39;</span><span class="p p-Indicator">]}},</span><span class="w"> </span>
+<span class="w">        </span><span class="p p-Indicator">}</span>
+<span class="w">    </span><span class="nt">src</span><span class="p">:</span><span class="w"> </span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;instrument&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;ViSP&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;data&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;AEVEG&#39;</span><span class="p p-Indicator">,</span><span class="nt"> mod</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SPD&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">theme</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;#527A00&#39;</span>
+<span class="w">        </span><span class="nt">residual</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">False</span>
+<span class="w">        </span><span class="nt">clustering</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">S0</span><span class="p">:</span><span class="w"> </span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;window&#39;</span><span class="p p-Indicator">,</span><span class="nt"> layerConfig</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;bins&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.52</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0.60</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">2</span><span class="p p-Indicator">]}}</span>
+<span class="w">          </span><span class="nt">S1</span><span class="p">:</span><span class="w"> </span>
+<span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">layerGroups</span><span class="p">:</span><span class="w"> </span><span class="nv">5</span><span class="p p-Indicator">,</span><span class="nt"> layerConfig</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;converge&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="nv">1e-6</span><span class="p p-Indicator">,</span><span class="nt"> ss_thresh</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">0</span><span class="p p-Indicator">]}}</span>
+<span class="w">        </span><span class="nt">axis_fit</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">coeff</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-2.81754321e-8  1.91621915e-3  8.53133874e+2</span><span class="p p-Indicator">],</span><span class="nt"> unit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;angstrom&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">lines</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;main&#39;</span><span class="p p-Indicator">,</span><span class="nt"> window</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">462</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">568</span><span class="p p-Indicator">],</span><span class="nt"> continuum</span><span class="p">:</span><span class="w"> </span><span class="nv">26</span><span class="p p-Indicator">,</span><span class="nt"> core</span><span class="p">:</span><span class="w"> </span><span class="nv">515</span><span class="p p-Indicator">}</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;instrument&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;ViSP&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;data&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;BZNNG&#39;</span><span class="p p-Indicator">,</span><span class="nt"> mod</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;SPD&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">theme</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="s">&#39;D1&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;#0000FF&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;D2&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;#FF0000&#39;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&#39;Ni&#39;</span><span class="p p-Indicator">:</span><span class="w"> </span><span class="s">&#39;#FF0000&#39;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">residual</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">True</span>
+<span class="w">        </span><span class="nt">axis_fit</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">coeff</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">-1.60283877e-8  1.42050858e-3  5.88875195e+2</span><span class="p p-Indicator">],</span><span class="nt"> unit</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;angstrom&quot;</span><span class="p p-Indicator">}</span>
+<span class="w">        </span><span class="nt">lines</span><span class="p">:</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;D2&#39;</span><span class="p p-Indicator">,</span><span class="nt"> continuum</span><span class="p">:</span><span class="w"> </span><span class="nv">375</span><span class="p p-Indicator">,</span><span class="nt"> core</span><span class="p">:</span><span class="w"> </span><span class="nv">86</span><span class="p p-Indicator">,</span><span class="nt">  window</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">51</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">121</span><span class="p p-Indicator">]}</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;D1&#39;</span><span class="p p-Indicator">,</span><span class="nt"> continuum</span><span class="p">:</span><span class="w"> </span><span class="nv">375</span><span class="p p-Indicator">,</span><span class="nt"> core</span><span class="p">:</span><span class="w"> </span><span class="nv">509</span><span class="p p-Indicator">,</span><span class="nt"> window</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">473</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">545</span><span class="p p-Indicator">]}</span>
+<span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Ni&#39;</span><span class="p p-Indicator">,</span><span class="nt"> continuum</span><span class="p">:</span><span class="w"> </span><span class="nv">375</span><span class="p p-Indicator">,</span><span class="nt"> core</span><span class="p">:</span><span class="w"> </span><span class="nv">291</span><span class="p p-Indicator">,</span><span class="nt"> window</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">327</span><span class="p p-Indicator">]}</span>
+</pre></div>
+</div>
+<section id="a-getting-started">
+<h3>A. Getting started<a class="headerlink" href="#a-getting-started" title="Link to this heading"></a></h3>
+<p>To get started, we are going to import the package (note the difference of the <strong>dash</strong> and <strong>underscore</strong> in the package name). And load in some file paths.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">queso_cluster</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">qc</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
+
+<span class="c1">#os.environ[&quot;QUESO-DAT&quot;] = &#39;/disk/data/DKIST/20230503&#39;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>One last note, the figure functions output a <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> figure object.</p>
+</section>
+</section>
+<section id="b-instrument-loader-objects">
+<h2>B. Instrument Loader Objects<a class="headerlink" href="#b-instrument-loader-objects" title="Link to this heading"></a></h2>
+<p>To handle the specific physical attributes of the data, we have developed a framework to import only the essentials. Currently, we only have a built-in object for ViSP. The instrument object will hold the dataset compressed into a <code class="docutils literal notranslate"><span class="pre">dask</span></code> array for lazy loading to minimize memory usage during some of the calculations.</p>
+</section>
+<section id="ii-time-independent-clustering">
+<h2>II. Time-independent clustering<a class="headerlink" href="#ii-time-independent-clustering" title="Link to this heading"></a></h2>
+<p>This is just fancy words for the standard approach to cluster the evolution of spectra. As it suggests, this clustering approach doesn’t use any temporal information during the clustering. See <a class="reference internal" href="#"><span class="xref myst">Udeas et al., 2026</span></a> for an example.</p>
+<p>The basic principle of using this approach is to cluster the entire dataset then afterwards reintroduce the temporal information to get the sequence of spectral profiles associated with the feature. This method does work, but there are some considerations that need to be taken.</p>
+<ol class="arabic simple">
+<li><p><strong>Feature density</strong> or the number of resolved clustered within the coordinate space. In clustering, a high feature density is actually bad. The more clusters you need the more the boundaries of the clusters is blurred. While there is not a specific threshold for feature density, a smaller “global” feature density is preferred.</p></li>
+<li><p>**</p></li>
+</ol>
+<p>This short tutorial will go through the steps to use the <code class="docutils literal notranslate"><span class="pre">ti</span></code> sub-module with a time series spectral dataset.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">ti</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.runners</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">runBase</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span> <span class="k">as</span> <span class="n">normAtom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.visp</span><span class="w"> </span><span class="kn">import</span> <span class="n">visp</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+	<span class="c1">#&gt; Note: This creates the instrument object for the ViSP observations</span>
+	<span class="n">ViSPobj</span> <span class="o">=</span> <span class="n">visp</span><span class="p">(</span><span class="s2">&quot;/disk/data/DKIST/20250503&quot;</span><span class="p">)</span>
+	<span class="n">ViSPobj</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+	<span class="c1">#&gt; Note: Here we are going to take only the first four frames and flatten them. The clustering functions only accept 2D arrays.</span>
+	<span class="n">ViSPobj</span><span class="o">.</span><span class="n">dataSquare</span> <span class="o">=</span> <span class="n">ViSPobj</span><span class="p">[:</span><span class="mi">4</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">((</span><span class="n">vispObj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="mi">4</span><span class="p">,</span> <span class="n">ViSPobj</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+	<span class="c1">#&gt; Note: This function imports everything from the instrument object and has the specific clustering functions that we will use for the time independent mode.</span>
+	<span class="n">tiObj</span> <span class="o">=</span> <span class="n">ti</span><span class="o">.</span><span class="n">timeIndependent</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">ViSPobj</span><span class="p">)</span>
+
+	<span class="c1">#&gt; Note: This preps the data. Specifically we want to normalize by the continuum intensity</span>
+	<span class="n">prepSquare</span> <span class="o">=</span> <span class="n">runBase</span><span class="o">.</span><span class="n">runPrep</span><span class="p">(</span><span class="n">tiObj</span><span class="o">.</span><span class="n">dataSquare</span><span class="p">,</span>
+									<span class="n">norm</span><span class="o">=</span><span class="n">normAtom</span><span class="o">.</span><span class="n">normContinuum</span><span class="p">,</span> 
+									<span class="n">continuumIndx</span><span class="o">=</span><span class="n">tiObj</span><span class="o">.</span><span class="n">continuum</span><span class="p">)</span>
+
+	<span class="c1">#&gt; Note: We are most interested in the flaring pixels. These are very bright compared with the surrounding area, </span>
+	<span class="n">maskLine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">prepSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span>
+	<span class="n">keepI0</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">if</span> <span class="s2">&quot;keepI0&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+		<span class="n">keepI0</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;keepI0&#39;</span><span class="p">]</span>
+	
+	<span class="c1">#&gt; Note: This is where the magic happens. This function will handle calls to the base clustering functions which handle the calculations.</span>
+	<span class="c1">#&gt; Note: The output in a 1D flattened array containing the labels for each pixel and a data object which stores the quality metrics of the cluster.</span>
+	<span class="n">labelLine</span><span class="p">,</span> <span class="n">scoreTuple</span><span class="p">,</span>  <span class="o">=</span> <span class="n">tiObj</span><span class="o">.</span><span class="n">cluster</span><span class="p">(</span><span class="n">prepSquare</span><span class="p">,</span> <span class="n">maskLine</span><span class="p">,</span> 
+											<span class="n">keepI0</span><span class="o">=</span><span class="n">keepI0</span><span class="p">,</span> <span class="n">kLst</span><span class="o">=</span><span class="n">config</span><span class="o">.</span><span class="n">srcLst</span><span class="o">.</span><span class="n">clusterConfig</span><span class="p">[</span><span class="s1">&#39;optimized&#39;</span><span class="p">])</span>
+
+	<span class="k">return</span><span class="p">(</span><span class="n">labelLine</span><span class="p">,</span> <span class="n">scoreTuple</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/tqdm/auto.py:21: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.event</span><span class="w"> </span><span class="kn">import</span> <span class="n">eventInput</span>
+<span class="n">eventManager</span> <span class="o">=</span> <span class="n">eventInput</span><span class="p">(</span><span class="s2">&quot;./eventManager.yml&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="n">epochDev</span><span class="p">,</span> <span class="n">labelLine</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">eventManager</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">FileNotFoundError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.event</span><span class="w"> </span><span class="kn">import</span> <span class="n">eventInput</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">eventManager</span> <span class="o">=</span> <span class="n">eventInput</span><span class="p">(</span><span class="s2">&quot;./eventManager.yml&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> 
+<span class="g g-Whitespace">      </span><span class="mi">4</span> 
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">epochDev</span><span class="p">,</span> <span class="n">labelLine</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">eventManager</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+
+<span class="nn">File /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py:136,</span> in <span class="ni">eventInput.__init__</span><span class="nt">(self, fname, eventIndx, runIndx)</span>
+<span class="g g-Whitespace">    </span><span class="mi">134</span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">eventIndx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">runIndx</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="g g-Whitespace">    </span><span class="mi">135</span> 	<span class="bp">self</span><span class="o">.</span><span class="n">configList</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="ne">--&gt; </span><span class="mi">136</span> 	<span class="n">configLst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
+<span class="g g-Whitespace">    </span><span class="mi">137</span> 	<span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">eventRunner</span><span class="p">(</span><span class="n">configLst</span><span class="p">[</span><span class="n">eventIndx</span><span class="p">],</span> <span class="n">runIndx</span><span class="p">)</span>
+
+<span class="nn">File /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py:141,</span> in <span class="ni">eventInput._load</span><span class="nt">(self, fname)</span>
+<span class="g g-Whitespace">    </span><span class="mi">140</span> <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
+<span class="ne">--&gt; </span><span class="mi">141</span> 	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">configFile</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">142</span> 		<span class="k">try</span><span class="p">:</span>
+<span class="g g-Whitespace">    </span><span class="mi">143</span> 			<span class="n">configInput</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
+
+<span class="ne">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;./eventManager.yml&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="iii-time-dependent-clustering">
+<h2>III. Time-dependent clustering<a class="headerlink" href="#iii-time-dependent-clustering" title="Link to this heading"></a></h2>
+<p>Here is where we enter more experimental waters. The main objective is to try and use the time information inside the algorithm where each cluster is a sequence of spectral profiles. One example of this was <a class="reference external" href="https://sriley.dev/">presented at the Solar Physics Division conference in 2025</a>, where we clustered each frame independently then glued the results together at the end. The benefit is a smaller number of clusters is needed per time step due to a smaller diversity of spectral features relative to the entire set of frames.</p>
+<p>This section of the tutorial will discuss the <code class="docutils literal notranslate"><span class="pre">td</span></code> sub-module with the same time series spectral dataset as before.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster</span><span class="w"> </span><span class="kn">import</span> <span class="n">td</span>
+<span class="c1"># from queso_cluster.runners import base as runBase</span>
+<span class="c1"># from queso_cluster.atoms import norm as normAtom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.visp</span><span class="w"> </span><span class="kn">import</span> <span class="n">visp</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">config</span><span class="p">):</span>
+	<span class="c1">#&gt; detail: </span>
+	<span class="c1">#&gt; param type config:</span>
+	<span class="c1">#&gt; return (type): </span>
+	<span class="c1">#&gt; test-method:</span>
+
+	<span class="c1"># srcUse = config.runners.config[&#39;primary&#39;][&#39;src&#39;]</span>
+	<span class="c1"># srcConfigPrimary 	= config.srcLst[config.srcLabelLst.index(srcUse)]</span>
+	<span class="c1"># config.srcLst = srcConfigPrimary</span>
+
+	<span class="n">ViSPobj</span> <span class="o">=</span> <span class="n">visp</span><span class="p">(</span><span class="s1">&#39;/disk/data/DKIST/20230503/AEVEG/&#39;</span><span class="p">)</span>
+	<span class="n">ViSPobj</span><span class="o">.</span><span class="n">load</span><span class="p">()</span>
+
+	<span class="n">evoDev</span> <span class="o">=</span> <span class="n">td</span><span class="o">.</span><span class="n">timeDependent</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">label</span><span class="p">,</span> <span class="n">ViSPobj</span><span class="p">)</span>
+
+	<span class="c1">#&gt; Note: Creates a mask for data within a specific coordinate range</span>
+	<span class="n">bboxMask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">evoDev</span><span class="o">.</span><span class="n">rasterSize</span><span class="p">,</span> <span class="n">evoDev</span><span class="o">.</span><span class="n">alongSlitSize</span><span class="p">))</span>
+	<span class="n">bEx</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;bbox&#39;</span><span class="p">]</span>
+	<span class="n">bboxMask</span><span class="p">[</span><span class="n">bEx</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">bEx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">bEx</span><span class="p">[</span><span class="mi">2</span><span class="p">]:</span><span class="n">bEx</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">1</span>
+	<span class="n">bboxMask</span> <span class="o">=</span> <span class="n">bboxMask</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">bboxMask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="n">bboxMask</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+	<span class="c1">#&gt; Note: Here I know that there is a bright feature at time step 2. Then, I want four frames centered on that peak -2, -1, +1, +2</span>
+	<span class="n">timeFrames</span><span class="p">,</span> <span class="n">tLst</span> <span class="o">=</span> <span class="n">evoDev</span><span class="o">.</span><span class="n">timeFrames</span><span class="p">(</span><span class="n">peakTime</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">nframes</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+	
+	<span class="c1">#&gt; Note: As before, we are generally more interested in the brighter features so we will opt to mask out the lower intrinsic bins</span>
+	<span class="c1">#&gt; Note: In this case, we will use the locations of bright pixels in the peak frame to focus the clustering.</span>
+	<span class="n">keepI0</span> <span class="o">=</span> <span class="kc">None</span>
+	<span class="k">if</span> <span class="s2">&quot;keepI0&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+		<span class="n">keepI0</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;keepI0&#39;</span><span class="p">]</span>
+	<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">base</span><span class="o">.</span><span class="n">_mainIntrinsic</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">srcLst</span><span class="p">,</span> 
+										<span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">timeFrames</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mf">100.</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">intrinsicSkip</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+	<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">auxAtom</span><span class="o">.</span><span class="n">pick_jth_label</span><span class="p">(</span><span class="n">intrinsicLine</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+
+	<span class="c1">#&gt; Note: This combines both the coordinate mask and the intrinsic bin mask</span>
+	<span class="n">maskLine</span> <span class="o">=</span> <span class="n">bboxMask</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">bool</span><span class="p">)</span><span class="c1">#np.ones(prepSquare.shape[0]).astype(bool)</span>
+	<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">keepI0</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+		<span class="n">i0Mask</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">timeFrames</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
+		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">keepI0</span><span class="p">:</span>
+			<span class="n">i0Mask</span><span class="p">[(</span><span class="n">intrinsicLine</span> <span class="o">==</span> <span class="n">i</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="n">maskLine</span> <span class="o">*=</span> <span class="n">i0Mask</span>
+
+	<span class="c1">#&gt; Note: This is our list of cluster groups for each time step</span>
+	<span class="n">klst</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;primary&#39;</span><span class="p">][</span><span class="s1">&#39;S1&#39;</span><span class="p">]</span>
+	<span class="c1">#&gt; Note: This is a specific fucntion which prepares the whole time sequence </span>
+	<span class="n">prepCube</span> <span class="o">=</span> <span class="n">evoDev</span><span class="o">.</span><span class="n">prepSequence</span><span class="p">(</span><span class="n">timeFrames</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">normAtom</span><span class="o">.</span><span class="n">normContinuum</span><span class="p">,</span> <span class="n">continuumIndx</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">continuum</span><span class="p">)</span>
+	<span class="c1">#&gt; Note: Now the magic happens. Right now this will simply cluster each frame seperately then combine the labels to form a sequence. </span>
+	<span class="n">labelSquare</span> <span class="o">=</span> <span class="n">evoDev</span><span class="o">.</span><span class="n">clusterSequence</span><span class="p">(</span><span class="n">prepCube</span><span class="p">,</span> <span class="n">maskLine</span><span class="p">,</span> <span class="n">klst</span><span class="p">,</span> <span class="n">intrinsicLine</span><span class="o">=</span><span class="n">intrinsicLine</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">evoDev</span><span class="p">,</span> <span class="n">labelSquare</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.event</span><span class="w"> </span><span class="kn">import</span> <span class="n">eventInput</span>
+<span class="n">eventManager</span> <span class="o">=</span> <span class="n">eventInput</span><span class="p">(</span><span class="s2">&quot;./eventManager.yml&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+
+<span class="n">epochDev</span><span class="p">,</span> <span class="n">labelLine</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">eventManager</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="intro-clustering.html" class="btn btn-neutral float-left" title="Introduction to k-means clustering of spectra" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api-reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Sarah Riley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

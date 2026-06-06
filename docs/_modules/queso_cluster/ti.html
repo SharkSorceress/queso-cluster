@@ -1,0 +1,220 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>queso_cluster.ti &mdash; QuESO Documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/custom.css?v=b6fd5f62" />
+
+  
+    <link rel="shortcut icon" href="../../_static/iconTeal_small.png"/>
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=87801401"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html">
+            
+              <img src="../../_static/iconTeal_small.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../queso-tutorial.html"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api-reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contributors.html">Project Contributors</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">QuESO</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">queso_cluster.ti</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for queso_cluster.ti</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	:file:  queso_cluster/ti.py</span>
+<span class="sd">	:lang:  python</span>
+<span class="sd">	:synopsis: </span>
+<span class="sd">	:author: Sarah Riley &lt;academic@sriley.dev&gt;</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">baseMain</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">aux</span> <span class="k">as</span> <span class="n">auxAtom</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">.addon.logg</span><span class="w"> </span><span class="kn">import</span> <span class="n">loggTimer</span><span class="p">,</span> <span class="n">logg</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">.atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">mask</span> <span class="k">as</span> <span class="n">maskAtom</span>
+
+<div class="viewcode-block" id="timeIndependent">
+<a class="viewcode-back" href="../../api-reference.html#queso_cluster.ti.timeIndependent">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">timeIndependent</span><span class="p">:</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Time independent clustering framework</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	config : :class:`~queso_cluster.loaders.event.eventInput`</span>
+<span class="sd">		object containing yaml configuration</span>
+<span class="sd">	catalogBase : str</span>
+<span class="sd">		base string for catalog name</span>
+<span class="sd">	instrumentObj : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` </span>
+<span class="sd">		A `loader` object for specific instruments</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">catalogName</span><span class="p">,</span> <span class="n">instrumentObj</span><span class="p">):</span>
+		<span class="n">baseMain</span><span class="o">.</span><span class="n">clusterBase</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">catalogName</span><span class="p">,</span> <span class="n">instrumentObj</span><span class="p">)</span>
+
+	<span class="k">def</span><span class="w"> </span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">baseMain</span><span class="o">.</span><span class="n">clusterBase</span><span class="o">.</span><span class="fm">__getattr__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">))</span>
+
+
+	<span class="c1"># 	self.catalogBase = catalogName</span>
+	<span class="c1"># 	self.instrumentObj = instrumentObj</span>
+
+	<span class="c1"># 	self.config = config </span>
+	<span class="c1"># 	self.dirid = &#39;&#39;.join(config.date.split(&#39;-&#39;))</span>
+
+	<span class="c1"># 	spectralConfig 			= self.config.srcLst.lines[0]</span>
+	<span class="c1"># 	self.ii, self.jj 		= spectralConfig[&#39;window&#39;]</span>
+	<span class="c1"># 	self.lineCenter 		= spectralConfig[&#39;center&#39;]</span>
+	<span class="c1"># 	self.continuum 			= self.config.srcLst.continuum</span>
+
+	<span class="c1"># 	#self.prepSquare = None</span>
+
+	<span class="c1"># 	#self.timeFrames = np.arange(1)</span>
+
+	<span class="c1"># 	if hasattr(self.config.srcLst, &quot;waveFitFunc&quot;):</span>
+	<span class="c1"># 		print(self.dataSquare.shape[-1]+1)</span>
+	<span class="c1"># 		self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to(&#39;angstrom&#39;)</span>
+
+	<span class="c1"># 		print(self.waveFit[self.lineCenter])</span>
+
+	<span class="c1"># def __getattr__(self, name):</span>
+	<span class="c1"># 	parentLst = [self.config, self.instrumentObj]</span>
+	<span class="c1"># 	for p in parentLst:</span>
+	<span class="c1"># 		if hasattr(p, name):</span>
+	<span class="c1"># 			return getattr(p, name)</span>
+	<span class="c1"># 		else:</span>
+	<span class="c1"># 			continue</span>
+	<span class="c1"># 	raise AttributeError(&quot;No parents have object with attribute &#39;%s&#39;&quot; % name)</span>
+
+<div class="viewcode-block" id="timeIndependent.cluster">
+<a class="viewcode-back" href="../../api-reference.html#queso_cluster.ti.timeIndependent.cluster">[docs]</a>
+	<span class="nd">@loggTimer</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">cluster</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">intrinsicLine</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">kLst</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">		</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">		Primary clustering function</span>
+<span class="sd">		</span>
+<span class="sd">		&quot;&quot;&quot;</span>
+		
+		<span class="c1">#&gt; Start of Intrinsic Layer</span>
+		<span class="k">if</span> <span class="n">intrinsicLine</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+			<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">baseMain</span><span class="o">.</span><span class="n">mainIntrinsic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="p">,</span> 
+										   <span class="n">np</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dataSquare</span><span class="o">*</span><span class="mi">100</span><span class="p">)</span><span class="o">/</span><span class="mf">100.</span><span class="p">)</span>
+		
+		<span class="k">if</span> <span class="s2">&quot;keepI0&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			
+			<span class="bp">self</span><span class="o">.</span><span class="n">maskLine</span> <span class="o">*=</span> <span class="n">maskAtom</span><span class="o">.</span><span class="n">maskIntrinsic</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">config</span><span class="o">.</span><span class="n">runners</span><span class="o">.</span><span class="n">config</span><span class="p">[</span><span class="s1">&#39;keepI0&#39;</span><span class="p">],</span> 
+										   			<span class="bp">self</span><span class="o">.</span><span class="n">prepSquare</span><span class="p">,</span> <span class="n">intrinsicLine</span><span class="p">,</span>
+													<span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">timeFrames</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;alongSlitSize&#39;</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">timeFrames</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+
+		<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">intrinsicLine</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">maskLine</span><span class="p">]</span>
+		<span class="c1">#prepSquare = self.prepSquare[self.maskLine, :]</span>
+		<span class="c1">#&gt;&gt; End of Intrinsic Layer</span>
+
+		<span class="c1"># prepSquare_compute = np.zeros(self.prepSquare)</span>
+		<span class="c1"># prepSquare_compute[self.maskLine, self.ii:self.jj+1] = self.prepSquare[self.maskLine, self.ii:self.jj+1].compute()</span>
+		<span class="c1"># self.prepSquare = prepSquare_compute</span>
+		<span class="n">_ct_</span> <span class="o">=</span> <span class="n">logg</span><span class="p">(</span><span class="s2">&quot;start&quot;</span><span class="p">,</span> <span class="s2">&quot;compute Time&quot;</span><span class="p">)</span>
+		<span class="n">prepSquare</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">prepSquare</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">maskLine</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">ii</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">jj</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">compute</span><span class="p">()</span>
+		<span class="n">logg</span><span class="p">(</span><span class="s2">&quot;stop&quot;</span><span class="p">,</span> <span class="n">_log</span><span class="o">=</span><span class="n">_ct_</span><span class="p">)</span>
+
+		<span class="c1">#&gt; Start of Optimized Layer</span>
+		<span class="n">labelLine</span><span class="p">,</span> <span class="n">scoreTuple</span> <span class="o">=</span> <span class="n">baseMain</span><span class="o">.</span><span class="n">mainOptimization</span><span class="p">(</span><span class="n">prepSquare</span><span class="p">,</span> <span class="n">intrinsicLine</span><span class="p">,</span> <span class="n">kLst</span><span class="o">=</span><span class="n">kLst</span><span class="p">)</span>
+		<span class="c1">#&gt;&gt; End of Optimized Layer</span>
+
+		<span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">maskLine</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+			<span class="n">unmaskLabelLine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">maskLine</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+			<span class="n">unmaskLabelLine</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">maskLine</span><span class="p">]</span> <span class="o">=</span> <span class="n">labelLine</span>
+			<span class="k">return</span><span class="p">(</span><span class="n">unmaskLabelLine</span><span class="p">,</span> <span class="n">scoreTuple</span><span class="p">)</span>
+		
+		<span class="k">return</span><span class="p">(</span><span class="n">labelLine</span><span class="p">,</span> <span class="n">scoreTuple</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, Sarah Riley.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

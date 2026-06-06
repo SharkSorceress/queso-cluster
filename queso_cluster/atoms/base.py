@@ -1,26 +1,54 @@
-#> file:  ./queso-cluster/atoms/base
-#> lang:  python
-#> synopsis: 
-#> author: Sarah Olivia Riley  <academic@sriley.dev>
+"""
+	:file: queso_cluster/atoms/base.py
+	:lang:  python
+	:synopsis:
+	:author: Sarah Riley <academic@sriley.dev>
+"""
 import numpy as np
 import dask.array as da
 import numba as nb
 
+from . import error as errAtom
+
 def concatSpectra(dataSquareLst):
-	#> detail: 
-	#> param type dataSquareLst:
-	#> return (type): 
-	#> test-method:
+	"""
+	Function to concatenate several channels of data into one array for clustering
+
+	Parameters
+	----------
+	dataSquareLst : dask.array
+		dask arrays containing spectral data to be concatenated
+	
+	Returns
+	-------
+	dask.array
+		Concatenated spectral profiles
+
+	"""
 	return(da.concatenate(dataSquareLst))	
 
 @nb.njit()
 def numba_histogram(a, bins, lim):
-	#> detail: 
-	#> param type a:
-	#> param type bins:
-	#> param type lim:
-	#> return (type): 
-	#> test-method:
+	"""
+	Numba accelerated histogram function
+
+	Parameters
+	----------
+	a : int
+		detail
+	bins : int
+		the number of bins in the histogram
+	lim : ndarray
+		the top and bottom of the histogram		
+	
+	Returns
+	-------
+	hist : ndarray
+		the histogram
+	bin_edges : ndarray
+		1D array of the bin edges
+
+	"""
 	hist = np.zeros((bins,), dtype=np.intp)
 	bin_edges = get_bin_edges(bins, lim)
 
@@ -32,11 +60,22 @@ def numba_histogram(a, bins, lim):
 	return hist, bin_edges
 
 def rotateArray(image, turns):
-	#> detail: 
-	#> param type image:
-	#> param type turns:
-	#> return (type): 
-	#> test-method:
+	"""
+	Rotates an array
+
+	Parameters
+	----------
+	image : ndarray
+		2D array to be rotated
+	turns : int
+		Number of pi/2 turns to rotate
+	
+	Returns
+	-------
+	ndarray
+		Rotated array
+	
+	"""
 	
 	for i in range(turns):
 		image = np.array(list(zip(*image[::-1])))
@@ -84,8 +123,6 @@ def compute_bin(x, bin_edges):
 	else:
 		return bin
 
-
-# @numba.extending.overload(np.gradient)
 @nb.njit()
 def np_gradient(f):
 	#> detail: 
@@ -98,8 +135,6 @@ def np_gradient(f):
 	out[0] = f[1] - f[0]
 	out[-1] = f[-1] - f[-2]
 	return out
-
-#    return np_gradient_impl
 
 @nb.njit(cache=True)
 def minimize(data, decisions, size):
@@ -194,12 +229,25 @@ def curvature(y):
 
 @nb.njit()
 def startMax(data, k, decisions):
-	#> detail: 
-	#> param type data:
-	#> param type k:
-	#> param type decisions:
-	#> return (type): 
-	#> test-method:
+	"""
+	Heuristic k-means++. 
+	Rather than selecting from a distribution around the furtherest datapoint, this initialization simply selects the furtherest datapoint as the next representative
+
+	Parameters
+	----------
+	data : ndarray
+		data pool for finding the initial representative profiles
+	k : int
+		The number of clusters
+	decisions : ndarray
+		Array containing the initial, randomly selected representative profile and empty slots for remaining profiles
+	
+	Returns
+	-------
+	decisions : ndarray
+		Array containing a full set of representative profiles
+
+	"""
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
 		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
@@ -215,6 +263,24 @@ def startMax(data, k, decisions):
 
 @nb.njit(cache=True)
 def startPlusPlus(data, k, decisions):
+	"""
+	k-means++ initialization
+
+	Parameters
+	----------
+	data : ndarray
+		data pool for finding the initial representative profiles
+	k : int
+		The number of clusters
+	decisions : ndarray
+		Array containing the initial, randomly selected representative profile and empty slots for remaining profiles
+	
+	Returns
+	-------
+	decisions : ndarray
+		Array containing a full set of representative profiles
+
+	"""
 	#> detail: 
 	#> param type data:
 	#> param type k:
@@ -264,37 +330,58 @@ def _calcMoment(waveAxis, ii, jj, lineCore, dataCube, order, ref, counter=0):
 	
 	return(momentN)
 
-@nb.njit()
-def _calcFeatureDensity(data, converge, zindx, func1):
-	#> detail: 
-	#> param type data:
-	#> param type converge:
-	#> param type zindx:
-	#> param type func1:
-	#> return (type): 
-	#> test-method:
-	featureDensityArr = np.zeros(50)
-	for a in range(featureDensityArr.shape[0]):
-		scores1 = np.zeros(len(zindx))
-		for i in range(int(scores1.shape[0]/100)):
-			print((a, i, i*100/(len(zindx)/100)))
-			labels = _runOptimization(i+1, data[zindx, :], converge)
-			scores1_tmp = func1(data[zindx, :], labels)
-			scores1[i] = scores1_tmp
-		featureDensityArr[a] = np.min(np.where(scores1 == np.nanmax(scores1))[0]) + 1
-	featureDensity = np.median(featureDensityArr)/len(zindx)
-	return(featureDensity)
+# @nb.njit()
+# def _calcFeatureDensity(data, converge, zindx, func1):
+# 	#> detail: 
+# 	#> param type data:
+# 	#> param type converge:
+# 	#> param type zindx:
+# 	#> param type func1:
+# 	#> return (type): 
+# 	#> test-method:
+# 	featureDensityArr = np.zeros(50)
+# 	for a in range(featureDensityArr.shape[0]):
+# 		scores1 = np.zeros(len(zindx))
+# 		for i in range(int(scores1.shape[0]/100)):
+# 			print((a, i, i*100/(len(zindx)/100)))
+# 			labels = _runOptimization(i+1, data[zindx, :], converge)
+# 			scores1_tmp = func1(data[zindx, :], labels)
+# 			scores1[i] = scores1_tmp
+# 		featureDensityArr[a] = np.min(np.where(scores1 == np.nanmax(scores1))[0]) + 1
+# 	featureDensity = np.median(featureDensityArr)/len(zindx)
+# 	return(featureDensity)
 
 
 @nb.njit()
-def _calcOptimization(k, data, decision, threshold):
-	#> detail: 
-	#> param type k:
-	#> param type data:
-	#> param type decision:
-	#> param type threshold:
-	#> return (type): 
-	#> test-method:
+def calcOptimization(k, data, decision, threshold=1e-6):
+	"""
+	Calculates the set of k decisions with a convergence threshold
+
+	Parameters
+	----------
+	k : int
+		The number of groups
+	data : ndarray
+		The data to be clustered
+	decision : ndarray
+		The previous iteration's decisions
+	threshold : float, optional
+		The convergence threshold
+
+	Raises
+	------
+	ConvergenceError
+		If the convergence criteria cannot be evaulated or if the convergence criterion is not met after :obj:`~queso_cluster.atoms.error.covergeLimit`
+	
+	Returns
+	-------
+	decision : ndarray
+		The current iteration's representative profiles
+	data_label : ndarray
+		The labels for the data
+	
+	"""
+	killCounter = 0
 	while True:
 		data_label, _ = minimize(data, decision, k)
 		new_centroid = np.zeros((k, data.shape[1]), dtype=data.dtype)
@@ -307,9 +394,18 @@ def _calcOptimization(k, data, decision, threshold):
 			diff_centroid   = new_centroid[kk,:] - decision[kk,:]
 			converge        = np.max(np.asarray([converge, 
 												np.sqrt(diff_centroid.dot(diff_centroid))]))
+		
+			if not np.isfinite(converge):
+				raise errAtom.ConvergenceError(f"Converge criteria cannot be evaluated. Convergence is not finite")
+		
+		if killCounter == errAtom.convergeLimit:
+			raise errAtom.ConvergenceError(f"Convergence condition not met after {killCounter} steps")
+		
 		decision = new_centroid
-		if (converge <= threshold) or np.isnan(converge):
-			return(decision, data_label)    
+		if converge <= threshold:
+			return(decision, data_label) 
+
+		killCounter += 1
 
 
 

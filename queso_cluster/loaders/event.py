@@ -1,3 +1,10 @@
+"""
+	:file:  queso_cluster/loaders/event.py
+	:lang:  python
+	:synopsis: 
+	:author: Sarah Riley <academic@sriley.dev>
+"""
+
 import yaml
 import pint
 import numpy as np
@@ -5,34 +12,60 @@ import numpy as np
 from ..atoms import aux as auxAtom
 
 class eventRunner:
+	"""
+
+	Detail
+
+	Parameters
+	----------
+	inputLst : list
+		list
+	runIndx : int
+		integer for the order of the runner in the eventManager.yml
+	
+	Attributes
+	----------
+	date : str
+		the date in YYYY-MM-DD
+	dirid : str
+		the date in YYYYMMDD
+	runners : :class:`~queso_cluster.loaders.runnerMeta`
+		object containing runner metadata
+	
+	"""
 	def __init__(self, inputLst, runIndx):
-		stokes_lst 		= ['I', 'Q', 'U', 'V']
+		#stokes_lst 		= ['I', 'Q', 'U', 'V']
 
 		eventRaw 	= inputLst['event']
 		runRaw 		= eventRaw['run'][runIndx]
-
-		# if not runRaw['override']:
-		# 	exit()
 
 		self.date = eventRaw['date']
 		self.dirid = "".join(self.date.split("-"))
 
 		self.runners = runnerMeta(runRaw)
+		self.flavor = self.runners.label
 		self.loadSource(eventRaw)
 
-		# srcUse = self.runners.config['src']
-		# print(srcUse)
-		# print(self.srcLabelLst)
-		# print(self.srcLst)
-		# self.srcLst = self.srcLst[self.srcLabelLst.index(srcUse)]
 
 	def loadSource(self, eventInput):
-		#> detail: 
-		#> param type self:
-		#> param type eventInput:
-		#> return (type): 
-		#> test-method:
+		"""
+		Loads source configuration from eventManager.yml
 
+		Parameters
+		----------
+		eventInput : dict
+			dictionary containing event specific configuration from eventManager.yml
+		
+		Attributes
+		----------
+		srcLst : :class:`~queso_cluster.loaders.event.srcMeta`
+			Specific source metadata referenced in the active runner 
+		srcLabelLst : str
+			string identifier for a listed source set by the active runner
+		clusterConfig : dict
+			dictionary of the clustering configuration for the listed source set by the active runner
+
+		"""
 		for s in range(len(eventInput['src'])):
 			srcInput = eventInput['src'][s]
 			srcObj = srcMeta(srcInput)
@@ -45,6 +78,11 @@ class eventRunner:
 				break
 
 class srcMeta:
+	"""
+		:param srcInput:
+		:type srcInput:
+
+	"""
 	def __init__(self, srcInput):
 		self.id = srcInput['id']['data']
 		self.instrument = srcInput['id']['instrument']

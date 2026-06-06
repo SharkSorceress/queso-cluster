@@ -1,82 +1,100 @@
-#> file:  ./queso-cluster/ti
-#> lang:  python
-#> synopsis: 
-#> author: Sarah Olivia Riley  <academic@sriley.dev>
+"""
+	:file:  queso_cluster/ti.py
+	:lang:  python
+	:synopsis: 
+	:author: Sarah Riley <academic@sriley.dev>
+"""
+
 import numpy as np
 from . import base as baseMain
 from .atoms import aux as auxAtom
 
-from .addon.logg import logger
+from .addon.logg import loggTimer, logg
 from .atoms import mask as maskAtom
 
 class timeIndependent:
+	"""
+	Time independent clustering framework
+
+	Parameters
+	----------
+	config : :class:`~queso_cluster.loaders.event.eventInput`
+		object containing yaml configuration
+	catalogBase : str
+		base string for catalog name
+	instrumentObj : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
+		A `loader` object for specific instruments
+
+	"""
 	def __init__(self, config, catalogName, instrumentObj):
-		self.catalogBase = catalogName
-		self.instrumentObj = instrumentObj
-
-		#self.figDir 	 = './tests/dev/fig/{}/'.format(self.catalogBase)
-		#self.qsBase 	= config.runners.qs_config + '-' + config.runners.config['aia']
-		#self.qsFigDir 	 = './tests/dev/fig/{}/'.format(self.qsBase) 
-		#os.makedirs(self.figDir, exist_ok=True)
-
-		self.config = config 
-		self.dirid = ''.join(config.date.split('-'))
-
-		#lineIndx = 0
-
-		#print(self.config.srcLst)
-		spectralConfig 			= self.config.srcLst.lines[0]
-		self.spectralWindow 	= spectralConfig['window']
-		print(self.spectralWindow)
-		self.lineCenter 		= spectralConfig['center']
-		self.continuum 			= self.config.srcLst.continuum
-
-		self.prepSquare = None
-
-		self.timeFrames = np.arange(1)
-
-		if hasattr(self.config.srcLst, "waveFitFunc"):
-			print(self.dataSquare.shape[-1]+1)
-			self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
-
-			print(self.waveFit[self.lineCenter])
+		baseMain.clusterBase.__init__(self, config, catalogName, instrumentObj)
 
 	def __getattr__(self, name):
-		parentLst = [self.config, self.instrumentObj]
-		for p in parentLst:
-			if hasattr(p, name):
-				return getattr(p, name)
-			else:
-				continue
-		raise AttributeError("No parents have object with attribute '%s'" % name)
+		return(baseMain.clusterBase.__getattr__(self, name))
 
-	def cluster(self, prepSquare, intrinsicLine=None, kLst=None):
-		#> detail: 
-		#> param type self:
-		#> param type prepSquare:
-		#> param type maskLine:
-		#> return (type): 
-		#> test-method:
+
+	# 	self.catalogBase = catalogName
+	# 	self.instrumentObj = instrumentObj
+
+	# 	self.config = config 
+	# 	self.dirid = ''.join(config.date.split('-'))
+
+	# 	spectralConfig 			= self.config.srcLst.lines[0]
+	# 	self.ii, self.jj 		= spectralConfig['window']
+	# 	self.lineCenter 		= spectralConfig['center']
+	# 	self.continuum 			= self.config.srcLst.continuum
+
+	# 	#self.prepSquare = None
+
+	# 	#self.timeFrames = np.arange(1)
+
+	# 	if hasattr(self.config.srcLst, "waveFitFunc"):
+	# 		print(self.dataSquare.shape[-1]+1)
+	# 		self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
+
+	# 		print(self.waveFit[self.lineCenter])
+
+	# def __getattr__(self, name):
+	# 	parentLst = [self.config, self.instrumentObj]
+	# 	for p in parentLst:
+	# 		if hasattr(p, name):
+	# 			return getattr(p, name)
+	# 		else:
+	# 			continue
+	# 	raise AttributeError("No parents have object with attribute '%s'" % name)
+
+	@loggTimer
+	def cluster(self, intrinsicLine=None, kLst=None):
+		"""
+		Primary clustering function
 		
-		ii, jj = self.spectralWindow
+		"""
+		
+		#> Start of Intrinsic Layer
 		if intrinsicLine is None:
 			intrinsicLine = baseMain.mainIntrinsic(self.config, 
-										   np.floor(self.dataSquare*100)/100., intrinsicSkip=False)
-			intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
+										   np.floor(self.dataSquare*100)/100.)
 		
 		if "keepI0" in list(self.config.runners.config.keys()):
-			# i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
-			# for i in self.config.runners.config['keepI0']:
-			# 	i0Mask[(intrinsicLine == i)] = 1
 			
 			self.maskLine *= maskAtom.maskIntrinsic(self.config.runners.config['keepI0'], 
-										   			prepSquare, intrinsicLine,
-													(self.timeFrames.size, self.rasterSize, self.alongSlitSize), self.timeFrames.size)
+										   			self.prepSquare, intrinsicLine,
+													(self.timeFrames.size, self.dimInfo['rasterSize'], self.dimInfo['alongSlitSize']), self.timeFrames.size)
 
-		self.prepSquare = prepSquare[self.maskLine, :]
 		intrinsicLine = intrinsicLine[self.maskLine]
+		#prepSquare = self.prepSquare[self.maskLine, :]
+		#>> End of Intrinsic Layer
 
-		labelLine, scoreTuple = baseMain.mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst)
+		# prepSquare_compute = np.zeros(self.prepSquare)
+		# prepSquare_compute[self.maskLine, self.ii:self.jj+1] = self.prepSquare[self.maskLine, self.ii:self.jj+1].compute()
+		# self.prepSquare = prepSquare_compute
+		_ct_ = logg("start", "compute Time")
+		prepSquare = self.prepSquare[self.maskLine, self.ii:self.jj+1].compute()
+		logg("stop", _log=_ct_)
+
+		#> Start of Optimized Layer
+		labelLine, scoreTuple = baseMain.mainOptimization(prepSquare, intrinsicLine, kLst=kLst)
+		#>> End of Optimized Layer
 
 		if not self.maskLine.all():
 			unmaskLabelLine = np.zeros(self.maskLine.shape)

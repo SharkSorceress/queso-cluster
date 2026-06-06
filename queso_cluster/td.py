@@ -1,3 +1,10 @@
+"""
+	:file:  queso_cluster/td.py
+	:lang:  python
+	:synopsis: 
+	:author: Sarah Riley <academic@sriley.dev>
+"""
+
 import numpy as np
 from . import base as baseMain
 from .runners import base as runBase
@@ -5,29 +12,24 @@ from .runners import base as runBase
 from .addon.logg import loggTimer
 
 class timeDependent:
-	def __init__(self, config, catalogBase, instrumentObj):
+	"""
+	Time dependent clustering framework
 
-		self.config = config
-
-		self.catalogBase = catalogBase
-
-		self.instrumentObj = instrumentObj
-
-		spectralConfig 			= self.config.srcLst.lines[0]
-		self.spectralWindow 	= spectralConfig['window']
-		self.lineCenter 		= spectralConfig['core']
-		self.continuum 			= spectralConfig['continuum']
-
-		self.prepSquare = None
+	Parameters
+	----------
+	config : :class:`~queso_cluster.loaders.event.eventInput`
+		object containing yaml configuration
+	catalogBase : str
+		base string for catalog name
+	instrumentObj : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
+		A `loader` object for specific instruments
+	
+	"""
+	def __init__(self, config, catalogName, instrumentObj):
+		baseMain.clusterBase.__init__(self, config, catalogName, instrumentObj)
 
 	def __getattr__(self, name):
-		parentLst = [self.config, self.instrumentObj]
-		for p in parentLst:
-			if hasattr(p, name):
-				return getattr(p, name)
-			else:
-				continue
-		raise AttributeError("No parents have object with attribute '%s'" % name)
+		baseMain.clusterBase.__getattr__(self, name)
 
 	@loggTimer
 	def timeFrames(self, nframes=5, peakTime=None):

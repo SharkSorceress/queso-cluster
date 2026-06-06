@@ -7,21 +7,23 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API Reference &mdash; QuESO Documentation</title>
-      <link rel="stylesheet" type="text/css" href="assets/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="assets/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="assets/../docsrc/assets/css/custom.css?v=b6fd5f62" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=b6fd5f62" />
 
   
-    <link rel="shortcut icon" href="assets/iconTeal_small.png"/>
-      <script src="assets/jquery.js?v=5d32c60e"></script>
-      <script src="assets/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="assets/documentation_options.js?v=5ae79a96"></script>
-      <script src="assets/doctools.js?v=fd6eb6e6"></script>
-      <script src="assets/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="assets/js/theme.js"></script>
+    <link rel="shortcut icon" href="_static/iconTeal_small.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=87801401"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="prev" title="Installation" href="install.html" /> 
+    <link rel="next" title="Project Contributors" href="contributors.html" />
+    <link rel="prev" title="queso-cluster Tutorial" href="queso-tutorial.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -34,7 +36,7 @@
           
           <a href="index.html">
             
-              <img src="assets/iconTeal_small.png" class="logo" alt="Logo"/>
+              <img src="_static/iconTeal_small.png" class="logo" alt="Logo"/>
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -47,132 +49,67 @@
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributors.html">Project Contributors</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
+<li class="toctree-l1"><a class="reference internal" href="queso-tutorial.html"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#writer-py">writer.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#exportFITS"><code class="docutils literal notranslate"><span class="pre">exportFITS()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#queso-cluster">queso_cluster.</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.base">queso_cluster.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.base.clusterBase"><code class="docutils literal notranslate"><span class="pre">clusterBase</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#aux-py">aux.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#gen_dataID"><code class="docutils literal notranslate"><span class="pre">_gen_dataID()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pick_jth_label"><code class="docutils literal notranslate"><span class="pre">pick_jth_label()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#density_2channel"><code class="docutils literal notranslate"><span class="pre">density_2channel()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#density_hist2d"><code class="docutils literal notranslate"><span class="pre">density_hist2d()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#close_factors"><code class="docutils literal notranslate"><span class="pre">close_factors()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#almost_factors"><code class="docutils literal notranslate"><span class="pre">almost_factors()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#common_elements"><code class="docutils literal notranslate"><span class="pre">common_elements()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.td">queso_cluster.td</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.td.timeDependent"><code class="docutils literal notranslate"><span class="pre">timeDependent</span></code></a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#base-py">base.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#normZ"><code class="docutils literal notranslate"><span class="pre">normZ()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#normMaximum"><code class="docutils literal notranslate"><span class="pre">normMaximum()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#normContinuum"><code class="docutils literal notranslate"><span class="pre">normContinuum()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#concatSpectra"><code class="docutils literal notranslate"><span class="pre">concatSpectra()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#numba_histogram"><code class="docutils literal notranslate"><span class="pre">numba_histogram()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rotateArray"><code class="docutils literal notranslate"><span class="pre">rotateArray()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get_bin_edges"><code class="docutils literal notranslate"><span class="pre">get_bin_edges()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#compute_bin"><code class="docutils literal notranslate"><span class="pre">compute_bin()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#np_gradient"><code class="docutils literal notranslate"><span class="pre">np_gradient()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#minimize"><code class="docutils literal notranslate"><span class="pre">minimize()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#maximize"><code class="docutils literal notranslate"><span class="pre">maximize()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#np_all_axis0"><code class="docutils literal notranslate"><span class="pre">np_all_axis0()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#np_all_axis1"><code class="docutils literal notranslate"><span class="pre">np_all_axis1()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#similarityMetric"><code class="docutils literal notranslate"><span class="pre">similarityMetric()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#curvature"><code class="docutils literal notranslate"><span class="pre">curvature()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#startMax"><code class="docutils literal notranslate"><span class="pre">startMax()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#startPlusPlus"><code class="docutils literal notranslate"><span class="pre">startPlusPlus()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcMoment"><code class="docutils literal notranslate"><span class="pre">_calcMoment()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcFeatureDensity"><code class="docutils literal notranslate"><span class="pre">_calcFeatureDensity()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcOptimization"><code class="docutils literal notranslate"><span class="pre">_calcOptimization()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcElbowEntry"><code class="docutils literal notranslate"><span class="pre">_calcElbowEntry()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcVarianceScore"><code class="docutils literal notranslate"><span class="pre">_calcVarianceScore()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#criteriaInertiaScore"><code class="docutils literal notranslate"><span class="pre">_criteriaInertiaScore()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcInertiaScore"><code class="docutils literal notranslate"><span class="pre">_calcInertiaScore()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#criteriaSilhouetteScore"><code class="docutils literal notranslate"><span class="pre">_criteriaSilhouetteScore()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcSilhouetteScore"><code class="docutils literal notranslate"><span class="pre">_calcSilhouetteScore()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcSingleSilhouetteScore"><code class="docutils literal notranslate"><span class="pre">_calcSingleSilhouetteScore()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcCHindex"><code class="docutils literal notranslate"><span class="pre">_calcCHindex()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#labelGluer"><code class="docutils literal notranslate"><span class="pre">labelGluer()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#labelReorder"><code class="docutils literal notranslate"><span class="pre">labelReorder()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcQuiescentFrame"><code class="docutils literal notranslate"><span class="pre">_calcQuiescentFrame()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#calcDynamicFrame"><code class="docutils literal notranslate"><span class="pre">_calcDynamicFrame()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#approach-py">approach.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#init__"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getattr__"><code class="docutils literal notranslate"><span class="pre">__getattr__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id0"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#clustering"><code class="docutils literal notranslate"><span class="pre">clustering()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#logg-py">logg.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#loggTimer"><code class="docutils literal notranslate"><span class="pre">loggTimer()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#wrapper"><code class="docutils literal notranslate"><span class="pre">wrapper()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#logg"><code class="docutils literal notranslate"><span class="pre">logg()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#duration_string"><code class="docutils literal notranslate"><span class="pre">duration_string()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#aia-py">aia.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#delayAIA"><code class="docutils literal notranslate"><span class="pre">delayAIA()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#style-py">style.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#cbar_bounds"><code class="docutils literal notranslate"><span class="pre">cbar_bounds()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#genColorPallet"><code class="docutils literal notranslate"><span class="pre">_genColorPallet()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rainbow_cmap"><code class="docutils literal notranslate"><span class="pre">rainbow_cmap()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#cmap_discretize"><code class="docutils literal notranslate"><span class="pre">cmap_discretize()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mapGen"><code class="docutils literal notranslate"><span class="pre">_mapGen()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#multiline-py">multiline.py</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#products-py">products.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id2"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#figure03"><code class="docutils literal notranslate"><span class="pre">figure03()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#figure04_template"><code class="docutils literal notranslate"><span class="pre">figure04_template()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#spectralEntry"><code class="docutils literal notranslate"><span class="pre">spectralEntry()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#loader-py">loader.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id3"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#loadEventConfig"><code class="docutils literal notranslate"><span class="pre">_loadEventConfig()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id4"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#vispLoad"><code class="docutils literal notranslate"><span class="pre">vispLoad()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#irisLoad"><code class="docutils literal notranslate"><span class="pre">irisLoad()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fissLoad"><code class="docutils literal notranslate"><span class="pre">fissLoad()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id5"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#visp2visp"><code class="docutils literal notranslate"><span class="pre">visp2visp()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#fiss2fiss"><code class="docutils literal notranslate"><span class="pre">fiss2fiss()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id6"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id7"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id8"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#loadSource"><code class="docutils literal notranslate"><span class="pre">loadSource()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id9"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id10"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id11"><code class="docutils literal notranslate"><span class="pre">__init__()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#load"><code class="docutils literal notranslate"><span class="pre">_load()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#id12">base.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#mainIntrinsic"><code class="docutils literal notranslate"><span class="pre">_mainIntrinsic()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#mainOptimization"><code class="docutils literal notranslate"><span class="pre">_mainOptimization()</span></code></a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#id13">base.py</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#runOptimalKSearch"><code class="docutils literal notranslate"><span class="pre">_runOptimalKSearch()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#runPrep"><code class="docutils literal notranslate"><span class="pre">runPrep()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#runIntrinsic"><code class="docutils literal notranslate"><span class="pre">_runIntrinsic()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#runStart"><code class="docutils literal notranslate"><span class="pre">runStart()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#runOptimization"><code class="docutils literal notranslate"><span class="pre">_runOptimization()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#findOptimalK"><code class="docutils literal notranslate"><span class="pre">_findOptimalK()</span></code></a></li>
-<li class="toctree-l3"><a class="reference internal" href="#runLabelSort"><code class="docutils literal notranslate"><span class="pre">_runLabelSort()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.ti">queso_cluster.ti</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.ti.timeIndependent"><code class="docutils literal notranslate"><span class="pre">timeIndependent</span></code></a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev/queso.pdf">Download Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#queso-cluster-atoms">queso_cluster.atoms</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.atoms.aux">queso_cluster.atoms.aux</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.atoms.base">queso_cluster.atoms.base</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.base.calcOptimization"><code class="docutils literal notranslate"><span class="pre">calcOptimization()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.base.concatSpectra"><code class="docutils literal notranslate"><span class="pre">concatSpectra()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.base.numba_histogram"><code class="docutils literal notranslate"><span class="pre">numba_histogram()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.base.rotateArray"><code class="docutils literal notranslate"><span class="pre">rotateArray()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.base.startMax"><code class="docutils literal notranslate"><span class="pre">startMax()</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.base.startPlusPlus"><code class="docutils literal notranslate"><span class="pre">startPlusPlus()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.atoms.error">queso_cluster.atoms.error</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#attributes">Attributes</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.error.ConvergenceError"><code class="docutils literal notranslate"><span class="pre">ConvergenceError</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.atoms.error.LoadError"><code class="docutils literal notranslate"><span class="pre">LoadError</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#queso-cluster-addon">queso_cluster.addon</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.addon.products">queso_cluster.addon.products</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.addon.products.Products"><code class="docutils literal notranslate"><span class="pre">Products</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.addon.style">queso_cluster.addon.style</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.addon.style.clusterColormap"><code class="docutils literal notranslate"><span class="pre">clusterColormap</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.addon.style.mapMaker"><code class="docutils literal notranslate"><span class="pre">mapMaker</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#queso-cluster-loaders">queso_cluster.loaders</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-queso_cluster.loaders.event">queso_cluster.loaders.event</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.loaders.event.eventRunner"><code class="docutils literal notranslate"><span class="pre">eventRunner</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#queso_cluster.loaders.event.srcMeta"><code class="docutils literal notranslate"><span class="pre">srcMeta</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contributors.html">Project Contributors</a></li>
 </ul>
 
         </div>
@@ -200,476 +137,720 @@
              
   <section id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
-<section id="writer-py">
-<h2>writer.py<a class="headerlink" href="#writer-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="exportFITS">
-<span class="sig-name descname"><span class="pre">exportFITS</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectralDataset</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#exportFITS" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="aux-py">
-<h2>aux.py<a class="headerlink" href="#aux-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="gen_dataID">
-<span class="sig-name descname"><span class="pre">_gen_dataID</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Input</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#gen_dataID" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="pick_jth_label">
-<span class="sig-name descname"><span class="pre">pick_jth_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labelLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">j</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pick_jth_label" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="density_2channel">
-<span class="sig-name descname"><span class="pre">density_2channel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xsize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#density_2channel" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="density_hist2d">
-<span class="sig-name descname"><span class="pre">density_hist2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dy</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">top</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bottom</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#density_hist2d" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="close_factors">
-<span class="sig-name descname"><span class="pre">close_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#close_factors" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="almost_factors">
-<span class="sig-name descname"><span class="pre">almost_factors</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">number</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#almost_factors" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="common_elements">
-<span class="sig-name descname"><span class="pre">common_elements</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ar1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ar2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ar3</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#common_elements" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="base-py">
-<h2>base.py<a class="headerlink" href="#base-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="normZ">
-<span class="sig-name descname"><span class="pre">normZ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normZ" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="normMaximum">
-<span class="sig-name descname"><span class="pre">normMaximum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normMaximum" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="normContinuum">
-<span class="sig-name descname"><span class="pre">normContinuum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">continuumIndx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#normContinuum" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="concatSpectra">
-<span class="sig-name descname"><span class="pre">concatSpectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquareLst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#concatSpectra" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="numba_histogram">
-<span class="sig-name descname"><span class="pre">numba_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#numba_histogram" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="rotateArray">
-<span class="sig-name descname"><span class="pre">rotateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rotateArray" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="get_bin_edges">
-<span class="sig-name descname"><span class="pre">get_bin_edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lim</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#get_bin_edges" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="compute_bin">
-<span class="sig-name descname"><span class="pre">compute_bin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_edges</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#compute_bin" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="np_gradient">
-<span class="sig-name descname"><span class="pre">np_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">f</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#np_gradient" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="minimize">
-<span class="sig-name descname"><span class="pre">minimize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#minimize" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="maximize">
-<span class="sig-name descname"><span class="pre">maximize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#maximize" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="np_all_axis0">
-<span class="sig-name descname"><span class="pre">np_all_axis0</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#np_all_axis0" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="np_all_axis1">
-<span class="sig-name descname"><span class="pre">np_all_axis1</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#np_all_axis1" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="similarityMetric">
-<span class="sig-name descname"><span class="pre">similarityMetric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'dist'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#similarityMetric" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="curvature">
-<span class="sig-name descname"><span class="pre">curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#curvature" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="startMax">
-<span class="sig-name descname"><span class="pre">startMax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#startMax" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="startPlusPlus">
-<span class="sig-name descname"><span class="pre">startPlusPlus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#startPlusPlus" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcMoment">
-<span class="sig-name descname"><span class="pre">_calcMoment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">waveAxis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ii</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineCore</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataCube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">counter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcMoment" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcFeatureDensity">
-<span class="sig-name descname"><span class="pre">_calcFeatureDensity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zindx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">func1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcFeatureDensity" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcOptimization">
-<span class="sig-name descname"><span class="pre">_calcOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decision</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcOptimization" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcElbowEntry">
-<span class="sig-name descname"><span class="pre">_calcElbowEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcElbowEntry" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcVarianceScore">
-<span class="sig-name descname"><span class="pre">_calcVarianceScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcVarianceScore" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="criteriaInertiaScore">
-<span class="sig-name descname"><span class="pre">_criteriaInertiaScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#criteriaInertiaScore" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcInertiaScore">
-<span class="sig-name descname"><span class="pre">_calcInertiaScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcInertiaScore" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="criteriaSilhouetteScore">
-<span class="sig-name descname"><span class="pre">_criteriaSilhouetteScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">score</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#criteriaSilhouetteScore" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcSilhouetteScore">
-<span class="sig-name descname"><span class="pre">_calcSilhouetteScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcSilhouetteScore" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcSingleSilhouetteScore">
-<span class="sig-name descname"><span class="pre">_calcSingleSilhouetteScore</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lab</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcSingleSilhouetteScore" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcCHindex">
-<span class="sig-name descname"><span class="pre">_calcCHindex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcCHindex" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="labelGluer">
-<span class="sig-name descname"><span class="pre">labelGluer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#labelGluer" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="labelReorder">
-<span class="sig-name descname"><span class="pre">labelReorder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#labelReorder" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcQuiescentFrame">
-<span class="sig-name descname"><span class="pre">_calcQuiescentFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectralData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spectralParams</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contIndxs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcQuiescentFrame" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="calcDynamicFrame">
-<span class="sig-name descname"><span class="pre">_calcDynamicFrame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spectralData</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dynamicScanNum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">progress</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">delta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#calcDynamicFrame" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="approach-py">
-<h2>approach.py<a class="headerlink" href="#approach-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrumentObj</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#init__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="getattr__">
-<span class="sig-name descname"><span class="pre">__getattr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#getattr__" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py">
-<span class="sig-name descname"><span class="pre">cluster(self,prepSquare,maskLine</span></span></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id0">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogBase</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="clustering">
-<span class="sig-name descname"><span class="pre">clustering</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepCube</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tlst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">groups</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intrinsicSquare</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#clustering" title="Link to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Detail<span class="colon">:</span></dt>
-<dd class="field-odd"><p>low temporal resolution clustering</p>
+<section id="queso-cluster">
+<h2>queso_cluster.<a class="headerlink" href="#queso-cluster" title="Link to this heading"></a></h2>
+<section id="module-queso_cluster.base">
+<span id="queso-cluster-base"></span><h3>queso_cluster.base<a class="headerlink" href="#module-queso_cluster.base" title="Link to this heading"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.base.clusterBase">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">clusterBase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrumentObj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/base.html#clusterBase"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.base.clusterBase" title="Link to this definition"></a></dt>
+<dd><p>Parent class to <a class="reference internal" href="#queso_cluster.ti.timeIndependent" title="queso_cluster.ti.timeIndependent"><code class="xref py py-class docutils literal notranslate"><span class="pre">timeIndependent</span></code></a> and <a class="reference internal" href="#queso_cluster.td.timeDependent" title="queso_cluster.td.timeDependent"><code class="xref py py-class docutils literal notranslate"><span class="pre">timeDependent</span></code></a></p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>config</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">eventInput</span></code></span></dt><dd><p>object containing yaml configuration</p>
+</dd>
+<dt><strong>catalogBase</strong><span class="classifier">str</span></dt><dd><p>base string for catalog name</p>
+</dd>
+<dt><strong>instrumentObj</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">visp</span></code> <code class="xref py py-class docutils literal notranslate"><span class="pre">fiss</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">iris</span></code></span></dt><dd><p>A <cite>loader</cite> object for specific instruments</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ii, jj</strong><span class="classifier">int, int</span></dt><dd><p>1D array containing the index for the beginning and end of the spectral window used for clustering</p>
+</dd>
+<dt><strong>lineCenter</strong><span class="classifier">int</span></dt><dd><p>The index for a center position in the window. This may coinside with the line center of the spectrum</p>
+</dd>
+<dt><strong>continuum</strong><span class="classifier">int</span></dt><dd><p>The index of the continuum for the spectrum. This may be used for normalization</p>
+</dd>
+<dt><strong>waveFit</strong><span class="classifier">ndarray</span></dt><dd><p>If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms</p>
+</dd>
+</dl>
 </dd>
 </dl>
 </dd></dl>
 
 </section>
-<section id="logg-py">
-<h2>logg.py<a class="headerlink" href="#logg-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="loggTimer">
-<span class="sig-name descname"><span class="pre">loggTimer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loggTimer" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="wrapper">
-<span class="sig-name descname"><span class="pre">wrapper</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#wrapper" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="logg">
-<span class="sig-name descname"><span class="pre">logg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">tag</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">val</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_time</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">_log</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#logg" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="duration_string">
-<span class="sig-name descname"><span class="pre">duration_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dur</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#duration_string" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="aia-py">
-<h2>aia.py<a class="headerlink" href="#aia-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="delayAIA">
-<span class="sig-name descname"><span class="pre">delayAIA</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochDev</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#delayAIA" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="style-py">
-<h2>style.py<a class="headerlink" href="#style-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="cbar_bounds">
-<span class="sig-name descname"><span class="pre">cbar_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cbar_bounds" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="genColorPallet">
-<span class="sig-name descname"><span class="pre">_genColorPallet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#genColorPallet" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="rainbow_cmap">
-<span class="sig-name descname"><span class="pre">rainbow_cmap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nrange</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">discrete</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nan</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#rainbow_cmap" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="cmap_discretize">
-<span class="sig-name descname"><span class="pre">cmap_discretize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cmap</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#cmap_discretize" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id1">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spaceInfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="mapGen">
-<span class="sig-name descname"><span class="pre">_mapGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pos</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">arr</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">flareContour</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargsDict</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mapGen" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<section id="module-queso_cluster.td">
+<span id="queso-cluster-td"></span><h3>queso_cluster.td<a class="headerlink" href="#module-queso_cluster.td" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/td.py</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.td.timeDependent">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">timeDependent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrumentObj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/td.html#timeDependent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.td.timeDependent" title="Link to this definition"></a></dt>
+<dd><p>Time dependent clustering framework</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>config</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">eventInput</span></code></span></dt><dd><p>object containing yaml configuration</p>
+</dd>
+<dt><strong>catalogBase</strong><span class="classifier">str</span></dt><dd><p>base string for catalog name</p>
+</dd>
+<dt><strong>instrumentObj</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">visp</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">fiss</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">iris</span></code></span></dt><dd><p>A <cite>loader</cite> object for specific instruments</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
-<section id="multiline-py">
-<h2>multiline.py<a class="headerlink" href="#multiline-py" title="Link to this heading"></a></h2>
-</section>
-<section id="products-py">
-<h2>products.py<a class="headerlink" href="#products-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="id2">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epochObj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">optLabels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id2" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<section id="module-queso_cluster.ti">
+<span id="queso-cluster-ti"></span><h3>queso_cluster.ti<a class="headerlink" href="#module-queso_cluster.ti" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/ti.py</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.ti.timeIndependent">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">timeIndependent</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">catalogName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">instrumentObj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/ti.html#timeIndependent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.ti.timeIndependent" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Time independent clustering framework</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl>
+<dt><strong>config</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">eventInput</span></code></span></dt><dd><p>object containing yaml configuration</p>
+</dd>
+<dt><strong>catalogBase</strong><span class="classifier">str</span></dt><dd><p>base string for catalog name</p>
+</dd>
+<dt><strong>instrumentObj</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">visp</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">fiss</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">iris</span></code></span></dt><dd><p>A <cite>loader</cite> object for specific instruments</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.ti.timeIndependent.cluster">
+<span class="sig-name descname"><span class="pre">cluster</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">intrinsicLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kLst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/ti.html#timeIndependent.cluster"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.ti.timeIndependent.cluster" title="Link to this definition"></a></dt>
+<dd><p>Primary clustering function</p>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="figure03">
-<span class="sig-name descname"><span class="pre">figure03</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#figure03" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="figure04_template">
-<span class="sig-name descname"><span class="pre">figure04_template</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#figure04_template" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="spectralEntry">
-<span class="sig-name descname"><span class="pre">spectralEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#spectralEntry" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-</section>
-<section id="loader-py">
-<h2>loader.py<a class="headerlink" href="#loader-py" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="id3">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">home</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fig</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id3" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="loadEventConfig">
-<span class="sig-name descname"><span class="pre">_loadEventConfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventRunnerFname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loadEventConfig" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id4">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPath</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id4" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="vispLoad">
-<span class="sig-name descname"><span class="pre">vispLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#vispLoad" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="irisLoad">
-<span class="sig-name descname"><span class="pre">irisLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#irisLoad" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fissLoad">
-<span class="sig-name descname"><span class="pre">fissLoad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fissLoad" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id5">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">config2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id5" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="visp2visp">
-<span class="sig-name descname"><span class="pre">visp2visp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#visp2visp" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="fiss2fiss">
-<span class="sig-name descname"><span class="pre">fiss2fiss</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#fiss2fiss" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id6">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id6" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id7">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataPath</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stokes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id7" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id8">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runIndx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id8" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="loadSource">
-<span class="sig-name descname"><span class="pre">loadSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#loadSource" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id9">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">srcInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id9" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id10">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runnerInput</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id10" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="id11">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eventIndx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runIndx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id11" title="Link to this definition"></a></dt>
-<dd></dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="load">
-<span class="sig-name descname"><span class="pre">_load</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">fname</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#load" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+</dd></dl>
 
 </section>
-<section id="id12">
-<h2>base.py<a class="headerlink" href="#id12" title="Link to this heading"></a></h2>
+</section>
+<section id="queso-cluster-atoms">
+<h2>queso_cluster.atoms<a class="headerlink" href="#queso-cluster-atoms" title="Link to this heading"></a></h2>
+<section id="module-queso_cluster.atoms.aux">
+<span id="queso-cluster-atoms-aux"></span><h3>queso_cluster.atoms.aux<a class="headerlink" href="#module-queso_cluster.atoms.aux" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/atoms/aux</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+</section>
+<section id="module-queso_cluster.atoms.base">
+<span id="queso-cluster-atoms-base"></span><h3>queso_cluster.atoms.base<a class="headerlink" href="#module-queso_cluster.atoms.base" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/atoms/base.py</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
 <dl class="py function">
-<dt class="sig sig-object py" id="mainIntrinsic">
-<span class="sig-name descname"><span class="pre">_mainIntrinsic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">config</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prepSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lineIndx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">intrinsicSkip</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainIntrinsic" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="queso_cluster.atoms.base.calcOptimization">
+<span class="sig-name descname"><span class="pre">calcOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decision</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/base.html#calcOptimization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.calcOptimization" title="Link to this definition"></a></dt>
+<dd><p>Calculates the set of k decisions with a convergence threshold</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The number of groups</p>
+</dd>
+<dt><strong>data</strong><span class="classifier">ndarray</span></dt><dd><p>The data to be clustered</p>
+</dd>
+<dt><strong>decision</strong><span class="classifier">ndarray</span></dt><dd><p>The previous iteration’s decisions</p>
+</dd>
+<dt><strong>threshold</strong><span class="classifier">float, optional</span></dt><dd><p>The convergence threshold</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>decision</strong><span class="classifier">ndarray</span></dt><dd><p>The current iteration’s representative profiles</p>
+</dd>
+<dt><strong>data_label</strong><span class="classifier">ndarray</span></dt><dd><p>The labels for the data</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-odd">Raises<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt>ConvergenceError</dt><dd><p>If the convergence criteria cannot be evaulated or if the convergence criterion is not met after <code class="xref py py-obj docutils literal notranslate"><span class="pre">covergeLimit</span></code></p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py function">
-<dt class="sig sig-object py" id="mainOptimization">
-<span class="sig-name descname"><span class="pre">_mainOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prepSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kLst</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stageMax</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainOptimization" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dt class="sig sig-object py" id="queso_cluster.atoms.base.concatSpectra">
+<span class="sig-name descname"><span class="pre">concatSpectra</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquareLst</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/base.html#concatSpectra"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.concatSpectra" title="Link to this definition"></a></dt>
+<dd><p>Function to concatenate several channels of data into one array for clustering</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>dataSquareLst</strong><span class="classifier">dask.array</span></dt><dd><p>dask arrays containing spectral data to be concatenated</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>dask.array</dt><dd><p>Concatenated spectral profiles</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="queso_cluster.atoms.base.numba_histogram">
+<span class="sig-name descname"><span class="pre">numba_histogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lim</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/base.html#numba_histogram"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.numba_histogram" title="Link to this definition"></a></dt>
+<dd><p>Numba accelerated histogram function</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>a</strong><span class="classifier">int</span></dt><dd><p>detail</p>
+</dd>
+<dt><strong>bins</strong><span class="classifier">int</span></dt><dd><p>the number of bins in the histogram</p>
+</dd>
+<dt><strong>lim</strong><span class="classifier">ndarray</span></dt><dd><p>the top and bottom of the histogram</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>hist</strong><span class="classifier">ndarray</span></dt><dd><p>the histogram</p>
+</dd>
+<dt><strong>bin_edges</strong><span class="classifier">ndarray</span></dt><dd><p>1D array of the bin edges</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="queso_cluster.atoms.base.rotateArray">
+<span class="sig-name descname"><span class="pre">rotateArray</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">image</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">turns</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/base.html#rotateArray"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.rotateArray" title="Link to this definition"></a></dt>
+<dd><p>Rotates an array</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>image</strong><span class="classifier">ndarray</span></dt><dd><p>2D array to be rotated</p>
+</dd>
+<dt><strong>turns</strong><span class="classifier">int</span></dt><dd><p>Number of pi/2 turns to rotate</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt>ndarray</dt><dd><p>Rotated array</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="queso_cluster.atoms.base.startMax">
+<span class="sig-name descname"><span class="pre">startMax</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/base.html#startMax"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.startMax" title="Link to this definition"></a></dt>
+<dd><p>Heuristic k-means++. 
+Rather than selecting from a distribution around the furtherest datapoint, this initialization simply selects the furtherest datapoint as the next representative</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">ndarray</span></dt><dd><p>data pool for finding the initial representative profiles</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The number of clusters</p>
+</dd>
+<dt><strong>decisions</strong><span class="classifier">ndarray</span></dt><dd><p>Array containing the initial, randomly selected representative profile and empty slots for remaining profiles</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>decisions</strong><span class="classifier">ndarray</span></dt><dd><p>Array containing a full set of representative profiles</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="queso_cluster.atoms.base.startPlusPlus">
+<span class="sig-name descname"><span class="pre">startPlusPlus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">decisions</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/base.html#startPlusPlus"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.startPlusPlus" title="Link to this definition"></a></dt>
+<dd><p>k-means++ initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>data</strong><span class="classifier">ndarray</span></dt><dd><p>data pool for finding the initial representative profiles</p>
+</dd>
+<dt><strong>k</strong><span class="classifier">int</span></dt><dd><p>The number of clusters</p>
+</dd>
+<dt><strong>decisions</strong><span class="classifier">ndarray</span></dt><dd><p>Array containing the initial, randomly selected representative profile and empty slots for remaining profiles</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>decisions</strong><span class="classifier">ndarray</span></dt><dd><p>Array containing a full set of representative profiles</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
 </section>
-<section id="id13">
-<h2>base.py<a class="headerlink" href="#id13" title="Link to this heading"></a></h2>
-<dl class="py function">
-<dt class="sig sig-object py" id="runOptimalKSearch">
-<span class="sig-name descname"><span class="pre">_runOptimalKSearch</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">checkLst</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runOptimalKSearch" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<section id="module-queso_cluster.atoms.error">
+<span id="queso-cluster-atoms-error"></span><h3>queso_cluster.atoms.error<a class="headerlink" href="#module-queso_cluster.atoms.error" title="Link to this heading"></a></h3>
+<blockquote>
+<div><dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/atom/error.py</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+</div></blockquote>
+<section id="attributes">
+<h4>Attributes<a class="headerlink" href="#attributes" title="Link to this heading"></a></h4>
+<dl class="simple">
+<dt>convergeLimit<span class="classifier">int</span></dt><dd><p>Maximum number of interations before ConvergenceError is raised</p>
+</dd>
+</dl>
+</section>
+<dl class="py exception">
+<dt class="sig sig-object py" id="queso_cluster.atoms.error.ConvergenceError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ConvergenceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/atoms/error.html#ConvergenceError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.error.ConvergenceError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Create an Exception for when convergence doesn’t occur after <code class="xref py py-obj docutils literal notranslate"><span class="pre">convergeLimit</span></code> iterations</p>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="runPrep">
-<span class="sig-name descname"><span class="pre">runPrep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">norm</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'continuum'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">keepI0</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maskLine</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quSquare</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runPrep" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py exception">
+<dt class="sig sig-object py" id="queso_cluster.atoms.error.LoadError">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadError</span></span><a class="reference internal" href="_modules/queso_cluster/atoms/error.html#LoadError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.error.LoadError" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Creates an Exception for overwrite contradiction</p>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="runIntrinsic">
-<span class="sig-name descname"><span class="pre">_runIntrinsic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">edgeOverride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runIntrinsic" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+</section>
+</section>
+<section id="queso-cluster-addon">
+<h2>queso_cluster.addon<a class="headerlink" href="#queso-cluster-addon" title="Link to this heading"></a></h2>
+<section id="module-queso_cluster.addon.products">
+<span id="queso-cluster-addon-products"></span><h3>queso_cluster.addon.products<a class="headerlink" href="#module-queso_cluster.addon.products" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/addon/products.py</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">Products</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">quesoOut</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products" title="Link to this definition"></a></dt>
+<dd><p>Detail</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>quesoOut</strong><span class="classifier">type</span></dt><dd><p>summary</p>
+</dd>
+<dt><strong>optLabels</strong><span class="classifier">type</span></dt><dd><p>summary</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>vindx</strong><span class="classifier">ndarray</span></dt><dd><p>tuple of the indicies corresponding to non-nan labels</p>
+</dd>
+<dt><strong>vfindx</strong><span class="classifier">ndarray</span></dt><dd><p>1D array containing the indicies of non-nan labels</p>
+</dd>
+<dt><strong>xlim</strong><span class="classifier">ndarray</span></dt><dd><p>The physical minimum and maximum of the raster direction</p>
+</dd>
+<dt><strong>ylim</strong><span class="classifier">ndarray</span></dt><dd><p>The physical minimum and maximum of the along slit direction</p>
+</dd>
+<dt><strong>aspect</strong><span class="classifier">float</span></dt><dd><p>Half of the aspect ratio</p>
+</dd>
+<dt><strong>clusterCmap</strong><span class="classifier"><a class="reference internal" href="#queso_cluster.addon.style.clusterColormap" title="queso_cluster.addon.style.clusterColormap"><code class="xref py py-class docutils literal notranslate"><span class="pre">clusterColormap</span></code></a></span></dt><dd><p>default color configuration for cluster maps</p>
+</dd>
+<dt><strong>mapMake</strong><span class="classifier"><a class="reference internal" href="#queso_cluster.addon.style.mapMaker" title="queso_cluster.addon.style.mapMaker"><code class="xref py py-class docutils literal notranslate"><span class="pre">mapMaker</span></code></a></span></dt><dd><p>A map object to plot the data</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.clusterMapCompound">
+<span class="sig-name descname"><span class="pre">clusterMapCompound</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compoundLabels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products.clusterMapCompound"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.clusterMapCompound" title="Link to this definition"></a></dt>
+<dd><p>Creates a figure showing all of the distinct sequences of spectra</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>compoundLabels</strong><span class="classifier">char.array</span></dt><dd><p>Character array for all sequence labels</p>
+</dd>
+<dt><strong>timeAxis</strong><span class="classifier">bool</span></dt><dd><p>Boolean to add an extra axis for time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>fig</strong><span class="classifier">mpl.Figure</span></dt><dd><p>Figure showing the distribution of cluster sequences</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="runStart">
-<span class="sig-name descname"><span class="pre">runStart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runStart" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.clusterMapSequence">
+<span class="sig-name descname"><span class="pre">clusterMapSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products.clusterMapSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.clusterMapSequence" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>timeAxis</strong><span class="classifier">bool, optional</span></dt><dd><p>Boolean to add an extra axis for time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>figA</strong><span class="classifier">mpl.Figure</span></dt><dd><p>Map of the cluster results for individual time steps</p>
+</dd>
+<dt><strong>figB</strong><span class="classifier">mpl.Figure</span></dt><dd><p>Map of all distinct sequences</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="runOptimization">
-<span class="sig-name descname"><span class="pre">_runOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runOptimization" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.clusterMapSequenceHorizontal">
+<span class="sig-name descname"><span class="pre">clusterMapSequenceHorizontal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products.clusterMapSequenceHorizontal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.clusterMapSequenceHorizontal" title="Link to this definition"></a></dt>
+<dd><p>Horizontal oriented maps of the cluster results for individual time steps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>compoundLabels</strong><span class="classifier">char.array</span></dt><dd></dd>
+<dt><strong>timeAxis</strong><span class="classifier">bool</span></dt><dd><p>Boolean to add an extra axis for time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>fig</strong><span class="classifier">mpl.figure</span></dt><dd><p>Map of the cluster results for individual time steps</p>
+</dd>
+<dt><strong>compoundLabels</strong><span class="classifier">np.char.array</span></dt><dd><p>Character array for all sequence labels</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="findOptimalK">
-<span class="sig-name descname"><span class="pre">_findOptimalK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteriaLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-6</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#findOptimalK" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.clusterMapSequenceVertical">
+<span class="sig-name descname"><span class="pre">clusterMapSequenceVertical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products.clusterMapSequenceVertical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.clusterMapSequenceVertical" title="Link to this definition"></a></dt>
+<dd><p>Vertically oriented maps of the cluster results for individual time steps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>compoundLabels</strong><span class="classifier">char.array</span></dt><dd></dd>
+<dt><strong>timeAxis</strong><span class="classifier">bool</span></dt><dd><p>Boolean to add an extra axis for time</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>fig</strong><span class="classifier">mpl.figure</span></dt><dd><p>Map of the cluster results for individual time steps</p>
+</dd>
+<dt><strong>compoundLabels</strong><span class="classifier">np.char.array</span></dt><dd><p>Character array for all sequence labels</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="runLabelSort">
-<span class="sig-name descname"><span class="pre">_runLabelSort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelLine</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#runLabelSort" title="Link to this definition"></a></dt>
-<dd></dd></dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.clusterProfiles">
+<span class="sig-name descname"><span class="pre">clusterProfiles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showContinuum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products.clusterProfiles"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.clusterProfiles" title="Link to this definition"></a></dt>
+<dd><p>Figure showing the representative profiles of each of the clusters and the raw data histogram</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>showContinuum</strong><span class="classifier">bool, optional</span></dt><dd><p>Adds a horizontal line at the continuum. Useful only if normalized to continuum</p>
+</dd>
+<dt><strong>dev</strong><span class="classifier">bool</span></dt><dd><p>secret testing</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>fig</strong><span class="classifier">mpl.figure</span></dt><dd><p>Figure</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.spectralEntry">
+<span class="sig-name descname"><span class="pre">spectralEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wavelambda</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">extent</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showContinuum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/products.html#Products.spectralEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.spectralEntry" title="Link to this definition"></a></dt>
+<dd><p>Calculation function for <a class="reference internal" href="#queso_cluster.addon.products.Products.clusterProfiles" title="queso_cluster.addon.products.Products.clusterProfiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">clusterProfiles()</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">mpl.Axes</span></dt><dd><p>matplotlib axes to add content to</p>
+</dd>
+<dt><strong>indx</strong><span class="classifier">ndarray</span></dt><dd><p>1D array of data indexes for a given cluster</p>
+</dd>
+<dt><strong>color</strong><span class="classifier">str</span></dt><dd><p>color string for 2D histogram of raw data. gradient goes as white -&gt; color</p>
+</dd>
+<dt><strong>wavelambda</strong><span class="classifier">ndarray</span></dt><dd><p>1D array containing the wavelength</p>
+</dd>
+<dt><strong>extent</strong><span class="classifier">list</span></dt><dd><p>List containing the left, right, bottom, top of the content</p>
+</dd>
+<dt><strong>showContinuum</strong><span class="classifier">bool</span></dt><dd><p>Adds a horizontal line at the continuum. Useful only if normalized to continuum</p>
+</dd>
+<dt><strong>scores</strong><span class="classifier">float, optional</span></dt><dd><p>Validation score to be shown in the figure window</p>
+</dd>
+<dt><strong>dev</strong><span class="classifier">bool, optional</span></dt><dd><p>secret testing</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>ax</strong><span class="classifier">mpl.Axes</span></dt><dd><p>Updated axis with all the content added</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-queso_cluster.addon.style">
+<span id="queso-cluster-addon-style"></span><h3>queso_cluster.addon.style<a class="headerlink" href="#module-queso_cluster.addon.style" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/addon/style</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.addon.style.clusterColormap">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">clusterColormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolColorLabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rainbow_PuRd'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/style.html#clusterColormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap" title="Link to this definition"></a></dt>
+<dd><p>Creates a colormap to be used with the cluster maps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>nbounds</strong><span class="classifier">int</span></dt><dd><p>the number of labels to use</p>
+</dd>
+<dt><strong>tolColorLabel</strong><span class="classifier">str, optional</span></dt><dd><p>the name of the TOL colormap to use</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>cmap</strong><span class="classifier">ListedColormap</span></dt><dd><p>The matplotlib colormap to use</p>
+</dd>
+<dt><strong>norm</strong><span class="classifier">BoundaryNorm</span></dt><dd><p>The matplotlib normalization to use</p>
+</dd>
+<dt><strong>bound_ticks</strong><span class="classifier">ndarray</span></dt><dd><p>Tick locations for plt.colorbar</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.style.clusterColormap.cbar_bounds">
+<span class="sig-name descname"><span class="pre">cbar_bounds</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/style.html#clusterColormap.cbar_bounds"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap.cbar_bounds" title="Link to this definition"></a></dt>
+<dd><p>Creates a list of uniform spaced tick locations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>actual_bounds</strong><span class="classifier">ndarray</span></dt><dd><p>The edges of the bins to be used with mpl.colors.BoundaryNorm</p>
+</dd>
+<dt><strong>bound_ticks</strong><span class="classifier">ndarray</span></dt><dd><p>Tick locations for plt.colorbar</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.style.clusterColormap.genColorPalette">
+<span class="sig-name descname"><span class="pre">genColorPalette</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/style.html#clusterColormap.genColorPalette"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap.genColorPalette" title="Link to this definition"></a></dt>
+<dd><p>Creates a list of uniform spaced tick locations</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>color_palette</strong><span class="classifier">list</span></dt><dd><p>The hexcodes for the colors to be used in the colormap</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.addon.style.mapMaker">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mapMaker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spaceInfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/addon/style.html#mapMaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.mapMaker" title="Link to this definition"></a></dt>
+<dd><p>A class to format maps in a consistent way.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>spaceInfo</strong><span class="classifier">dict</span></dt><dd><p>dictionary containing number of pixels in each spatial dimension</p>
+</dd>
+<dt><strong>deltas</strong><span class="classifier">dict</span></dt><dd><p>dictinary containing the raster pixel scale as ‘pxlSlitWidth’ and the along slit pixel scale as ‘pxlAlongSlit’</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl class="simple">
+<dt><strong>flatten</strong><span class="classifier">lambda function</span></dt><dd><p>creates a 1D array from a spatial 2D array</p>
+</dd>
+<dt><strong>unflatten</strong><span class="classifier">lambda function</span></dt><dd><p>creates a spatial 2D array from a flattened 1D array</p>
+</dd>
+<dt><strong>bbox</strong><span class="classifier">ndarray</span></dt><dd><p>1D array containing the extent of the region in pixel units</p>
+</dd>
+<dt><strong>extent</strong><span class="classifier">ndarray</span></dt><dd><p>1D array containing the extent of the region in arcseconds</p>
+</dd>
+<dt><strong>correct</strong><span class="classifier">lambda function</span></dt><dd><p>Flattens a transposed array (for IDL maps only)</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="queso-cluster-loaders">
+<h2>queso_cluster.loaders<a class="headerlink" href="#queso-cluster-loaders" title="Link to this heading"></a></h2>
+<section id="module-queso_cluster.loaders.event">
+<span id="queso-cluster-loaders-event"></span><h3>queso_cluster.loaders.event<a class="headerlink" href="#module-queso_cluster.loaders.event" title="Link to this heading"></a></h3>
+<dl class="field-list simple">
+<dt class="field-odd">file<span class="colon">:</span></dt>
+<dd class="field-odd"><p>queso_cluster/loaders/event.py</p>
+</dd>
+<dt class="field-even">lang<span class="colon">:</span></dt>
+<dd class="field-even"><p>python</p>
+</dd>
+<dt class="field-odd">synopsis<span class="colon">:</span></dt>
+<dd class="field-odd"><p></p></dd>
+<dt class="field-even">author<span class="colon">:</span></dt>
+<dd class="field-even"><p>Sarah Riley &lt;<a class="reference external" href="mailto:academic&#37;&#52;&#48;sriley&#46;dev">academic<span>&#64;</span>sriley<span>&#46;</span>dev</a>&gt;</p>
+</dd>
+</dl>
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.loaders.event.eventRunner">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">eventRunner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">runIndx</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/loaders/event.html#eventRunner"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.loaders.event.eventRunner" title="Link to this definition"></a></dt>
+<dd><p>Detail</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>inputLst</strong><span class="classifier">list</span></dt><dd><p>list</p>
+</dd>
+<dt><strong>runIndx</strong><span class="classifier">int</span></dt><dd><p>integer for the order of the runner in the eventManager.yml</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>date</strong><span class="classifier">str</span></dt><dd><p>the date in YYYY-MM-DD</p>
+</dd>
+<dt><strong>dirid</strong><span class="classifier">str</span></dt><dd><p>the date in YYYYMMDD</p>
+</dd>
+<dt><strong>runners</strong><span class="classifier"><code class="xref py py-class docutils literal notranslate"><span class="pre">runnerMeta</span></code></span></dt><dd><p>object containing runner metadata</p>
+</dd>
+</dl>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.loaders.event.eventRunner.loadSource">
+<span class="sig-name descname"><span class="pre">loadSource</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">eventInput</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/loaders/event.html#eventRunner.loadSource"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.loaders.event.eventRunner.loadSource" title="Link to this definition"></a></dt>
+<dd><p>Loads source configuration from eventManager.yml</p>
+<dl class="field-list">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><dl class="simple">
+<dt><strong>eventInput</strong><span class="classifier">dict</span></dt><dd><p>dictionary containing event specific configuration from eventManager.yml</p>
+</dd>
+</dl>
+</dd>
+<dt class="field-even">Attributes<span class="colon">:</span></dt>
+<dd class="field-even"><dl>
+<dt><strong>srcLst</strong><span class="classifier"><a class="reference internal" href="#queso_cluster.loaders.event.srcMeta" title="queso_cluster.loaders.event.srcMeta"><code class="xref py py-class docutils literal notranslate"><span class="pre">srcMeta</span></code></a></span></dt><dd><p>Specific source metadata referenced in the active runner</p>
+</dd>
+<dt><strong>srcLabelLst</strong><span class="classifier">str</span></dt><dd><p>string identifier for a listed source set by the active runner</p>
+</dd>
+<dt><strong>clusterConfig</strong><span class="classifier">dict</span></dt><dd><p>dictionary of the clustering configuration for the listed source set by the active runner</p>
+</dd>
+</dl>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="queso_cluster.loaders.event.srcMeta">
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">srcMeta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">srcInput</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/queso_cluster/loaders/event.html#srcMeta"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.loaders.event.srcMeta" title="Link to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>srcInput</strong></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 </section>
 
@@ -677,7 +858,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="install.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="queso-tutorial.html" class="btn btn-neutral float-left" title="queso-cluster Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contributors.html" class="btn btn-neutral float-right" title="Project Contributors" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

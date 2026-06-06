@@ -27,8 +27,8 @@
     label: 'Strong flare signatures'
     run: 
       - label: 'timeIndependent'
-        overwrite: False
-        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
+        overwrite: True
+        config: {keepI0: [3], timeFrames: [0, 4], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'AEVEG', mod: ""}
         clustering:
@@ -60,7 +60,7 @@
     label: 'Strong flare signatures'
     run: 
       - label: 'timeIndependentXClass'
-        overwrite: False
+        overwrite: True
         config: {keepI0: [2, 3], timeFrames: [0, 3], bbox: [0, 91, 500, 2548], src: 'BWVCXN', line: 'narrow'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}

@@ -1,7 +1,9 @@
-#> file:  ./QuESO/atoms/aux
-#> lang:  python
-#> synopsis: 
-#> author:   <>
+"""
+	:file: queso_cluster/atoms/aux
+	:lang:  python
+	:synopsis:
+	:author: Sarah Riley <academic@sriley.dev>
+"""
 import numpy as np
 import numba as nb
 
@@ -9,14 +11,12 @@ import datetime
 from  datetime import datetime as dt
 
 
-
-
-def strLst(stringList):
-	if type(stringList) == str:
-		out = [stringList]
-	elif type(stringList) == list:
-		out = stringList
-	return(out)
+# def strLst(stringList):
+# 	if type(stringList) == str:
+# 		out = [stringList]
+# 	elif type(stringList) == list:
+# 		out = stringList
+# 	return(out)
 
 
 def convertTime(dates, ref=False):
@@ -75,25 +75,25 @@ def pick_jth_label(labelLst, j):
 	return(np.array([str(x)[j] for x in labelLst.astype(int)]).astype(int))
 
 
-@nb.njit()
-def density_2channel(x, y, dy, xsize, top, bottom):
-	#> detail: 
-	#> param type x:
-	#> param type y:
-	#> param type dy:
-	#> param type xsize:
-	#> param type top:
-	#> param type bottom:
-	#> return (type): 
-	#> test-method:
-	NbinY   = nb.int32((top-bottom)/dy)
-	centerRaster = np.zeros((xsize, NbinY))
-	for i in range(len(x)):
-		xx = nb.int32(x[i])
-		for j in range(len(y)):
-			yy = nb.int32(np.floor((y[j] - bottom) / dy))
-			centerRaster[xx, yy] += 1
-	return(centerRaster)
+# @nb.njit()
+# def density_2channel(x, y, dy, xsize, top, bottom):
+# 	#> detail: 
+# 	#> param type x:
+# 	#> param type y:
+# 	#> param type dy:
+# 	#> param type xsize:
+# 	#> param type top:
+# 	#> param type bottom:
+# 	#> return (type): 
+# 	#> test-method:
+# 	NbinY   = nb.int32((top-bottom)/dy)
+# 	centerRaster = np.zeros((xsize, NbinY))
+# 	for i in range(len(x)):
+# 		xx = nb.int32(x[i])
+# 		for j in range(len(y)):
+# 			yy = nb.int32(np.floor((y[j] - bottom) / dy))
+# 			centerRaster[xx, yy] += 1
+# 	return(centerRaster)
 
 @nb.njit()
 def density_hist2d(data, dy, top, bottom):

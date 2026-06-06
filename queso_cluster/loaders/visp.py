@@ -35,8 +35,8 @@ class visp:
 						spectral_len = dnaxis_entry
 						spectral_loc = int(np.where(np.asarray(dataCube.shape) == dnaxis_entry)[0])
 				case 'TEMPORAL':
-						numRaster = dnaxis_entry
-						flat_axis *= numRaster
+						numRasters = dnaxis_entry
+						flat_axis *= numRasters
 				case 'SPATIAL':
 						crval.append(dataset.headers['CRVAL' + str(n+1)][0])
 						flat_axis *= dnaxis_entry
@@ -49,8 +49,8 @@ class visp:
 				case 'HPLT-TAN':                     
 					pxlSize[0].append(dataset.headers['CDELT' + str(m+1)][0])   
 					pxlSize[1].append(m)
-				case 'AWAV':
-						waveAxisDelta = dataset.headers['CDELT' + str(m+1)][0]
+				#case 'AWAV':
+				#		waveAxisDelta = dataset.headers['CDELT' + str(m+1)][0]
 
 
 		self.deltas = {	
@@ -60,26 +60,29 @@ class visp:
 
 		self.dataCube = np.moveaxis(dataCube, spectral_loc, -1)
 		self.shape = self.dataCube.shape
-		if numRaster == 1 or flattenTime:
+		if numRasters == 1 or flattenTime:
 			self.shape = self.dataCube.shape
 			self.dataSquare = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
 		else:
-			self.dataSquare = self.dataCube.reshape(numRaster, flat_axis//numRaster, spectral_len)
+			self.dataSquare = self.dataCube.reshape(numRasters, flat_axis//numRasters, spectral_len)
 
-		self.alongSlitSize 	= np.max(test)
-		self.rasterSize 	= (flat_axis // self.alongSlitSize) // numRaster
+		self.dimInfo = {
+			"numRasters" : numRasters,
+			"alongSlitSize" : np.max(test),
+			"rasterSize" : (flat_axis // np.max(test)) // numRasters,
+		}
 
-		self.spaceInfo = {
-			"maxRasters": numRaster,
-			"rasterSize": self.rasterSize,
-			"alongSlitSize": self.alongSlitSize,
-		}
-		self.waveInfo = {
-			#"waveDelta": waveAxisDelta,
-			"waveExtrema": (dataset.headers['WAVEMIN'][0], 
-							dataset.headers['LINEWAV'][0], 
-							dataset.headers['WAVEMAX'][0])
-		}
+		# self.spaceInfo = {
+		# 	"maxRasters": numRaster,
+		# 	"rasterSize": self.rasterSize,
+		# 	"alongSlitSize": self.alongSlitSize,
+		# }
+		# self.waveInfo = {
+		# 	#"waveDelta": waveAxisDelta,
+		# 	"waveExtrema": (dataset.headers['WAVEMIN'][0], 
+		# 					dataset.headers['LINEWAV'][0], 
+		# 					dataset.headers['WAVEMAX'][0])
+		# }
 
 		datetime = auxAtom.convertTime(dataset.headers['DATE-BEG'])
 
@@ -90,14 +93,14 @@ class visp:
 		#> Note: step cadence -- the time between slit positions 
 		#> Note: map cadence -- the time between rasters
 		#> Note: reset time -- the time it takes to go from the end of the raster to the start of a new raster
-		stepCadence = np.diff(datetime[0:self.rasterSize])
+		stepCadence = np.diff(datetime[0:self.dimInfo['rasterSize']])
 		stepCadence = stepCadence[stepCadence > 0]
 		self.stepCadence = stepCadence.mean() * pint.Unit("second")
 
-		mapCadence = np.diff(datetime[::self.rasterSize])
+		mapCadence = np.diff(datetime[::self.dimInfo['rasterSize']])
 		mapCadence = mapCadence[mapCadence > 0]
 
-		self.resetTime = datetime[self.rasterSize-1:self.rasterSize+1] * pint.Unit("second")
+		self.resetTime = datetime[self.dimInfo['rasterSize']-1:self.dimInfo['rasterSize']+1] * pint.Unit("second")
 
 		if len(np.unique(mapCadence)) > 0: 
 			self.mapCadence = mapCadence.mean() * pint.Unit("second")

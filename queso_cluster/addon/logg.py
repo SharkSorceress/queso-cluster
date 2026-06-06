@@ -4,6 +4,7 @@
 #> author:   <>
 import logging
 import timeit 
+import functools
 
 logger = logging.getLogger("queso_cluster")
 logger.addHandler(logging.NullHandler())
@@ -13,6 +14,7 @@ def loggTimer(func):
 #> param type func:
 #> return (type): 
 #> test-method:
+	@functools.wraps(func)
 	def wrapper(*args, **kwargs):
 		__log__ = logg("start", val="{}".format(func.__name__))
 		value = func(*args, **kwargs)
