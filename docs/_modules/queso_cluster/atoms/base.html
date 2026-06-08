@@ -1,82 +1,417 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="../../../">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>queso_cluster.atoms.base &mdash; QuESO Documentation</title>
-      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-      <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=b6fd5f62" />
+
+
+<html lang="en" data-content_root="../../../" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>queso_cluster.atoms.base &#8212; QuESO Documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=933a268b" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="../../../_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+
+    <script src="../../../_static/documentation_options.js?v=7f41d439"></script>
+    <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/queso_cluster/atoms/base';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="../../../_static/iconTeal_small.png"/>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.1.0" />
+  
+    
+    <script src="../../../_static/searchtools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script src="../../../searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
 
   
-    <link rel="shortcut icon" href="../../../_static/iconTeal_small.png"/>
-      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
-      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="../../../_static/documentation_options.js?v=87801401"></script>
-      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="../../../_static/js/theme.js"></script>
-    <link rel="index" title="Index" href="../../../genindex.html" />
-    <link rel="search" title="Search" href="../../../search.html" /> 
-</head>
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
-
-          
-          
-          <a href="../../../index.html">
-            
-              <img src="../../../_static/iconTeal_small.png" class="logo" alt="Logo"/>
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../queso-tutorial.html"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../api-reference.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../contributors.html">Project Contributors</a></li>
-</ul>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">This is under active development</div>
+</aside>
 
-        </div>
-      </div>
-    </nav>
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../../../index.html">QuESO</a>
-      </nav>
+  
+    
+  
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
-          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
-      <li class="breadcrumb-item active">queso_cluster.atoms.base</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/iconTeal_small.png" class="logo__image only-light" alt=""/>
+    <img src="../../../_static/iconTeal_small.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">QuESO</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting-started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contributors.html">
+    Project Contributors
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
   </ul>
-  <hr/>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SharkSorceress/queso-cluster" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-github-original fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/queso-cluster/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-pypi-plain fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../getting-started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contributors.html">
+    Project Contributors
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../api/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SharkSorceress/queso-cluster" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-github-original fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/queso-cluster/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-pypi-plain fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="../../../index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="../../index.html" class="nav-link">Module code</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">queso_cluster.atoms.base</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <h1>Source code for queso_cluster.atoms.base</h1><div class="highlight"><pre>
 <span></span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	:file: queso_cluster/atoms/base.py</span>
@@ -91,7 +426,7 @@
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">error</span> <span class="k">as</span> <span class="n">errAtom</span>
 
 <div class="viewcode-block" id="concatSpectra">
-<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.atoms.base.concatSpectra">[docs]</a>
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.concatSpectra">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">concatSpectra</span><span class="p">(</span><span class="n">dataSquareLst</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Function to concatenate several channels of data into one array for clustering</span>
@@ -111,7 +446,7 @@
 
 
 <div class="viewcode-block" id="numba_histogram">
-<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.atoms.base.numba_histogram">[docs]</a>
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.numba_histogram">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">numba_histogram</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">lim</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
@@ -146,7 +481,7 @@
 
 
 <div class="viewcode-block" id="rotateArray">
-<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.atoms.base.rotateArray">[docs]</a>
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.rotateArray">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">rotateArray</span><span class="p">(</span><span class="n">image</span><span class="p">,</span> <span class="n">turns</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">	Rotates an array</span>
@@ -171,6 +506,8 @@
 	<span class="k">return</span><span class="p">(</span><span class="n">image</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
 
 
+<div class="viewcode-block" id="get_bin_edges">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.get_bin_edges">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_bin_edges</span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">lim</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -186,9 +523,12 @@
 		<span class="n">bin_edges</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_min</span> <span class="o">+</span> <span class="n">i</span> <span class="o">*</span> <span class="n">delta</span>
 
 	<span class="n">bin_edges</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_max</span>  <span class="c1"># Avoid roundoff error on last point</span>
-	<span class="k">return</span> <span class="n">bin_edges</span>
+	<span class="k">return</span> <span class="n">bin_edges</span></div>
 
 
+
+<div class="viewcode-block" id="compute_bin">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.compute_bin">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">compute_bin</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">bin_edges</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -210,8 +550,11 @@
 	<span class="k">if</span> <span class="nb">bin</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">bin</span> <span class="o">&gt;=</span> <span class="n">n</span><span class="p">:</span>
 		<span class="k">return</span> <span class="kc">None</span>
 	<span class="k">else</span><span class="p">:</span>
-		<span class="k">return</span> <span class="nb">bin</span>
+		<span class="k">return</span> <span class="nb">bin</span></div>
 
+
+<div class="viewcode-block" id="np_gradient">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.np_gradient">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">np_gradient</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -223,8 +566,11 @@
 	<span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">:]</span> <span class="o">-</span> <span class="n">f</span><span class="p">[:</span><span class="o">-</span><span class="mi">2</span><span class="p">])</span> <span class="o">/</span> <span class="mf">2.0</span>
 	<span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 	<span class="n">out</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">2</span><span class="p">]</span>
-	<span class="k">return</span> <span class="n">out</span>
+	<span class="k">return</span> <span class="n">out</span></div>
 
+
+<div class="viewcode-block" id="minimize">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.minimize">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">minimize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decisions</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -241,8 +587,11 @@
 			<span class="n">sq_dist</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span> 	<span class="o">=</span> <span class="n">similarityMetric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,:],</span> <span class="n">decisions</span><span class="p">[</span><span class="n">kk</span><span class="p">,</span> <span class="p">:])</span>
 		<span class="n">data_label</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>  <span class="o">=</span> <span class="n">sq_dist</span><span class="o">.</span><span class="n">argmin</span><span class="p">()</span>
 		<span class="n">D_x</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>         <span class="o">=</span> <span class="n">sq_dist</span><span class="p">[</span><span class="n">nb</span><span class="o">.</span><span class="n">u4</span><span class="p">(</span><span class="n">data_label</span><span class="p">[</span><span class="n">ii</span><span class="p">])]</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">data_label</span><span class="p">,</span> <span class="n">D_x</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">data_label</span><span class="p">,</span> <span class="n">D_x</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="maximize">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.maximize">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">maximize</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">decisions</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -261,8 +610,11 @@
 			<span class="n">sq_dist</span><span class="p">[</span><span class="n">kk</span><span class="p">]</span> 	<span class="o">=</span> <span class="n">similarityMetric</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">ii</span><span class="p">,:],</span> <span class="n">decisions</span><span class="p">[</span><span class="n">kk</span><span class="p">,</span> <span class="p">:])</span>
 		<span class="n">data_label</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>  <span class="o">=</span> <span class="n">sq_dist</span><span class="o">.</span><span class="n">argmax</span><span class="p">()</span>
 		<span class="n">D_x</span><span class="p">[</span><span class="n">ii</span><span class="p">]</span>         <span class="o">=</span> <span class="n">sq_dist</span><span class="p">[</span><span class="n">nb</span><span class="o">.</span><span class="n">u4</span><span class="p">(</span><span class="n">data_label</span><span class="p">[</span><span class="n">ii</span><span class="p">])]</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">data_label</span><span class="p">,</span> <span class="n">D_x</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">data_label</span><span class="p">,</span> <span class="n">D_x</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="np_all_axis0">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.np_all_axis0">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">np_all_axis0</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: Numba compatible version of np.all(x, axis=0)</span>
@@ -272,8 +624,11 @@
 	<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool8</span><span class="p">)</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
 		<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
-	<span class="k">return</span> <span class="n">out</span>
+	<span class="k">return</span> <span class="n">out</span></div>
 
+
+<div class="viewcode-block" id="np_all_axis1">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.np_all_axis1">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">np_all_axis1</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: Numba compatible version of np.all(x, axis=1)</span>
@@ -283,8 +638,11 @@
 	<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">bool8</span><span class="p">)</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
 		<span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">out</span><span class="p">,</span> <span class="n">x</span><span class="p">[:,</span> <span class="n">i</span><span class="p">])</span>
-	<span class="k">return</span> <span class="n">out</span>
+	<span class="k">return</span> <span class="n">out</span></div>
 
+
+<div class="viewcode-block" id="similarityMetric">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.similarityMetric">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">similarityMetric</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;dist&#39;</span><span class="p">,</span> <span class="n">ref</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -303,8 +661,11 @@
 		<span class="n">y</span> <span class="o">-=</span> <span class="n">ref</span>
 		<span class="n">similarityCoeff</span> <span class="o">=</span> <span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">y</span><span class="p">)))</span>	
 		<span class="n">metric</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">similarityCoeff</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">metric</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="curvature">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.curvature">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">curvature</span><span class="p">(</span><span class="n">y</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -313,11 +674,12 @@
 	<span class="c1">#&gt; test-method:</span>
 	<span class="n">grady</span> <span class="o">=</span> <span class="n">np_gradient</span><span class="p">(</span><span class="n">y</span><span class="p">)</span>
 	<span class="n">signedCurvature</span> <span class="o">=</span> <span class="n">np_gradient</span><span class="p">(</span><span class="n">grady</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">grady</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">grady</span><span class="p">)),</span> <span class="mi">3</span><span class="p">))</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">signedCurvature</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">power</span><span class="p">(</span><span class="n">signedCurvature</span><span class="p">,</span> <span class="mi">2</span><span class="p">)))</span></div>
+
 <span class="c1">#	return(np.abs(np.gradient(np.gradient(y)))/(np.sqrt(1 + np.gradient(y)**2)**3))</span>
 
 <div class="viewcode-block" id="startMax">
-<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.atoms.base.startMax">[docs]</a>
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.startMax">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">startMax</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">decisions</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
@@ -354,7 +716,7 @@
 
 
 <div class="viewcode-block" id="startPlusPlus">
-<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.atoms.base.startPlusPlus">[docs]</a>
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.startPlusPlus">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">startPlusPlus</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">decisions</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
@@ -401,6 +763,8 @@
 
 
 
+<div class="viewcode-block" id="_calcMoment">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base._calcMoment">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_calcMoment</span><span class="p">(</span><span class="n">waveAxis</span><span class="p">,</span> <span class="n">ii</span><span class="p">,</span> <span class="n">jj</span><span class="p">,</span> <span class="n">lineCore</span><span class="p">,</span> <span class="n">dataCube</span><span class="p">,</span> <span class="n">order</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">counter</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>    
 	<span class="c1">#&gt; detail: </span>
@@ -423,7 +787,8 @@
 			<span class="n">momentN</span><span class="p">[</span><span class="n">counter</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">momentN</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
 		<span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 	
-	<span class="k">return</span><span class="p">(</span><span class="n">momentN</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">momentN</span><span class="p">)</span></div>
+
 
 <span class="c1"># @nb.njit()</span>
 <span class="c1"># def _calcFeatureDensity(data, converge, zindx, func1):</span>
@@ -448,7 +813,7 @@
 
 
 <div class="viewcode-block" id="calcOptimization">
-<a class="viewcode-back" href="../../../api-reference.html#queso_cluster.atoms.base.calcOptimization">[docs]</a>
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.calcOptimization">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">calcOptimization</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">decision</span><span class="p">,</span> <span class="n">threshold</span><span class="o">=</span><span class="mf">1e-6</span><span class="p">):</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
@@ -507,6 +872,8 @@
 
 
 
+<div class="viewcode-block" id="labelGluer">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.labelGluer">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">labelGluer</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
 	<span class="c1">#&gt; param type labels:</span>
@@ -517,8 +884,11 @@
 		<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
 			<span class="n">time_label_concat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">time_label_concat</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">labels</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">l</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)))</span>	
 
-	<span class="k">return</span><span class="p">(</span><span class="n">time_label_concat</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">time_label_concat</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="labelReorder">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base.labelReorder">[docs]</a>
 <span class="k">def</span><span class="w"> </span><span class="nf">labelReorder</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
 	<span class="c1">#&gt; param type labels:</span>
@@ -545,8 +915,11 @@
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labels</span><span class="p">)):</span>
 		<span class="n">time_label_concat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">time_label_concat</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">char</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">time_label</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span>	
 
-	<span class="k">return</span><span class="p">(</span><span class="n">time_label_concat</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">time_label_concat</span><span class="p">)</span></div>
 
+
+<div class="viewcode-block" id="_calcQuiescentFrame">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base._calcQuiescentFrame">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_calcQuiescentFrame</span><span class="p">(</span><span class="n">spectralData</span><span class="p">,</span> <span class="n">spectralParams</span><span class="p">,</span> <span class="n">contIndxs</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -567,8 +940,11 @@
 			<span class="n">quiescentFrame</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">spectralData</span><span class="p">[</span><span class="n">qindx</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">:]</span>
 			<span class="k">if</span> <span class="n">progress</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
 				<span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">quiescentFrame</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">spectralData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">spectralData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">spectralData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">quiescentFrame</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">spectralData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">*</span><span class="n">spectralData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">spectralData</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span></div>
 
+
+<div class="viewcode-block" id="_calcDynamicFrame">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/base/index.html#queso_cluster.atoms.base._calcDynamicFrame">[docs]</a>
 <span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_calcDynamicFrame</span><span class="p">(</span><span class="n">spectralData</span><span class="p">,</span> <span class="n">dynamicScanNum</span><span class="p">,</span> <span class="n">progress</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">delta</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 	<span class="c1">#&gt; detail: </span>
@@ -586,34 +962,79 @@
 				<span class="n">dynamicFrame</span><span class="p">[</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">spectralData</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="p">:]</span>
 				<span class="k">if</span> <span class="n">progress</span> <span class="o">!=</span> <span class="kc">None</span><span class="p">:</span>
 					<span class="n">progress</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">dynamicFrame</span><span class="p">)</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">dynamicFrame</span><span class="p">)</span></div>
+
 </pre></div>
 
-           </div>
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
           </div>
-          <footer>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2026, Sarah Riley.</p>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
   </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
+<script defer src="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
 
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
 
-</footer>
-        </div>
-      </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+  <p class="copyright">
+    
+      © Copyright 2026, Sarah Riley.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
 
-</body>
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
 </html>

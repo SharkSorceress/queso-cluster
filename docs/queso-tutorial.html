@@ -1,98 +1,446 @@
 
-
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" data-content_root="./">
-<head>
-  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>queso-cluster Tutorial &mdash; QuESO Documentation</title>
-      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
-      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
-      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
-      <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=b6fd5f62" />
 
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>queso-cluster Tutorial &#8212; QuESO Documentation</title>
   
-    <link rel="shortcut icon" href="_static/iconTeal_small.png"/>
-      <script src="_static/jquery.js?v=5d32c60e"></script>
-      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-      <script src="_static/documentation_options.js?v=87801401"></script>
-      <script src="_static/doctools.js?v=fd6eb6e6"></script>
-      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
-    <script src="_static/js/theme.js"></script>
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  <!--
+    this give us a css class that will be invisible only if js is disabled
+  -->
+  <noscript>
+    <style>
+      .pst-js-only { display: none !important; }
+
+    </style>
+  </noscript>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=0790524f97105ba85085" rel="stylesheet" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
+    <link rel="stylesheet" type="text/css" href="_static/css/custom.css?v=933a268b" />
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
+  
+  <!-- So that users can add custom icons -->
+  <script defer src="_static/scripts/fontawesome.js?digest=0790524f97105ba85085"></script>
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
+
+    <script src="_static/documentation_options.js?v=7f41d439"></script>
+    <script src="_static/doctools.js?v=fd6eb6e6"></script>
+    <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'queso-tutorial';</script>
+    <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
+    <link rel="icon" href="_static/iconTeal_small.png"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="API Reference" href="api-reference.html" />
-    <link rel="prev" title="Introduction to k-means clustering of spectra" href="intro-clustering.html" /> 
-</head>
+    <link rel="prev" title="Introduction to k-means clustering of spectra" href="intro-clustering.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  <meta name="docsearch:version" content="v0.1.0" />
+  
+    
+    <script src="_static/searchtools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <script src="searchindex.js"></script>
+  
+  </head>
+  <body data-default-mode="">
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
 
-<body class="wy-body-for-nav"> 
-  <div class="wy-grid-for-nav">
-    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search" >
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+  
+  
+  
+  
+  <dialog id="pst-search-dialog">
+    
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         placeholder="Search the docs ..."
+         aria-label="Search the docs ..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+  </dialog>
 
-          
-          
-          <a href="index.html">
-            
-              <img src="_static/iconTeal_small.png" class="logo" alt="Logo"/>
-          </a>
-<div role="search">
-  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
-    <input type="hidden" name="check_keywords" value="yes" />
-    <input type="hidden" name="area" value="default" />
-  </form>
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
-        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference external" href="https://queso.sriley.dev">Documentation Home</a></li>
-<li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#i-a-brief-introduction">I. A brief introduction</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#a-getting-started">A. Getting started</a></li>
-</ul>
+<aside class="bd-header-announcement" aria-label="Announcement">
+  <div class="bd-header-announcement__content">This is under active development</div>
+</aside>
+
+  
+    <header id="pst-header" class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+<div class="bd-header__inner bd-page-width">
+  <button class="pst-navbar-icon sidebar-toggle primary-toggle" aria-label="Site navigation">
+    <span class="fa-solid fa-bars"></span>
+  </button>
+  
+  
+  <div class=" navbar-header-items__start">
+    
+      <div class="navbar-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/iconTeal_small.png" class="logo__image only-light" alt=""/>
+    <img src="_static/iconTeal_small.png" class="logo__image only-dark pst-js-only" alt=""/>
+  
+  
+    <p class="title logo__title">QuESO</p>
+  
+</a></div>
+    
+  </div>
+  
+  <div class=" navbar-header-items">
+    
+    <div class="me-auto navbar-header-items__center">
+      
+        <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting-started.html">
+    Getting Started
+  </a>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#b-instrument-loader-objects">B. Instrument Loader Objects</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ii-time-independent-clustering">II. Time-independent clustering</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#iii-time-dependent-clustering">III. Time-dependent clustering</a></li>
-</ul>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributors.html">
+    Project Contributors
+  </a>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="api-reference.html">API Reference</a></li>
-<li class="toctree-l1"><a class="reference internal" href="contributors.html">Project Contributors</a></li>
-</ul>
 
-        </div>
-      </div>
-    </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
-          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="index.html">QuESO</a>
-      </nav>
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API Reference
+  </a>
+</li>
 
-      <div class="wy-nav-content">
-        <div class="rst-content">
-          <div role="navigation" aria-label="Page navigation">
-  <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</li>
-      <li class="wy-breadcrumbs-aside">
-      </li>
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
   </ul>
-  <hr/>
+</nav></div>
+      
+    </div>
+    
+    
+    <div class="navbar-header-items__end">
+      
+        <div class="navbar-item navbar-persistent--container">
+          
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+        </div>
+      
+      
+        <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+      
+        <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SharkSorceress/queso-cluster" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-github-original fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/queso-cluster/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-pypi-plain fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+      
+    </div>
+    
+  </div>
+  
+  
+    <div class="navbar-persistent--mobile">
+
+<button class="btn search-button-field search-button__button pst-js-only" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+ <i class="fa-solid fa-magnifying-glass"></i>
+ <span class="search-button__default-text">Search</span>
+ <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+</button>
+    </div>
+  
+
+  
+    <button class="pst-navbar-icon sidebar-toggle secondary-toggle" aria-label="On this page">
+      <span class="fa-solid fa-outdent"></span>
+    </button>
+  
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
-             
+
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <dialog id="pst-primary-sidebar-modal"></dialog>
+      <div id="pst-primary-sidebar" class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+        
+          
+          
+            <div class="navbar-item">
+<nav>
+  <ul class="bd-navbar-elements navbar-nav">
+    
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="getting-started.html">
+    Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="contributors.html">
+    Project Contributors
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="api/index.html">
+    API Reference
+  </a>
+</li>
+
+
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="tutorials.html">
+    Tutorials
+  </a>
+</li>
+
+  </ul>
+</nav></div>
+          
+        
+      </div>
+    
+    
+    
+      <div class="sidebar-header-items__end">
+        
+          <div class="navbar-item">
+
+<div class="theme-switch-container dropdown pst-js-only" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Color mode">
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button dropdown-toggle" aria-label="Color mode" data-bs-toggle="dropdown">
+    <i class="theme-switch fa-solid fa-sun fa-lg fa-fw" data-mode="light" title="Light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg fa-fw" data-mode="dark" title="Dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg fa-fw" data-mode="auto" title="System Settings"></i>
+  </button>
+  <ul class="dropdown-menu dropdown-menu-end">
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg fa-fw me-1"></i>System Settings</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="light"><i class="fa-solid fa-sun fa-lg fa-fw me-1"></i>Light</button></li>
+    <li><button class="dropdown-item d-flex align-items-center theme-change-button" data-mode="dark"><i class="fa-solid fa-moon fa-lg fa-fw me-1"></i>Dark</button></li>
+  </ul>
+</div></div>
+        
+          <div class="navbar-item"><ul class="navbar-icon-links"
+    aria-label="Icon Links">
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://github.com/SharkSorceress/queso-cluster" title="GitHub" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-github-original fa-lg" aria-hidden="true"></i><span class="visually-hidden">GitHub</span></a>
+        </li>
+        <li class="nav-item">
+          
+          
+          
+          
+          
+          
+          
+          
+          <a href="https://pypi.org/project/queso-cluster/" title="PyPI" class="nav-link pst-navbar-icon" rel="noopener" target="_blank" data-bs-toggle="tooltip" data-bs-placement="bottom"><i class="devicon-pypi-plain fa-lg" aria-hidden="true"></i><span class="visually-hidden">PyPI</span></a>
+        </li>
+</ul></div>
+        
+      </div>
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item pst-sidebar-collapse"><button id="pst-collapse-sidebar-button" aria-expanded="true" aria-controls="pst-primary-sidebar"><svg class="pst-icon svg-inline--fa" role="img" aria-hidden="true" focusable="false" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg">
+    <path fill="currentColor" d="M3 15.5C2.36232 15.5 1.74874 15.2564 1.28478 14.8189C0.820828 14.3815 0.541576 13.7832 0.504167 13.1467L0.5 13L0.5 3C0.499965 2.36232 0.743605 1.74874 1.18107 1.28478C1.61854 0.820828 2.21676 0.541576 2.85333 0.504167L3 0.5L13 0.5C13.6377 0.499965 14.2513 0.743605 14.7152 1.18107C15.1792 1.61854 15.4584 2.21676 15.4958 2.85333L15.5 3L15.5 13C15.5 13.6377 15.2564 14.2513 14.8189 14.7152C14.3815 15.1792 13.7832 15.4584 13.1467 15.4958L13 15.5L3 15.5ZM3 13.8333L10.5 13.8333L10.5 2.16667L3 2.16667C2.79589 2.16669 2.59889 2.24163 2.44636 2.37726C2.29383 2.5129 2.19638 2.69979 2.1725 2.9025L2.16667 3L2.16667 13C2.16669 13.2041 2.24163 13.4011 2.37726 13.5536C2.5129 13.7062 2.69979 13.8036 2.9025 13.8275L3 13.8333ZM6.65583 10.325L6.5775 10.2558L4.91083 8.58917C4.76735 8.44567 4.68116 8.25476 4.66843 8.05223C4.65569 7.84971 4.71729 7.6495 4.84167 7.48917L4.91083 7.41083L6.5775 5.74417C6.72747 5.59471 6.9287 5.50794 7.14032 5.50148C7.35194 5.49502 7.55809 5.56935 7.7169 5.70937C7.8757 5.8494 7.97525 6.04463 7.99533 6.25539C8.01541 6.46616 7.95451 6.67667 7.825 6.84417L7.75583 6.9225L6.67917 8L7.75583 9.0775C7.89931 9.22099 7.98551 9.41191 7.99824 9.61443C8.01097 9.81695 7.94938 10.0172 7.825 10.1775L7.75583 10.2558C7.61234 10.3993 7.42142 10.4855 7.2189 10.4982C7.01638 10.511 6.81617 10.4494 6.65583 10.325Z"/>
+  </svg>
+  <span class="pst-collapse-sidebar-label">Collapse Sidebar</span>
+  <span class="pst-expand-sidebar-label">Expand Sidebar</span>
+</button></div>
+        <div class="sidebar-primary-item">
+
+<nav class="bd-docs-nav bd-links"
+     aria-label="Section Navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="intro-clustering.html">Introduction to k-means clustering of spectra</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</a></li>
+</ul>
+</div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+      <div class="sidebar-primary-item">
+<div id="ethical-ad-placement"
+      class="flat"
+      data-ea-publisher="readthedocs"
+      data-ea-type="readthedocs-sidebar"
+      data-ea-manual="true">
+</div></div>
+  </div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item">
+
+<nav aria-label="Breadcrumb" class="d-print-none">
+  <ul class="bd-breadcrumbs">
+    
+    <li class="breadcrumb-item breadcrumb-home">
+      <a href="index.html" class="nav-link" aria-label="Home">
+        <i class="fa-solid fa-home"></i>
+      </a>
+    </li>
+    
+    <li class="breadcrumb-item"><a href="tutorials.html" class="nav-link">Tutorials</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis"><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial</span></li>
+  </ul>
+</nav>
+</div>
+      
+    </div>
+  
+  
+</div>
+</div>
+              
+              
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
   <section id="queso-cluster-tutorial">
-<h1><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial<a class="headerlink" href="#queso-cluster-tutorial" title="Link to this heading"></a></h1>
+<h1><code class="docutils literal notranslate"><span class="pre">queso-cluster</span></code> Tutorial<a class="headerlink" href="#queso-cluster-tutorial" title="Link to this heading">#</a></h1>
 <p><strong>This is a work in progress!!!</strong></p>
-<section id="i-a-brief-introduction">
-<h2>I. A brief introduction<a class="headerlink" href="#i-a-brief-introduction" title="Link to this heading"></a></h2>
+<section id="a-brief-introduction">
+<h2>A brief introduction<a class="headerlink" href="#a-brief-introduction" title="Link to this heading">#</a></h2>
 <p>This package is still under active development!! I am working on it.</p>
 <p>For package installation:</p>
 <div class="cell docutils container">
@@ -112,7 +460,7 @@
 </pre></div>
 </div>
 <div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span><span class=" -Color -Color-Yellow">WARNING: Ignoring invalid distribution ~ueso-cluster (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages)</span>
-Requirement already satisfied: queso-cluster in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (0.0.2)
+Requirement already satisfied: queso-cluster in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (0.1.0)
 Requirement already satisfied: numpy&gt;=1.25 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.26.0)
 Requirement already satisfied: dkist in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.16.0)
 Requirement already satisfied: scipy in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (1.15.2)
@@ -123,12 +471,12 @@ Requirement already satisfied: dask in /nfs/hl0/data/sriley/src/sriley/lib/pytho
 Requirement already satisfied: pyyaml in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (6.0.2)
 Requirement already satisfied: tol-colors in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (2.2.0)
 Requirement already satisfied: pint in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from queso-cluster) (0.25.3)
-Requirement already satisfied: pyerfa&gt;=2.0.1.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (2.0.1.5)
-Requirement already satisfied: astropy-iers-data&gt;=0.2025.1.31.12.41.4 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (0.2025.4.7.0.35.30)
-Requirement already satisfied: packaging&gt;=22.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (24.2)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: click&gt;=8.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (8.1.8)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pyerfa&gt;=2.0.1.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (2.0.1.5)
+Requirement already satisfied: astropy-iers-data&gt;=0.2025.1.31.12.41.4 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (0.2025.4.7.0.35.30)
+Requirement already satisfied: packaging&gt;=22.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from astropy-&gt;queso-cluster) (24.2)
+Requirement already satisfied: click&gt;=8.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (8.1.8)
 Requirement already satisfied: cloudpickle&gt;=3.0.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (3.1.1)
 Requirement already satisfied: fsspec&gt;=2021.09.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (2025.3.2)
 Requirement already satisfied: partd&gt;=1.4.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (1.4.2)
@@ -136,7 +484,9 @@ Requirement already satisfied: toolz&gt;=0.10.0 in /nfs/hl0/data/sriley/src/sril
 Requirement already satisfied: importlib_metadata&gt;=4.13.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dask-&gt;queso-cluster) (8.6.1)
 Requirement already satisfied: zipp&gt;=3.20 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from importlib_metadata&gt;=4.13.0-&gt;dask-&gt;queso-cluster) (3.21.0)
 Requirement already satisfied: locket in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from partd&gt;=1.4.0-&gt;dask-&gt;queso-cluster) (1.0.0)
-Requirement already satisfied: aiohttp&gt;=3.9 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (3.11.16)
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: aiohttp&gt;=3.9 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (3.11.16)
 Requirement already satisfied: asdf&gt;=3.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (4.1.0)
 Requirement already satisfied: asdf-astropy&gt;=0.5.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.7.1)
 Requirement already satisfied: asdf-coordinates-schemas&gt;=0.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (0.3.0)
@@ -151,9 +501,7 @@ Requirement already satisfied: parfive&gt;=2.2.0 in /nfs/hl0/data/sriley/src/sri
 Requirement already satisfied: platformdirs&gt;=3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (4.3.7)
 Requirement already satisfied: sunpy&gt;=5.0.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from sunpy[asdf,net]&gt;=5.0.7-&gt;dkist-&gt;queso-cluster) (6.1.1)
 Requirement already satisfied: tqdm&gt;=4.65 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from dkist-&gt;queso-cluster) (4.67.1)
-</pre></div>
-</div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: aiohappyeyeballs&gt;=2.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (2.6.1)
+Requirement already satisfied: aiohappyeyeballs&gt;=2.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (2.6.1)
 Requirement already satisfied: aiosignal&gt;=1.1.2 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (1.3.2)
 Requirement already satisfied: attrs&gt;=17.3.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (25.3.0)
 Requirement already satisfied: frozenlist&gt;=1.1.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from aiohttp&gt;=3.9-&gt;dkist-&gt;queso-cluster) (1.5.0)
@@ -172,10 +520,10 @@ Requirement already satisfied: charset-normalizer&lt;4,&gt;=2 in /nfs/hl0/data/s
 Requirement already satisfied: urllib3&lt;3,&gt;=1.21.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from requests&lt;3.0.0,&gt;=2.19.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.3.0)
 Requirement already satisfied: certifi&gt;=2017.4.17 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from requests&lt;3.0.0,&gt;=2.19.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2025.1.31)
 Requirement already satisfied: cffi&gt;=1.12 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from cryptography!=3.4.0,&gt;=3.3.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (1.17.1)
-Requirement already satisfied: pycparser in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from cffi&gt;=1.12-&gt;cryptography!=3.4.0,&gt;=3.3.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.22)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: contourpy&gt;=1.0.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.3.1)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: pycparser in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from cffi&gt;=1.12-&gt;cryptography!=3.4.0,&gt;=3.3.1-&gt;globus-sdk&gt;=3.0-&gt;dkist-&gt;queso-cluster) (2.22)
+Requirement already satisfied: contourpy&gt;=1.0.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.3.1)
 Requirement already satisfied: cycler&gt;=0.10 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (0.12.1)
 Requirement already satisfied: fonttools&gt;=4.22.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (4.57.0)
 Requirement already satisfied: kiwisolver&gt;=1.3.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.4.8)
@@ -184,10 +532,10 @@ Requirement already satisfied: pyparsing&gt;=2.3.1 in /nfs/hl0/data/sriley/src/s
 Requirement already satisfied: python-dateutil&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (2.9.0.post0)
 Requirement already satisfied: mpl_animators&gt;=1.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (1.2.1)
 Requirement already satisfied: reproject&gt;=0.7.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (0.14.1)
+Requirement already satisfied: aioftp&gt;=0.17.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from parfive[ftp]&gt;=2.2.0-&gt;dkist-&gt;queso-cluster) (0.24.1)
 </pre></div>
 </div>
-<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: aioftp&gt;=0.17.1 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from parfive[ftp]&gt;=2.2.0-&gt;dkist-&gt;queso-cluster) (0.24.1)
-Requirement already satisfied: six&gt;=1.5 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.17.0)
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Requirement already satisfied: six&gt;=1.5 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from python-dateutil&gt;=2.7-&gt;matplotlib&gt;=3.7-&gt;dkist-&gt;queso-cluster) (1.17.0)
 Requirement already satisfied: astropy-healpix&gt;=1.0 in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (1.1.2)
 Requirement already satisfied: zarr in /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages (from reproject&gt;=0.7.1-&gt;ndcube[plotting,reproject]&gt;=2.1-&gt;dkist-&gt;queso-cluster) (3.0.6)
 </pre></div>
@@ -263,8 +611,8 @@ Requirement already satisfied: crc32c&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley
 <span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="p p-Indicator">{</span><span class="nt">label</span><span class="p">:</span><span class="w"> </span><span class="s">&#39;Ni&#39;</span><span class="p p-Indicator">,</span><span class="nt"> continuum</span><span class="p">:</span><span class="w"> </span><span class="nv">375</span><span class="p p-Indicator">,</span><span class="nt"> core</span><span class="p">:</span><span class="w"> </span><span class="nv">291</span><span class="p p-Indicator">,</span><span class="nt"> window</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">256</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="nv">327</span><span class="p p-Indicator">]}</span>
 </pre></div>
 </div>
-<section id="a-getting-started">
-<h3>A. Getting started<a class="headerlink" href="#a-getting-started" title="Link to this heading"></a></h3>
+<section id="getting-started">
+<h3>Getting started<a class="headerlink" href="#getting-started" title="Link to this heading">#</a></h3>
 <p>To get started, we are going to import the package (note the difference of the <strong>dash</strong> and <strong>underscore</strong> in the package name). And load in some file paths.</p>
 <div class="cell docutils container">
 <div class="cell_input docutils container">
@@ -278,13 +626,13 @@ Requirement already satisfied: crc32c&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley
 </div>
 <p>One last note, the figure functions output a <code class="docutils literal notranslate"><span class="pre">matplotlib</span></code> figure object.</p>
 </section>
-</section>
-<section id="b-instrument-loader-objects">
-<h2>B. Instrument Loader Objects<a class="headerlink" href="#b-instrument-loader-objects" title="Link to this heading"></a></h2>
+<section id="instrument-loader-objects">
+<h3>Instrument Loader Objects<a class="headerlink" href="#instrument-loader-objects" title="Link to this heading">#</a></h3>
 <p>To handle the specific physical attributes of the data, we have developed a framework to import only the essentials. Currently, we only have a built-in object for ViSP. The instrument object will hold the dataset compressed into a <code class="docutils literal notranslate"><span class="pre">dask</span></code> array for lazy loading to minimize memory usage during some of the calculations.</p>
 </section>
-<section id="ii-time-independent-clustering">
-<h2>II. Time-independent clustering<a class="headerlink" href="#ii-time-independent-clustering" title="Link to this heading"></a></h2>
+</section>
+<section id="time-independent-clustering">
+<h2>Time-independent clustering<a class="headerlink" href="#time-independent-clustering" title="Link to this heading">#</a></h2>
 <p>This is just fancy words for the standard approach to cluster the evolution of spectra. As it suggests, this clustering approach doesn’t use any temporal information during the clustering. See <a class="reference internal" href="#"><span class="xref myst">Udeas et al., 2026</span></a> for an example.</p>
 <p>The basic principle of using this approach is to cluster the entire dataset then afterwards reintroduce the temporal information to get the sequence of spectral profiles associated with the feature. This method does work, but there are some considerations that need to be taken.</p>
 <ol class="arabic simple">
@@ -350,34 +698,21 @@ Requirement already satisfied: crc32c&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley
 </div>
 <div class="cell_output docutils container">
 <div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
-<span class="ne">FileNotFoundError</span><span class="g g-Whitespace">                         </span>Traceback (most recent call last)
-<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
-<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.event</span><span class="w"> </span><span class="kn">import</span> <span class="n">eventInput</span>
-<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">eventManager</span> <span class="o">=</span> <span class="n">eventInput</span><span class="p">(</span><span class="s2">&quot;./eventManager.yml&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">from</span><span class="w"> </span><span class="nn">queso_cluster.loaders.event</span><span class="w"> </span><span class="kn">import</span> <span class="n">eventInput</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="n">eventManager</span> <span class="o">=</span> <span class="n">eventInput</span><span class="p">(</span><span class="s2">&quot;./eventManager.yml&quot;</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="g g-Whitespace">      </span><span class="mi">3</span> 
 <span class="g g-Whitespace">      </span><span class="mi">4</span> 
-<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="n">epochDev</span><span class="p">,</span> <span class="n">labelLine</span> <span class="o">=</span> <span class="n">main</span><span class="p">(</span><span class="n">eventManager</span><span class="o">.</span><span class="n">event</span><span class="p">)</span>
 
-<span class="nn">File /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py:136,</span> in <span class="ni">eventInput.__init__</span><span class="nt">(self, fname, eventIndx, runIndx)</span>
-<span class="g g-Whitespace">    </span><span class="mi">134</span> <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">eventIndx</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">runIndx</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
-<span class="g g-Whitespace">    </span><span class="mi">135</span> 	<span class="bp">self</span><span class="o">.</span><span class="n">configList</span> <span class="o">=</span> <span class="p">[]</span>
-<span class="ne">--&gt; </span><span class="mi">136</span> 	<span class="n">configLst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span>
-<span class="g g-Whitespace">    </span><span class="mi">137</span> 	<span class="bp">self</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="n">eventRunner</span><span class="p">(</span><span class="n">configLst</span><span class="p">[</span><span class="n">eventIndx</span><span class="p">],</span> <span class="n">runIndx</span><span class="p">)</span>
-
-<span class="nn">File /nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py:141,</span> in <span class="ni">eventInput._load</span><span class="nt">(self, fname)</span>
-<span class="g g-Whitespace">    </span><span class="mi">140</span> <span class="k">def</span><span class="w"> </span><span class="nf">_load</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">fname</span><span class="p">):</span>
-<span class="ne">--&gt; </span><span class="mi">141</span> 	<span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fname</span><span class="p">)</span> <span class="k">as</span> <span class="n">configFile</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">142</span> 		<span class="k">try</span><span class="p">:</span>
-<span class="g g-Whitespace">    </span><span class="mi">143</span> 			<span class="n">configInput</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
-
-<span class="ne">FileNotFoundError</span>: [Errno 2] No such file or directory: &#39;./eventManager.yml&#39;
+<span class="ne">ImportError</span>: cannot import name &#39;eventInput&#39; from &#39;queso_cluster.loaders.event&#39; (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py)
 </pre></div>
 </div>
 </div>
 </div>
 </section>
-<section id="iii-time-dependent-clustering">
-<h2>III. Time-dependent clustering<a class="headerlink" href="#iii-time-dependent-clustering" title="Link to this heading"></a></h2>
+<section id="time-dependent-clustering">
+<h2>Time-dependent clustering<a class="headerlink" href="#time-dependent-clustering" title="Link to this heading">#</a></h2>
 <p>Here is where we enter more experimental waters. The main objective is to try and use the time information inside the algorithm where each cluster is a sequence of spectral profiles. One example of this was <a class="reference external" href="https://sriley.dev/">presented at the Solar Physics Division conference in 2025</a>, where we clustered each frame independently then glued the results together at the end. The benefit is a smaller number of clusters is needed per time step due to a smaller diversity of spectral features relative to the entire set of frames.</p>
 <p>This section of the tutorial will discuss the <code class="docutils literal notranslate"><span class="pre">td</span></code> sub-module with the same time series spectral dataset as before.</p>
 <div class="cell docutils container">
@@ -455,34 +790,108 @@ Requirement already satisfied: crc32c&gt;=2.7 in /nfs/hl0/data/sriley/src/sriley
 </section>
 
 
-           </div>
-          </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="intro-clustering.html" class="btn btn-neutral float-left" title="Introduction to k-means clustering of spectra" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="api-reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
-
-  <hr/>
-
-  <div role="contentinfo">
-    <p>&#169; Copyright 2026, Sarah Riley.</p>
-  </div>
-
-  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    provided by <a href="https://readthedocs.org">Read the Docs</a>.
-   
-
-</footer>
-        </div>
+                </article>
+              
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="intro-clustering.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Introduction to k-means clustering of spectra</p>
       </div>
-    </section>
-  </div>
-  <script>
-      jQuery(function () {
-          SphinxRtdTheme.Navigation.enable(true);
-      });
-  </script> 
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <dialog id="pst-secondary-sidebar-modal"></dialog>
+                <div id="pst-secondary-sidebar" class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
 
-</body>
+
+  <div class="sidebar-secondary-item">
+<div
+    id="pst-page-navigation-heading-2"
+    class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+  </div>
+  <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
+    <ul class="pst-show_toc_level nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#a-brief-introduction">A brief introduction</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting started</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#instrument-loader-objects">Instrument Loader Objects</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-independent-clustering">Time-independent clustering</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#time-dependent-clustering">Time-dependent clustering</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+          </footer>
+        
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script defer src="_static/scripts/bootstrap.js?digest=0790524f97105ba85085"></script>
+<script defer src="_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085"></script>
+
+  <footer class="bd-footer">
+<div class="bd-footer__inner bd-page-width">
+  
+    <div class="footer-items__start">
+      
+        <div class="footer-item">
+
+  <p class="copyright">
+    
+      © Copyright 2026, Sarah Riley.
+      <br/>
+    
+  </p>
+</div>
+      
+        <div class="footer-item">
+
+  <p class="sphinx-version">
+    Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 9.0.4.
+    <br/>
+  </p>
+</div>
+      
+    </div>
+  
+  
+  
+    <div class="footer-items__end">
+      
+        <div class="footer-item">
+<p class="theme-version">
+  <!-- # L10n: Setting the PST URL as an argument as this does not need to be localized -->
+  Built with the <a href="https://pydata-sphinx-theme.readthedocs.io/en/stable/index.html">PyData Sphinx Theme</a> 0.18.0.
+</p></div>
+      
+    </div>
+  
+</div>
+
+  </footer>
+  </body>
 </html>

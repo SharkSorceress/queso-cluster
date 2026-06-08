@@ -21,3 +21,19 @@
 .rst-content code.literal {
     color: #0989a0;
 }
+
+
+html[data-theme="dark"] {
+    --pst-color-background: #03272e;
+}
+
+html[data-theme="light"] {
+    --pst-color-primary: black;
+}
+
+.bd-header-announcement {
+    background: repeating-linear-gradient(45deg, #d4a500, #d4a500 10px, #0989a0 10px, #0989a0 20px);
+    font-size: 20px;
+    font-weight: bolder;
+    color: black;
+}

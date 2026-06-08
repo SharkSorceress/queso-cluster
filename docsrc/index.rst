@@ -15,11 +15,9 @@ At present, we only support observations from the Visible Spectropolarimeter (Vi
 	:maxdepth: 2
 	:caption: Contents:
 
-	Documentation Home <https://queso.sriley.dev>
-	install
-	intro-clustering
-	queso-tutorial
-	api-reference
-
+	getting-started
 	contributors
+	api/index
+	tutorials
+
 
