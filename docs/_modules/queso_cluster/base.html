@@ -531,6 +531,8 @@
 </div>
 
 	
+<span class="kn">import</span><span class="w"> </span><span class="nn">numba</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">nb</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">timeit</span><span class="w"> </span><span class="kn">import</span> <span class="n">default_timer</span> <span class="k">as</span> <span class="n">timer</span>
 <div class="viewcode-block" id="mainIntrinsic">
 <a class="viewcode-back" href="../../api/queso_cluster/base/index.html#queso_cluster.base.mainIntrinsic">[docs]</a>
 <span class="nd">@loggTimer</span>
@@ -538,33 +540,39 @@
 	<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">prepSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 	<span class="n">intrinsicConfig</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">clusterConfig</span><span class="p">[</span><span class="s1">&#39;intrinsic&#39;</span><span class="p">]</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intrinsicConfig</span><span class="p">)):</span>
-		<span class="n">key</span> <span class="o">=</span>  <span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]</span>
-		<span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;continuum&#39;</span><span class="p">:</span>
-			<span class="n">indxs</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">srcLst</span><span class="o">.</span><span class="n">continuum</span>
-		<span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;window&#39;</span><span class="p">:</span>
-			<span class="n">indxs</span> <span class="o">=</span> <span class="p">[</span><span class="n">config</span><span class="o">.</span><span class="n">blueEdge</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">redEdge</span><span class="p">]</span>
-		<span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">indxs</span><span class="p">)</span> <span class="o">==</span> <span class="nb">list</span><span class="p">:</span>
-			<span class="n">iframe</span> <span class="o">=</span> <span class="n">prepSquare</span><span class="p">[:,</span> <span class="n">indxs</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span><span class="n">indxs</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span><span class="c1">#.astype(np.float64).compute()</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">iframe</span> <span class="o">=</span> <span class="n">prepSquare</span><span class="p">[:,</span> <span class="n">indxs</span><span class="p">]</span><span class="c1">#.astype(np.float64).compute()</span>
+		<span class="k">match</span> <span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;label&#39;</span><span class="p">]:</span>
+			<span class="k">case</span> <span class="s1">&#39;lineContinuum&#39;</span><span class="p">:</span>
+				<span class="n">indxs</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">lineContinuum</span><span class="p">))</span>
+			<span class="k">case</span> <span class="s1">&#39;window&#39;</span><span class="p">:</span> 
+				<span class="n">indxs</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">blueEdge</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">redEdge</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+			<span class="k">case</span> <span class="s1">&#39;lineCenter&#39;</span><span class="p">:</span>
+				<span class="n">indxs</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">int16</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">lineCenter</span><span class="p">))</span>
+		<span class="n">iframe</span> <span class="o">=</span> <span class="n">prepSquare</span><span class="p">[:,</span> <span class="n">indxs</span><span class="p">]</span>
+		<span class="k">if</span> <span class="n">indxs</span><span class="o">.</span><span class="n">size</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+			<span class="n">iframe</span> <span class="o">=</span> <span class="n">iframe</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
+
+		<span class="c1">#s = timer()</span>
 		<span class="k">if</span> <span class="s1">&#39;layerConfig&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
 			<span class="k">if</span> <span class="s1">&#39;bins&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;layerConfig&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-				<span class="n">bins</span> <span class="o">=</span> <span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;layerConfig&#39;</span><span class="p">][</span><span class="s1">&#39;bins&#39;</span><span class="p">]</span>
-				<span class="n">intrinsicLine_tmp</span> 	<span class="o">=</span> <span class="n">baseRun</span><span class="o">.</span><span class="n">runIntrinsic</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">bins</span><span class="p">)),</span> <span class="n">iframe</span><span class="p">,</span> <span class="n">edgeOverride</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">bins</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">))</span>
-
-			<span class="k">if</span> <span class="s1">&#39;nbins&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;layerConfig&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-				<span class="n">nbins</span> <span class="o">=</span> <span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;layerConfig&#39;</span><span class="p">][</span><span class="s1">&#39;nbins&#39;</span><span class="p">]</span>
-				<span class="n">intrinsicLine_tmp</span> 	<span class="o">=</span> <span class="n">baseRun</span><span class="o">.</span><span class="n">runIntrinsic</span><span class="p">(</span><span class="n">nbins</span><span class="p">,</span> <span class="n">iframe</span><span class="p">)</span>
-
+				<span class="n">intrinsicLine_tmp</span> 	<span class="o">=</span> <span class="n">baseRun</span><span class="o">.</span><span class="n">runIntrinsic</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">intrinsicConfig</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s1">&#39;layerConfig&#39;</span><span class="p">][</span><span class="s1">&#39;bins&#39;</span><span class="p">])),</span> 
+											  <span class="n">iframe</span><span class="o">.</span><span class="n">compute</span><span class="p">())</span>
 		<span class="k">else</span><span class="p">:</span>
-			<span class="n">intrinsicLine_tmp</span> 	<span class="o">=</span> <span class="n">baseRun</span><span class="o">.</span><span class="n">runIntrinsic</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">iframe</span><span class="p">)</span>
+			<span class="n">_</span><span class="p">,</span> <span class="n">edges</span> <span class="o">=</span> <span class="n">baseAtom</span><span class="o">.</span><span class="n">numba_histogram</span><span class="p">(</span><span class="n">iframe</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">iframe</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">iframe</span><span class="o">.</span><span class="n">max</span><span class="p">()]))</span>
+			<span class="n">intrinsicLine_tmp</span> 	<span class="o">=</span> <span class="n">baseRun</span><span class="o">.</span><span class="n">runIntrinsic</span><span class="p">(</span><span class="n">edges</span><span class="p">,</span> <span class="n">iframe</span><span class="p">)</span>
+		<span class="c1">#e = timer()</span>
+		<span class="c1">#print(&quot;Part 3: {}s&quot;.format(e - s))</span>
+
 		<span class="n">intrinsicLine</span> <span class="o">+=</span> <span class="n">intrinsicLine_tmp</span> <span class="o">*</span> <span class="mi">10</span><span class="o">**</span><span class="n">i</span>
+
+	<span class="c1">#s = timer()</span>
 	<span class="n">s0_Lst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">intrinsicLine</span><span class="p">)</span>
 	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">s0_Lst</span><span class="p">)):</span>
 		<span class="n">indx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">intrinsicLine</span> <span class="o">==</span> <span class="n">s0_Lst</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
 		<span class="n">intrinsicLine</span><span class="p">[</span><span class="n">indx</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)]</span> <span class="o">=</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span>
-	<span class="n">intrinsicLine</span> <span class="o">=</span> <span class="n">auxAtom</span><span class="o">.</span><span class="n">pick_jth_label</span><span class="p">(</span><span class="n">intrinsicLine</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">intrinsicLine</span><span class="p">)</span></div>
+	<span class="c1">#e = timer()</span>
+	<span class="c1">#print(&quot;Part 4: {}s&quot;.format(e - s))</span>
+
+	<span class="k">return</span><span class="p">(</span><span class="n">auxAtom</span><span class="o">.</span><span class="n">pick_jth_label</span><span class="p">(</span><span class="n">intrinsicLine</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span></div>
 
 
 

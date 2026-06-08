@@ -61,6 +61,9 @@ Module Contents
    .. py:method:: srcMeta(srcInput)
 
 
+   .. py:property:: QSConfig
+
+
    .. py:property:: blueEdge
 
       

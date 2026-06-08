@@ -25,7 +25,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: timeIndependent(instrumentObj)
+.. py:class:: timeIndependent(config, instrumentObj)
 
    
    Time independent clustering framework
@@ -77,5 +77,8 @@ Module Contents
 
       ..
           !! processed by numpydoc !!
+
+
+   .. py:method:: clusterCompoundLabels(optLabels)
 
 

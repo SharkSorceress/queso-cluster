@@ -3,7 +3,7 @@ requires = ["setuptools", "wheel"]
 
 [project]
 name = "queso-cluster"
-version = "0.1.0"
+version = "0.2.0-alpha"
 authors = [
 	{name = "Sarah Riley", email="sarah.riley1@montana.edu"}
 ]

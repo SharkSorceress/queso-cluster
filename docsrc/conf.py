@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath('./'))
 project = 'QuESO'
 copyright = '2026, Sarah Riley'
 author = 'Sarah Riley'
-version = 'v0.1.0'
+version = 'v0.2.0-alpha'
 #release = __version__
 
 # -- General configuration

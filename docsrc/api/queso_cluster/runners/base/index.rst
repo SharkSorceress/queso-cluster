@@ -23,7 +23,7 @@ Module Contents
 
 .. py:function:: findOptimalK(dataSquare, funcLst, criteriaLst, converge=1e-06)
 
-.. py:function:: runIntrinsic(nbins, data, edgeOverride=None)
+.. py:function:: runIntrinsic(edges, data)
 
 .. py:function:: runLabelSort(dataSquare, labelLine)
 

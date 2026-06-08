@@ -421,56 +421,51 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">event</span> <span class="k">as</span> <span class="n">eventLoad</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+
 <div class="viewcode-block" id="visp">
 <a class="viewcode-back" href="../../../api/queso_cluster/loaders/visp/index.html#queso_cluster.loaders.visp.visp">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">visp</span><span class="p">(</span><span class="n">eventLoad</span><span class="o">.</span><span class="n">eventRunner</span><span class="p">):</span>
 
 	<span class="n">stokes_lst</span> 		<span class="o">=</span> <span class="p">[</span><span class="s1">&#39;I&#39;</span><span class="p">,</span> <span class="s1">&#39;Q&#39;</span><span class="p">,</span> <span class="s1">&#39;U&#39;</span><span class="p">,</span> <span class="s1">&#39;V&#39;</span><span class="p">]</span>
 
-	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataDirectory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+	<span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dataDirectory</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">stokes</span><span class="o">=</span><span class="s1">&#39;I&#39;</span><span class="p">):</span>
 		
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span> <span class="o">=</span> <span class="n">dkist</span><span class="o">.</span><span class="n">load_dataset</span><span class="p">(</span><span class="n">dataDirectory</span><span class="p">)</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_datetime</span> <span class="o">=</span> <span class="n">auxAtom</span><span class="o">.</span><span class="n">convertTime</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;DATE-BEG&#39;</span><span class="p">])</span>
 
 
-		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_axis_names</span><span class="p">)</span>
-		<span class="k">if</span> <span class="s1">&#39;polarization state&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_axis_names</span><span class="p">:</span>
-			<span class="n">dataCube</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">stokes</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> 
-		<span class="k">else</span><span class="p">:</span>
-			<span class="n">dataCube</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">data</span>
+		<span class="c1"># print(self._dataset.wcs.pixel_axis_names)</span>
 
 
-
-
-		<span class="n">flat_axis</span> <span class="o">=</span> <span class="mi">1</span>
-		<span class="n">numRasters</span> <span class="o">=</span> <span class="mi">1</span>
+		<span class="c1"># flat_axis = 1</span>
+		<span class="c1"># numRasters = 1</span>
 		<span class="c1">#test = []</span>
 		<span class="c1">#crval = []</span>
 
-		<span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;DNAXIS&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]):</span>
-			<span class="n">dnaxis_entry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;DNAXIS&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="c1"># for n in range(self._dataset.headers[&#39;DNAXIS&#39;][0]):</span>
+		<span class="c1"># 	dnaxis_entry = self._dataset.headers[&#39;DNAXIS&#39; + str(n+1)][0]</span>
 			
-			<span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s1">&#39;DTYPE&#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)][</span><span class="mi">0</span><span class="p">]:</span> 
-				<span class="k">case</span> <span class="s1">&#39;SPECTRAL&#39;</span><span class="p">:</span>
-						<span class="n">spectral_len</span> <span class="o">=</span> <span class="n">dnaxis_entry</span>
-						<span class="n">spectral_loc</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">dataCube</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="n">dnaxis_entry</span><span class="p">)[</span><span class="mi">0</span><span class="p">])</span>
-				<span class="k">case</span> <span class="s1">&#39;TEMPORAL&#39;</span><span class="p">:</span>
-						<span class="n">numRasters</span> <span class="o">=</span> <span class="n">dnaxis_entry</span>
-						<span class="c1">#flat_axis *= numRasters</span>
-				<span class="k">case</span> <span class="s1">&#39;SPATIAL&#39;</span><span class="p">:</span>
-						<span class="c1">#crval.append(dataset.headers[&#39;CRVAL&#39; + str(n+1)][0])</span>
-						<span class="n">flat_axis</span> <span class="o">*=</span> <span class="n">dnaxis_entry</span>
-						<span class="c1">#test.append(dnaxis_entry)</span>
+		<span class="c1"># 	match self._dataset.headers[&#39;DTYPE&#39; + str(n+1)][0]: </span>
+		<span class="c1"># 		case &#39;SPECTRAL&#39;:</span>
+		<span class="c1"># 				spectral_len = dnaxis_entry</span>
+		<span class="c1"># 				spectral_loc = int(np.where(np.asarray(dataCube.shape) == dnaxis_entry)[0])</span>
+		<span class="c1"># 		case &#39;TEMPORAL&#39;:</span>
+		<span class="c1"># 				numRasters = dnaxis_entry</span>
+		<span class="c1"># 				#flat_axis *= numRasters</span>
+		<span class="c1"># 		case &#39;SPATIAL&#39;:</span>
+		<span class="c1"># 				#crval.append(dataset.headers[&#39;CRVAL&#39; + str(n+1)][0])</span>
+		<span class="c1"># 				flat_axis *= dnaxis_entry</span>
+		<span class="c1"># 				#test.append(dnaxis_entry)</span>
 
 
-		<span class="n">dataCube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">dataCube</span><span class="p">,</span> <span class="n">spectral_loc</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="n">dataCube</span><span class="o">.</span><span class="n">shape</span>
+		<span class="c1">#self.shape = self._dataset.data.shape</span>
 		<span class="c1">#if numRasters == 1:</span>
 		<span class="c1">#	self.shape = self.dataCube.shape</span>
 		<span class="c1">#	self.dataSquare = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk(&#39;auto&#39;)</span>
 		<span class="c1">#else:</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">dataPrism</span> <span class="o">=</span> <span class="n">dataCube</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">numRasters</span><span class="p">,</span> <span class="n">flat_axis</span><span class="p">,</span> <span class="n">spectral_len</span><span class="p">)</span>
+		<span class="c1"># self.dataPrism = </span>
 
 		<span class="c1"># self.dimInfo = {</span>
 		<span class="c1"># 	&quot;numRasters&quot; : numRasters,</span>
@@ -478,16 +473,19 @@
 		<span class="c1"># 	&quot;rasterSize&quot; : (flat_axis // np.max(test)) // numRasters,</span>
 		<span class="c1"># }</span>
 
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">dataPrism</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="s1">&#39;polarization state&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_axis_names</span><span class="p">:</span>
+			<span class="n">dataCube</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> 
+		<span class="k">else</span><span class="p">:</span>
+			<span class="n">dataCube</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">data</span>
 
-	<span class="nd">@property</span>
+		<span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_axis_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;dispersion axis&#39;</span><span class="p">)</span>
+		<span class="n">dataCube</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">moveaxis</span><span class="p">(</span><span class="n">dataCube</span><span class="p">,</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">dataCube</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;numRasters&#39;</span><span class="p">],</span> 
+						  <span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">]</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;alongSlitSize&#39;</span><span class="p">],</span> <span class="n">dataCube</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">pxlDelta</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="c1"># pxlSize = [[], []]</span>
-		<span class="c1"># for m in range(self._dataset.headers[&#39;WCSAXES&#39;][0]):</span>
-		<span class="c1"># 	match self._dataset.headers[&#39;CTYPE&#39; + str(m+1)][0]:</span>
-		<span class="c1"># 		case &#39;HPLT-TAN&#39;:                     </span>
-		<span class="c1"># 			pxlSize[0].append(self._dataset.headers[&#39;CDELT&#39; + str(m+1)][0])   </span>
-		<span class="c1"># 			pxlSize[1].append(m)</span>
-
 		<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;pxlSlitWidth&#39;</span><span class="p">,</span> <span class="s1">&#39;pxlAlongSlit&#39;</span><span class="p">]</span>		
 		<span class="n">dimLst</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;raster scan step number&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial along slit&#39;</span><span class="p">]</span>
 
@@ -499,7 +497,7 @@
 		<span class="k">return</span><span class="p">(</span><span class="n">deltaInfo</span><span class="p">)</span>
 
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">stepCadence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;the time between slit positions&quot;&quot;&quot;</span>
 		<span class="n">stepCadence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_datetime</span><span class="p">[</span><span class="mi">0</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">]])</span>
@@ -507,20 +505,20 @@
 		<span class="k">return</span><span class="p">(</span><span class="n">stepCadence</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">))</span>
 
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">mapCadence</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;the time between rasters&quot;&quot;&quot;</span>
 		<span class="n">mapCadence</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_datetime</span><span class="p">[::</span><span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">]])</span>
 		<span class="n">mapCadence</span> <span class="o">=</span> <span class="n">mapCadence</span><span class="p">[</span><span class="n">mapCadence</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">]</span>
 		<span class="k">return</span><span class="p">(</span><span class="n">mapCadence</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span> <span class="o">*</span> <span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">))</span>	
 	
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">resetDuration</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;the time it takes to go from the end of the raster to the start of a new raster&quot;&quot;&quot;</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_datetime</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">:</span><span class="bp">self</span><span class="o">.</span><span class="n">dimInfo</span><span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="s2">&quot;second&quot;</span><span class="p">))</span>
 
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">dimInfo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="n">labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;rasterSize&#39;</span><span class="p">,</span> <span class="s1">&#39;alongSlitSize&#39;</span><span class="p">,</span> <span class="s1">&#39;numRasters&#39;</span><span class="p">]</span>
 		<span class="n">dimLst</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;raster scan step number&#39;</span><span class="p">,</span> <span class="s1">&#39;spatial along slit&#39;</span><span class="p">,</span> <span class="s1">&#39;raster map repeat number&#39;</span><span class="p">]</span>
@@ -532,7 +530,7 @@
 		<span class="k">return</span><span class="p">(</span><span class="n">dimInfo</span><span class="p">)</span>
 			
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">fitWavelength</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms&quot;&quot;&quot;</span>	
 		<span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dataset</span><span class="o">.</span><span class="n">wcs</span><span class="o">.</span><span class="n">pixel_axis_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s1">&#39;dispersion axis&#39;</span><span class="p">)</span>

@@ -424,6 +424,8 @@
 <span class="kn">import</span><span class="w"> </span><span class="nn">pint</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
  
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
+
 <div class="viewcode-block" id="eventRunner">
 <a class="viewcode-back" href="../../../api/queso_cluster/loaders/event/index.html#queso_cluster.loaders.event.eventRunner">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">eventRunner</span><span class="p">:</span>
@@ -447,12 +449,6 @@
 		<span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span> 	<span class="o">=</span> <span class="n">inputLst</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span>
 		<span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span> 	<span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">][</span><span class="n">runIndx</span><span class="p">]</span>
 
-		<span class="k">if</span> <span class="s1">&#39;alignment_dir&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">alignmentDir</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;alignment_dir&#39;</span><span class="p">]</span>
-
-		<span class="k">if</span> <span class="s1">&#39;qs&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">qs_config</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;qs&#39;</span><span class="p">]</span>
-
 		<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])):</span>
 			<span class="bp">self</span><span class="o">.</span><span class="n">srcMeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">])</span>
 			<span class="n">id_mod</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span><span class="p">))</span>
@@ -461,24 +457,40 @@
 				<span class="c1">#self.srcLabelLst = srcObj.id + id_mod</span>
 				<span class="bp">self</span><span class="o">.</span><span class="n">clusterConfig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">srcCluster</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">][</span><span class="s1">&#39;line&#39;</span><span class="p">]]</span>
 				<span class="k">break</span>
-		
-	<span class="nd">@property</span>
+		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span>
+		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clusterConfig</span><span class="p">)</span>
+		<span class="c1"># self._flavor = None</span>
+		<span class="c1"># self._overwrite = None</span>
+		<span class="c1"># self._runnerConfig = None</span>
+		<span class="c1"># self._datasetID = None</span>
+		<span class="c1"># self._directoryDate = None</span>
+		<span class="c1"># self._blueEdge = None</span>
+		<span class="c1"># self._redEdge = None</span>
+		<span class="c1"># self._lineCenter = None</span>
+		<span class="c1"># self._lineContinuum = None</span>
+		<span class="c1"># self._timeFrames = None</span>
+
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">QSConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;qs&#39;</span><span class="p">])</span>
+
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">flavor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;overwrite&#39;</span><span class="p">])</span>
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">runnerConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">])</span>
 	
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">datasetID</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runnerConfig</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])</span>
 
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">directoryDate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The datestring directory&quot;&quot;&quot;</span>
 		<span class="k">return</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)))</span>
@@ -498,7 +510,7 @@
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The index for a center position in the window. This may coinside with the line center of the spectrum&quot;&quot;&quot;</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center&#39;</span><span class="p">])</span>
 	
-	<span class="nd">@property</span>
+	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">lineContinuum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The index of the continuum for the spectrum. This may be used for normalization&quot;&quot;&quot;</span>
 		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuum</span><span class="p">)</span>

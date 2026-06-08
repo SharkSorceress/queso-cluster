@@ -77,7 +77,7 @@ Module Contents
    ..
        !! processed by numpydoc !!
 
-   .. py:method:: clusterMapCompound(compoundLabels, timeAxis)
+   .. py:method:: clusterMapCompound(compoundLabels, timeAxis=False)
 
       
       Creates a figure showing all of the distinct sequences of spectra
@@ -256,6 +256,9 @@ Module Contents
 
       ..
           !! processed by numpydoc !!
+
+
+   .. py:method:: clusterProfilesCompound(compoundLabels)
 
 
    .. py:method:: figure03()

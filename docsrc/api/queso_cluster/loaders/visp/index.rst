@@ -15,7 +15,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: visp(dataDirectory=None, stokes=0)
+.. py:class:: visp(dataDirectory=None, stokes='I')
 
    Bases: :py:obj:`queso_cluster.loaders.event.eventRunner`
 
@@ -51,7 +51,7 @@ Module Contents
    ..
        !! processed by numpydoc !!
 
-   .. py:attribute:: dataPrism
+   .. py:property:: dataPrism
 
 
    .. py:property:: dimInfo
@@ -130,9 +130,6 @@ Module Contents
 
       ..
           !! processed by numpydoc !!
-
-
-   .. py:attribute:: shape
 
 
    .. py:property:: stepCadence
