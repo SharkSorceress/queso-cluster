@@ -28,7 +28,7 @@
     run: 
       - label: 'timeIndependent'
         overwrite: True
-        config: {keepI0: [3], timeFrames: [0, 4], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
+        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'AEVEG', mod: ""}
         clustering:
@@ -60,8 +60,8 @@
     label: 'Strong flare signatures'
     run: 
       - label: 'timeIndependentXClass'
-        overwrite: True
-        config: {keepI0: [2, 3], timeFrames: [0, 3], bbox: [0, 91, 500, 2548], src: 'BWVCXN', line: 'narrow'}
+        overwrite: False
+        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 91, 1750, 2548], src: 'BWVCXN', line: 'narrow'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}
         clustering:
@@ -70,7 +70,7 @@
               - {label: 'window', layerConfig: {'bins': [0, 0.45, 0.55, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2]}
-              - {layerGroups: [1, 1, 4, 4]}
+              - {layerGroups: [1, 2, 4, 3]}
         spectralParams:
           continuum: 825
           lineList:

@@ -8,8 +8,8 @@
 import yaml
 import pint
 import numpy as np
-
-from ..atoms import aux as auxAtom
+ 
+from functools import cached_property
 
 class eventRunner:
 	"""
@@ -18,72 +18,105 @@ class eventRunner:
 
 	Parameters
 	----------
-	inputLst : list
-		list
+	fname : str
+		File path of the eventManager.yml
+	eventIndx : list
+		integer for the order of the event in the eventManager.yml
 	runIndx : int
 		integer for the order of the runner in the eventManager.yml
-	
-	Attributes
-	----------
-	date : str
-		the date in YYYY-MM-DD
-	dirid : str
-		the date in YYYYMMDD
-	runners : :class:`~queso_cluster.loaders.runnerMeta`
-		object containing runner metadata
-	
-	"""
-	def __init__(self, inputLst, runIndx):
-		#stokes_lst 		= ['I', 'Q', 'U', 'V']
-
-		eventRaw 	= inputLst['event']
-		runRaw 		= eventRaw['run'][runIndx]
-
-		self.date = eventRaw['date']
-		self.dirid = "".join(self.date.split("-"))
-
-		self.runners = runnerMeta(runRaw)
-		self.flavor = self.runners.label
-		self.loadSource(eventRaw)
-
-
-	def loadSource(self, eventInput):
-		"""
-		Loads source configuration from eventManager.yml
-
-		Parameters
-		----------
-		eventInput : dict
-			dictionary containing event specific configuration from eventManager.yml
 		
-		Attributes
-		----------
-		srcLst : :class:`~queso_cluster.loaders.event.srcMeta`
-			Specific source metadata referenced in the active runner 
-		srcLabelLst : str
-			string identifier for a listed source set by the active runner
-		clusterConfig : dict
-			dictionary of the clustering configuration for the listed source set by the active runner
+	"""
+	def __init__(self, fname, eventIndx, runIndx):
+		inputLst = self._load(fname)[eventIndx]
 
-		"""
-		for s in range(len(eventInput['src'])):
-			srcInput = eventInput['src'][s]
-			srcObj = srcMeta(srcInput)
-			id_mod = ('-' + srcObj.id_mod)*(bool(srcObj.id_mod))
-			if (srcObj.id + id_mod) == self.runners.config['src']:
-				srcObj.lines = [x for x in srcObj.lines if x['label'] == self.runners.config['line']]
-				self.srcLst = srcObj
-				self.srcLabelLst = srcObj.id + id_mod
-				self.clusterConfig = srcObj.srcCluster[self.runners.config['line']]
+		self._eventRaw 	= inputLst['event']
+		self._runRaw 	= self._eventRaw['run'][runIndx]
+
+		for s in range(len(self._eventRaw['src'])):
+			self.srcMeta(self._eventRaw['src'][s])
+			id_mod = ('-' + self.id_mod)*(bool(self.id_mod))
+			if (self.id + id_mod) == self._runRaw['config']['src']:
+				self.lines = [x for x in self.lines if x['label'] == self._runRaw['config']['line']]
+				#self.srcLabelLst = srcObj.id + id_mod
+				self.clusterConfig = self.srcCluster[self._runRaw['config']['line']]
 				break
+		print(self.lines)
+		print(self.clusterConfig)
+		# self._flavor = None
+		# self._overwrite = None
+		# self._runnerConfig = None
+		# self._datasetID = None
+		# self._directoryDate = None
+		# self._blueEdge = None
+		# self._redEdge = None
+		# self._lineCenter = None
+		# self._lineContinuum = None
+		# self._timeFrames = None
 
-class srcMeta:
-	"""
-		:param srcInput:
-		:type srcInput:
+	@cached_property
+	def QSConfig(self):
+		return(self._runRaw['qs'])
 
-	"""
-	def __init__(self, srcInput):
+	@cached_property
+	def flavor(self):
+		return(self._runRaw['label'])
+
+	@cached_property
+	def overwrite(self):
+		return(self._runRaw['overwrite'])
+
+	@cached_property
+	def runnerConfig(self):
+		return(self._runRaw['config'])
+	
+	@cached_property
+	def datasetID(self):
+		return(self.runnerConfig['src'])
+
+	@cached_property
+	def directoryDate(self):
+		"""The datestring directory"""
+		return("".join(self._eventRaw['date'].split("-")))
+		
+	@property
+	def blueEdge(self):
+		"""int containing the index for the beginning of the spectral window used for clustering"""
+		return(self.lines[0]['window'][0])
+
+	@property
+	def redEdge(self):
+		"""int containing the index for the end of the spectral window used for clustering"""
+		return(self.lines[0]['window'][1])
+
+	@property
+	def lineCenter(self):
+		"""The index for a center position in the window. This may coinside with the line center of the spectrum"""
+		return(self.lines[0]['center'])
+	
+	@cached_property
+	def lineContinuum(self):
+		"""The index of the continuum for the spectrum. This may be used for normalization"""
+		return(self.continuum)
+
+	@property
+	def timeFrames(self):
+		startFrame = self.runnerConfig['timeFrames'][0]
+		endFrame = self.runnerConfig['timeFrames'][1]
+		return(np.arange(startFrame, endFrame+1).astype(int))
+
+	# @property
+	# def clusterConfig(self):
+	# 	return(self.srcLst.srcCluster[self._runRaw.runnerInput['line']])
+
+	def _load(self, fname):
+		with open(fname) as configFile:
+			try:
+				configInput = yaml.safe_load(configFile)
+				return(configInput) 
+			except yaml.YAMLError as error:
+				print(error)
+
+	def srcMeta(self, srcInput):
 		self.id = srcInput['id']['data']
 		self.instrument = srcInput['id']['instrument']
 		if 'mod' in list(srcInput['id'].keys()):
@@ -118,29 +151,57 @@ class srcMeta:
 			#self.waveUnit = srcInput['axisFit']['unit']
 			self.waveFitFunc = lambda N: np.poly1d(waveCoeff)(np.arange(N))*pint.Unit(srcInput['axisFit']['unit'])
 
-class runnerMeta:
-	def __init__(self, runnerInput):
-		self.label = runnerInput['label']
-		self.config = runnerInput['config']
-		self.overwrite = runnerInput['overwrite']
 
-		if 'alignment_dir' in list(runnerInput.keys()):
-			self.alignmentDir = runnerInput['alignment_dir']
+	# def loadSource(self):
+	# 	"""
+	# 	Loads source configuration from eventManager.yml
 
-		if 'qs' in list(runnerInput.keys()):
-			self.qs_config = runnerInput['qs']
+	# 	Parameters
+	# 	----------
+	# 	eventInput : dict
+	# 		dictionary containing event specific configuration from eventManager.yml
+		
+	# 	Attributes
+	# 	----------
+	# 	srcLst : :class:`~queso_cluster.loaders.event.srcMeta`
+	# 		Specific source metadata referenced in the active runner 
+	# 	srcLabelLst : str
+	# 		string identifier for a listed source set by the active runner
+	# 	clusterConfig : dict
+	# 		dictionary of the clustering configuration for the listed source set by the active runner
 
-class eventInput:
-	def __init__(self, fname, eventIndx=0, runIndx=0):
-		self.configList = []
-		configLst = self._load(fname)
-		self.event = eventRunner(configLst[eventIndx], runIndx)
+	# 	"""
+
+# class srcMeta:
+# 	"""
+# 		:param srcInput:
+# 		:type srcInput:
+
+# 	"""
+# 	def __init__(self, srcInput):
+
+# class runnerMeta:
+# 	def __init__(self, runnerInput):
+# 		self.label = runnerInput['label']
+# 		self.config = runnerInput['config']
+# 		self.overwrite = runnerInput['overwrite']
+
+# 		if 'alignment_dir' in list(runnerInput.keys()):
+# 			self.alignmentDir = runnerInput['alignment_dir']
+
+# 		if 'qs' in list(runnerInput.keys()):
+# 			self.qs_config = runnerInput['qs']
+
+# class eventInput:
+# 	def __init__(self, fname, eventIndx=0, runIndx=0):
+# 		configLst = self._load(fname)
+# 		self.event = eventRunner(configLst[eventIndx], runIndx)
 
 
-	def _load(self, fname):
-		with open(fname) as configFile:
-			try:
-				configInput = yaml.safe_load(configFile)
-				return(configInput) 
-			except yaml.YAMLError as error:
-				print(error)
+# 	def _load(self, fname):
+# 		with open(fname) as configFile:
+# 			try:
+# 				configInput = yaml.safe_load(configFile)
+# 				return(configInput) 
+# 			except yaml.YAMLError as error:
+# 				print(error)

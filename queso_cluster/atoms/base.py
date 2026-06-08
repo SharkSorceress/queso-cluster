@@ -123,7 +123,7 @@ def compute_bin(x, bin_edges):
 	else:
 		return bin
 
-@nb.njit()
+@nb.njit
 def np_gradient(f):
 	#> detail: 
 	#> param type f:
@@ -134,7 +134,11 @@ def np_gradient(f):
 	out[1:-1] = (f[2:] - f[:-2]) / 2.0
 	out[0] = f[1] - f[0]
 	out[-1] = f[-1] - f[-2]
-	return out
+	return(out)
+
+# @nb.njit
+# def np_diff(x):
+#     return(x[1:] - x[:-1])
 
 @nb.njit(cache=True)
 def minimize(data, decisions, size):

@@ -20,48 +20,12 @@ class timeIndependent:
 	----------
 	config : :class:`~queso_cluster.loaders.event.eventInput`
 		object containing yaml configuration
-	catalogBase : str
-		base string for catalog name
-	instrumentObj : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
+	instrumentObj : :class:`~queso_cluster.loaders.visp.visp` :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
 		A `loader` object for specific instruments
-
 	"""
-	def __init__(self, config, catalogName, instrumentObj):
-		baseMain.clusterBase.__init__(self, config, catalogName, instrumentObj)
-
-	def __getattr__(self, name):
-		return(baseMain.clusterBase.__getattr__(self, name))
-
-
-	# 	self.catalogBase = catalogName
-	# 	self.instrumentObj = instrumentObj
-
-	# 	self.config = config 
-	# 	self.dirid = ''.join(config.date.split('-'))
-
-	# 	spectralConfig 			= self.config.srcLst.lines[0]
-	# 	self.ii, self.jj 		= spectralConfig['window']
-	# 	self.lineCenter 		= spectralConfig['center']
-	# 	self.continuum 			= self.config.srcLst.continuum
-
-	# 	#self.prepSquare = None
-
-	# 	#self.timeFrames = np.arange(1)
-
-	# 	if hasattr(self.config.srcLst, "waveFitFunc"):
-	# 		print(self.dataSquare.shape[-1]+1)
-	# 		self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
-
-	# 		print(self.waveFit[self.lineCenter])
-
-	# def __getattr__(self, name):
-	# 	parentLst = [self.config, self.instrumentObj]
-	# 	for p in parentLst:
-	# 		if hasattr(p, name):
-	# 			return getattr(p, name)
-	# 		else:
-	# 			continue
-	# 	raise AttributeError("No parents have object with attribute '%s'" % name)
+	def __init__(self, config, instrumentObj):
+		self._instrumentObj = instrumentObj
+		self._config 		= config 
 
 	@loggTimer
 	def cluster(self, intrinsicLine=None, kLst=None):
@@ -72,28 +36,30 @@ class timeIndependent:
 		
 		#> Start of Intrinsic Layer
 		if intrinsicLine is None:
-			intrinsicLine = baseMain.mainIntrinsic(self.config, 
-										   np.floor(self.dataSquare*100)/100.)
+			intrinsicLine = baseMain.mainIntrinsic(self._config, 
+								np.floor(self.dataSquare*1000.)/1000.)
 		
-		if "keepI0" in list(self.config.runners.config.keys()):
-			
-			self.maskLine *= maskAtom.maskIntrinsic(self.config.runners.config['keepI0'], 
-										   			self.prepSquare, intrinsicLine,
-													(self.timeFrames.size, self.dimInfo['rasterSize'], self.dimInfo['alongSlitSize']), self.timeFrames.size)
+		if "keepI0" in list(self._config.runnerConfig.keys()):
+			self.maskLine *= maskAtom.maskIntrinsic(self._config.runnerConfig['keepI0'], 
+										   			#self.prepSquare, 
+													intrinsicLine,
+													(self._config.timeFrames.size, 
+													self._instrumentObj.dimInfo['rasterSize'], 
+													self._instrumentObj.dimInfo['alongSlitSize']), 
+													self._config.timeFrames.size)
 
 		intrinsicLine = intrinsicLine[self.maskLine]
 		#prepSquare = self.prepSquare[self.maskLine, :]
 		#>> End of Intrinsic Layer
 
-		# prepSquare_compute = np.zeros(self.prepSquare)
-		# prepSquare_compute[self.maskLine, self.ii:self.jj+1] = self.prepSquare[self.maskLine, self.ii:self.jj+1].compute()
-		# self.prepSquare = prepSquare_compute
 		_ct_ = logg("start", "compute Time")
-		prepSquare = self.prepSquare[self.maskLine, self.ii:self.jj+1].compute()
+		prepSquare = self.prepSquare[self.maskLine, 
+							   self._config.blueEdge:self._config.redEdge+1].compute()
 		logg("stop", _log=_ct_)
 
 		#> Start of Optimized Layer
-		labelLine, scoreTuple = baseMain.mainOptimization(prepSquare, intrinsicLine, kLst=kLst)
+		labelLine, scoreTuple = baseMain.mainOptimization(prepSquare, 
+															intrinsicLine, kLst=kLst)
 		#>> End of Optimized Layer
 
 		if not self.maskLine.all():
@@ -102,3 +68,19 @@ class timeIndependent:
 			return(unmaskLabelLine, scoreTuple)
 		
 		return(labelLine, scoreTuple)
+
+	def clusterCompoundLabels(self, optLabels):
+		labelLst = np.unique(optLabels)
+		recountedLabels = np.zeros(optLabels.shape) + np.nan
+		for l in range(labelLst.size):
+			#for t in range(self.optLabels.shape[0]):
+			if np.isnan(labelLst[l]):
+				continue
+			lindx = np.where(optLabels == labelLst[l])
+			recountedLabels[lindx] = l+1
+
+		compoundLabels = np.zeros((self._instrumentObj.dimInfo['rasterSize'], self._instrumentObj.dimInfo['alongSlitSize']), dtype=str)
+		for t in range(optLabels.shape[0]):
+			compoundLabels = np.char.add(compoundLabels, 
+								np.char.zfill(recountedLabels[t, ...].astype(np.uint).astype(str), 2))
+		return(compoundLabels)

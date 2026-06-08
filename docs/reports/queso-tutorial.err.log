@@ -28,25 +28,12 @@ epochDev, labelLine = main(eventManager.event)
 
 
 [31m---------------------------------------------------------------------------[39m
-[31mFileNotFoundError[39m                         Traceback (most recent call last)
-[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 2[39m
-[32m      1[39m [38;5;28;01mfrom[39;00m queso_cluster.loaders.event [38;5;28;01mimport[39;00m eventInput
-[32m----> [39m[32m2[39m eventManager = eventInput([33m"./eventManager.yml"[39m, [32m1[39m, [32m0[39m)
+[31mImportError[39m                               Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[4][39m[32m, line 1[39m
+[32m----> [39m[32m1[39m [38;5;28;01mfrom[39;00m queso_cluster.loaders.event [38;5;28;01mimport[39;00m eventInput
+[32m      2[39m eventManager = eventInput([33m"./eventManager.yml"[39m, [32m1[39m, [32m0[39m)
 [32m      3[39m 
 [32m      4[39m 
-[32m      5[39m epochDev, labelLine = main(eventManager.event)
 
-[36mFile [39m[32m/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py:136[39m, in [36meventInput.__init__[39m[34m(self, fname, eventIndx, runIndx)[39m
-[32m    134[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34m__init__[39m([38;5;28mself[39m, fname, eventIndx=[32m0[39m, runIndx=[32m0[39m):
-[32m    135[39m 	[38;5;28mself[39m.configList = []
-[32m--> [39m[32m136[39m 	configLst = [30;43mself[39;49m[30;43m.[39;49m[30;43m_load[39;49m[30;43m([39;49m[30;43mfname[39;49m[30;43m)[39;49m
-[32m    137[39m 	[38;5;28mself[39m.event = eventRunner(configLst[eventIndx], runIndx)
-
-[36mFile [39m[32m/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py:141[39m, in [36meventInput._load[39m[34m(self, fname)[39m
-[32m    140[39m [38;5;28;01mdef[39;00m[38;5;250m [39m[34m_load[39m([38;5;28mself[39m, fname):
-[32m--> [39m[32m141[39m 	[38;5;28;01mwith[39;00m [30;43mopen[39;49m[30;43m([39;49m[30;43mfname[39;49m[30;43m)[39;49m [38;5;28;01mas[39;00m configFile:
-[32m    142[39m 		[38;5;28;01mtry[39;00m:
-[32m    143[39m 			configInput = yaml.safe_load(configFile)
-
-[31mFileNotFoundError[39m: [Errno 2] No such file or directory: './eventManager.yml'
+[31mImportError[39m: cannot import name 'eventInput' from 'queso_cluster.loaders.event' (/nfs/hl0/data/sriley/src/sriley/lib/python3.11/site-packages/queso_cluster/loaders/event.py)
 

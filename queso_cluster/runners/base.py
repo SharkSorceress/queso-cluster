@@ -1,6 +1,6 @@
 from ..atoms import base as baseAtom
 from ..atoms import scores as scoresAtom
-
+from ..addon.logg import loggTimer
 
 import sys
 import numba as nb
@@ -40,7 +40,7 @@ def runPrep(dataSquare, norm, quSquare=None, **kwargs):
 	return(prepSquare)
 
 
-@nb.njit()
+@nb.njit
 def runLabelSort(dataSquare, labelLine):
 	labelLst = np.unique(labelLine)
 
@@ -59,20 +59,16 @@ def runLabelSort(dataSquare, labelLine):
 
 	return(sortedLabelLine, sortIndx)
 
-
-def runIntrinsic(nbins, data, edgeOverride=None):
+@nb.jit()
+def runIntrinsic(edges, data):
 	init_label  = np.ones(data.shape[0], dtype=np.uint16)
-	edges = edgeOverride
-	if edgeOverride is None:
-		_, edges = baseAtom.numba_histogram(data, nbins, 
-									np.array([data.min(), data.max()]))
-	for q in range(nbins):
-		for r in np.array(np.where((edges[q+1] > data) * (edges[q] <= data))).squeeze():
+	for q in range(edges.size-1):
+		for r in np.where((edges[q+1] > data) * (edges[q] <= data)):
 			init_label[r] = nb.u8(q+1)
 	return(init_label)
 
 
-@nb.njit()
+@nb.njit
 def runStart(k, data, start='max'):
 	N                          = data.shape[0]
 	starting_centroid          = np.zeros((k, data.shape[1]), data.dtype)
@@ -84,7 +80,7 @@ def runStart(k, data, start='max'):
 			initial_condition  = baseAtom.startMax(data, k, starting_centroid)
 	return(initial_condition)
 
-@nb.njit()
+@nb.njit
 def runOptimization(k, sub_data, converge):
 	ic                      = runStart(k, sub_data)
 	_, data_label           = baseAtom.calcOptimization(k, sub_data, ic, converge)
@@ -92,7 +88,7 @@ def runOptimization(k, sub_data, converge):
 	return(data_label+1, scoreLine)
 
 
-@nb.njit()
+@nb.njit
 def findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	with ProgressBar(total=30, ascii=False, leave=False, 
 					desc='findOptimalK',

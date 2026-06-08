@@ -25,11 +25,15 @@ class timeDependent:
 		A `loader` object for specific instruments
 	
 	"""
-	def __init__(self, config, catalogName, instrumentObj):
-		baseMain.clusterBase.__init__(self, config, catalogName, instrumentObj)
+	# def __init__(self, config, catalogName, instrumentObj):
+	# 	baseMain.clusterBase.__init__(self, config, catalogName, instrumentObj)
 
-	def __getattr__(self, name):
-		baseMain.clusterBase.__getattr__(self, name)
+	# def __getattr__(self, name):
+	# 	baseMain.clusterBase.__getattr__(self, name)
+
+	def __init__(self, config, instrumentObj):
+		self._config 		= config 
+		self._instrumentObj = instrumentObj
 
 	@loggTimer
 	def timeFrames(self, nframes=5, peakTime=None):
@@ -60,7 +64,9 @@ class timeDependent:
 		#> return (type): 
 		#> test-method:
 		
-		ii, jj = self.spectralWindow
+		ii = self.blueEdge
+		jj = self.redEdge
+		#ii, jj = self.spectralWindow
 		# if intrinsicLine is None:
 		# 	intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, 
 		# 								   np.floor(self.dataSquare*100)/100., 0, intrinsicSkip=False)

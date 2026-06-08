@@ -4,103 +4,118 @@ import pint
 
 from ..atoms import aux as auxAtom
 
-class visp:
-	def __init__(self, dataPath):
-		self.dataPath = dataPath
+from . import event as eventLoad
 
-	def load(self, stokes=0, flattenTime=False):
-		#> detail: 
-		#> param type self:
-		#> param type [0] stokes:
-		#> return (type): 
-		#> test-method:
-		dataset = dkist.load_dataset(self.dataPath)
-		dataCube = dataset.data
-		if 'polarization state' in dataset.wcs.pixel_axis_names:
-			dataCube = dataCube[stokes, ...] 
-		print(dataCube.shape)
-		#axisInfo = [dataset.wcs.pixel_axis_names[::-1], dataset.data.shape]
-		flat_axis = 1
-		numRaster = 1
-		test = []
-		crval = []
+from functools import cached_property
 
+class visp(eventLoad.eventRunner):
+
+	stokes_lst 		= ['I', 'Q', 'U', 'V']
+
+	def __init__(self, dataDirectory=None, stokes='I'):
 		
-		for n in range(dataset.headers['DNAXIS'][0]):
-			dnaxis_entry = dataset.headers['DNAXIS' + str(n+1)][0]
+
+		self._dataset = dkist.load_dataset(dataDirectory)
+		self._datetime = auxAtom.convertTime(self._dataset.headers['DATE-BEG'])
+
+
+		# print(self._dataset.wcs.pixel_axis_names)
+
+
+		# flat_axis = 1
+		# numRasters = 1
+		#test = []
+		#crval = []
+
+		# for n in range(self._dataset.headers['DNAXIS'][0]):
+		# 	dnaxis_entry = self._dataset.headers['DNAXIS' + str(n+1)][0]
 			
-			#print([dataset.headers['DTYPE' + str(n+1)][0], dnaxis_entry])
-			match dataset.headers['DTYPE' + str(n+1)][0]: 
-				case 'SPECTRAL':
-						spectral_len = dnaxis_entry
-						spectral_loc = int(np.where(np.asarray(dataCube.shape) == dnaxis_entry)[0])
-				case 'TEMPORAL':
-						numRasters = dnaxis_entry
-						flat_axis *= numRasters
-				case 'SPATIAL':
-						crval.append(dataset.headers['CRVAL' + str(n+1)][0])
-						flat_axis *= dnaxis_entry
-						test.append(dnaxis_entry)
+		# 	match self._dataset.headers['DTYPE' + str(n+1)][0]: 
+		# 		case 'SPECTRAL':
+		# 				spectral_len = dnaxis_entry
+		# 				spectral_loc = int(np.where(np.asarray(dataCube.shape) == dnaxis_entry)[0])
+		# 		case 'TEMPORAL':
+		# 				numRasters = dnaxis_entry
+		# 				#flat_axis *= numRasters
+		# 		case 'SPATIAL':
+		# 				#crval.append(dataset.headers['CRVAL' + str(n+1)][0])
+		# 				flat_axis *= dnaxis_entry
+		# 				#test.append(dnaxis_entry)
 
 
-		pxlSize = [[], []]
-		for m in range(dataset.headers['WCSAXES'][0]):
-			match dataset.headers['CTYPE' + str(m+1)][0]:
-				case 'HPLT-TAN':                     
-					pxlSize[0].append(dataset.headers['CDELT' + str(m+1)][0])   
-					pxlSize[1].append(m)
-				#case 'AWAV':
-				#		waveAxisDelta = dataset.headers['CDELT' + str(m+1)][0]
+		#self.shape = self._dataset.data.shape
+		#if numRasters == 1:
+		#	self.shape = self.dataCube.shape
+		#	self.dataSquare = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
+		#else:
+		# self.dataPrism = 
 
+		# self.dimInfo = {
+		# 	"numRasters" : numRasters,
+		# 	"alongSlitSize" : np.max(test),
+		# 	"rasterSize" : (flat_axis // np.max(test)) // numRasters,
+		# }
 
-		self.deltas = {	
-			"pxlAlongSlit": min(pxlSize[0]) * pint.Unit("arcsecond"),
-			'pxlSlitWidth': dataset.headers['VSPWID'][0] * pint.Unit("arcsecond")
-		}
-
-		self.dataCube = np.moveaxis(dataCube, spectral_loc, -1)
-		self.shape = self.dataCube.shape
-		if numRasters == 1 or flattenTime:
-			self.shape = self.dataCube.shape
-			self.dataSquare = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
+	@cached_property
+	def dataPrism(self):
+		if 'polarization state' in self._dataset.wcs.pixel_axis_names:
+			dataCube = self._dataset.data[0, ...] 
 		else:
-			self.dataSquare = self.dataCube.reshape(numRasters, flat_axis//numRasters, spectral_len)
+			dataCube = self._dataset.data
 
-		self.dimInfo = {
-			"numRasters" : numRasters,
-			"alongSlitSize" : np.max(test),
-			"rasterSize" : (flat_axis // np.max(test)) // numRasters,
-		}
+		n = self._dataset.wcs.pixel_axis_names.index('dispersion axis')
+		dataCube = np.moveaxis(dataCube, n+1, -1)
+		return(dataCube.reshape(self.dimInfo['numRasters'], 
+						  self.dimInfo['rasterSize']*self.dimInfo['alongSlitSize'], dataCube.shape[-1]))
+	@cached_property
+	def pxlDelta(self):
+		labels = ['pxlSlitWidth', 'pxlAlongSlit']		
+		dimLst = ['raster scan step number', 'spatial along slit']
 
-		# self.spaceInfo = {
-		# 	"maxRasters": numRaster,
-		# 	"rasterSize": self.rasterSize,
-		# 	"alongSlitSize": self.alongSlitSize,
-		# }
-		# self.waveInfo = {
-		# 	#"waveDelta": waveAxisDelta,
-		# 	"waveExtrema": (dataset.headers['WAVEMIN'][0], 
-		# 					dataset.headers['LINEWAV'][0], 
-		# 					dataset.headers['WAVEMAX'][0])
-		# }
+		deltaInfo = {}
+		for d in range(len(dimLst)):
+			n = self._dataset.wcs.pixel_axis_names.index(dimLst[d])
+			deltaInfo[labels[d]] = self._dataset.headers['CDELT' + str(n+1)][0] * pint.Unit("arcsecond")
+		
+		return(deltaInfo)
 
-		datetime = auxAtom.convertTime(dataset.headers['DATE-BEG'])
 
-		#> Note: The start datetime of the observations
-		self.zeroDate = dataset.headers['DATE-BEG'][0]
-
-		#> Note: slit spectrographs have three relavant time scales:
-		#> Note: step cadence -- the time between slit positions 
-		#> Note: map cadence -- the time between rasters
-		#> Note: reset time -- the time it takes to go from the end of the raster to the start of a new raster
-		stepCadence = np.diff(datetime[0:self.dimInfo['rasterSize']])
+	@cached_property
+	def stepCadence(self):
+		"""the time between slit positions"""
+		stepCadence = np.diff(self._datetime[0:self.dimInfo['rasterSize']])
 		stepCadence = stepCadence[stepCadence > 0]
-		self.stepCadence = stepCadence.mean() * pint.Unit("second")
+		return(stepCadence.mean() * pint.Unit("second"))
 
-		mapCadence = np.diff(datetime[::self.dimInfo['rasterSize']])
+
+	@cached_property
+	def mapCadence(self):
+		"""the time between rasters"""
+		mapCadence = np.diff(self._datetime[::self.dimInfo['rasterSize']])
 		mapCadence = mapCadence[mapCadence > 0]
+		return(mapCadence.mean() * pint.Unit("second"))	
+	
+	@cached_property
+	def resetDuration(self):
+		"""the time it takes to go from the end of the raster to the start of a new raster"""
+		return(self._datetime[self.dimInfo['rasterSize']-1:self.dimInfo['rasterSize']+1] * pint.Unit("second"))
 
-		self.resetTime = datetime[self.dimInfo['rasterSize']-1:self.dimInfo['rasterSize']+1] * pint.Unit("second")
 
-		if len(np.unique(mapCadence)) > 0: 
-			self.mapCadence = mapCadence.mean() * pint.Unit("second")
+	@cached_property
+	def dimInfo(self):
+		labels = ['rasterSize', 'alongSlitSize', 'numRasters']
+		dimLst = ['raster scan step number', 'spatial along slit', 'raster map repeat number']
+
+		dimInfo = {}
+		for d in range(len(dimLst)):
+			n = self._dataset.wcs.pixel_axis_names.index(dimLst[d])
+			dimInfo[labels[d]] = self._dataset.headers['DNAXIS' + str(n+1)][0]
+		return(dimInfo)
+			
+
+	@cached_property
+	def fitWavelength(self):
+		"""If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms"""	
+		n = self._dataset.wcs.pixel_axis_names.index('dispersion axis')
+		waveIndex = self._dataset.headers['DNAXIS' + str(n+1)][0]
+		return(self._config.srcLst.waveFitFunc(waveIndex+1).to('angstrom'))

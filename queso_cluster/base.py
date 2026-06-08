@@ -10,54 +10,56 @@ from .atoms import error as errAtom
 from .atoms import mask as maskAtom
 from .runners import base as baseRun
 
+from .loaders import event as eventLoad
 
-class clusterBase:
-	"""
-	Parent class to :class:`~queso_cluster.ti.timeIndependent` and :class:`~queso_cluster.td.timeDependent`
+# class clusterBase():
+# 	"""
+# 	Parent class to :class:`~queso_cluster.ti.timeIndependent` and :class:`~queso_cluster.td.timeDependent`
 
-	Parameters
-	----------
-	config : :class:`~queso_cluster.loaders.event.eventInput`
-		object containing yaml configuration
-	catalogBase : str
-		base string for catalog name
-	instrumentObj : :class:`~queso_cluster.loaders.visp.visp` :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
-		A `loader` object for specific instruments
-	
-	Attributes
-	----------
-	ii, jj : int, int
-		1D array containing the index for the beginning and end of the spectral window used for clustering
-	lineCenter : int
-		The index for a center position in the window. This may coinside with the line center of the spectrum
-	continuum : int
-		The index of the continuum for the spectrum. This may be used for normalization
-	waveFit : ndarray
-		If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms
-	"""
-	def __init__(self, config, catalogName, instrumentObj):
-		self.config 		= config 
-		self.catalogBase 	= catalogName
-		self.instrumentObj 	= instrumentObj
+# 	Parameters
+# 	----------
+# 	config : :class:`~queso_cluster.loaders.event.eventInput`
+# 		object containing yaml configuration
+# 	catalogBase : str
+# 		base string for catalog name
+# 	instrumentObj : :class:`~queso_cluster.loaders.visp.visp` :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
+# 		A `loader` object for specific instruments
+# 	"""
+# 	def __init__(self, config, instrumentObj):
+# 		self._config 		= config 
+# 		self._instrumentObj = instrumentObj
 
-		self.dirid = ''.join(self.config.date.split('-'))
 
-		spectralConfig 			= self.config.srcLst.lines[0]
-		self.ii, self.jj 		= spectralConfig['window']
-		self.lineCenter 		= spectralConfig['center']
-		self.continuum 			= self.config.srcLst.continuum
+# 		# spectralConfig 			= self.config.srcLst.lines[0]
+# 		# self.ii			= spectralConfig['window'][0]
+# 		# """int containing the index for the beginning of the spectral window used for clustering"""
 
-		if hasattr(self.config.srcLst, "waveFitFunc"):
-			self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
+# 		# self.jj 		= spectralConfig['window'][1]
+# 		# """int containing the index for the end of the spectral window used for clustering"""
 
-	def __getattr__(self, name):
-		parentLst = [self.config, self.instrumentObj]
-		for p in parentLst:
-			if hasattr(p, name):
-				return getattr(p, name)
-			else:
-				continue
-		raise AttributeError("No parents have object with attribute '%s'" % name)
+# 		# self.lineCenter 		= spectralConfig['center']
+# 		# """The index for a center position in the window. This may coinside with the line center of the spectrum"""
+
+# 		# self.continuum 			= self.config.srcLst.continuum
+# 		# """The index of the continuum for the spectrum. This may be used for normalization"""
+
+# 		# if hasattr(self.config.srcLst, "waveFitFunc"):
+# 		# 	self.waveFit = self.config.srcLst.waveFitFunc(self.dataSquare.shape[-1]+1).to('angstrom')
+			
+
+# 	# def __getattr__(self, name):
+# 	# 	parentLst = [self._config, self._instrumentObj]
+# 	# 	for p in parentLst:
+# 	# 		if hasattr(p, name):
+# 	# 			return getattr(p, name)
+# 	# 		else:
+# 	# 			continue
+# 	# 	raise AttributeError("No parents have object with attribute '%s'" % name)
+
+
+# 	@property
+# 	def directory(self):
+# 		return(''.join(self._config.date.split('-')))
 
 
 class interface:
@@ -102,38 +104,46 @@ class interface:
 		loading.close()
 		return(self.framework, labelSquare)
 	
+import numba as nb
+from timeit import default_timer as timer
 @loggTimer
 def mainIntrinsic(config, prepSquare):
 	intrinsicLine = np.zeros(prepSquare.shape[0])
 	intrinsicConfig = config.clusterConfig['intrinsic']
 	for i in range(len(intrinsicConfig)):
-		key =  intrinsicConfig[i]['label']
-		if key == 'continuum':
-			indxs = config.srcLst.continuum
-		else:
-			indxs = config.srcLst.lines[0][key]
-		if type(indxs) == list:
-			iframe = prepSquare[:, indxs[0]:indxs[1]].mean(axis=-1)#.astype(np.float64).compute()
-		else:
-			iframe = prepSquare[:, indxs]#.astype(np.float64).compute()
+		match intrinsicConfig[i]['label']:
+			case 'lineContinuum':
+				indxs = nb.int16(np.array(config.lineContinuum))
+			case 'window': 
+				indxs = nb.int16(np.arange(config.blueEdge, config.redEdge+1))
+			case 'lineCenter':
+				indxs = nb.int16(np.array(config.lineCenter))
+		iframe = prepSquare[:, indxs]
+		if indxs.size > 1:
+			iframe = iframe.mean(axis=-1)
+
+		#s = timer()
 		if 'layerConfig' in list(intrinsicConfig[i].keys()):
 			if 'bins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-				bins = intrinsicConfig[i]['layerConfig']['bins']
-				intrinsicLine_tmp 	= baseRun.runIntrinsic(len(np.diff(bins)), iframe, edgeOverride=np.array(bins).astype(float))
-
-			if 'nbins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-				nbins = intrinsicConfig[i]['layerConfig']['nbins']
-				intrinsicLine_tmp 	= baseRun.runIntrinsic(nbins, iframe)
-
+				intrinsicLine_tmp 	= baseRun.runIntrinsic(nb.float32(np.array(intrinsicConfig[i]['layerConfig']['bins'])), 
+											  iframe.compute())
 		else:
-			intrinsicLine_tmp 	= baseRun.runIntrinsic(1, iframe)
+			_, edges = baseAtom.numba_histogram(iframe, 1, np.array([iframe.min(), iframe.max()]))
+			intrinsicLine_tmp 	= baseRun.runIntrinsic(edges, iframe)
+		#e = timer()
+		#print("Part 3: {}s".format(e - s))
+
 		intrinsicLine += intrinsicLine_tmp * 10**i
+
+	#s = timer()
 	s0_Lst = np.unique(intrinsicLine)
 	for i in range(len(s0_Lst)):
 		indx = np.where(intrinsicLine == s0_Lst[i])[0]
 		intrinsicLine[indx.astype(int)] = i+1
-	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
-	return(intrinsicLine)
+	#e = timer()
+	#print("Part 4: {}s".format(e - s))
+
+	return(auxAtom.pick_jth_label(intrinsicLine, 0).astype(int))
 
 
 @loggTimer
