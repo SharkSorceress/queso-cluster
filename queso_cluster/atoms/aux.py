@@ -104,7 +104,7 @@ def density_hist2d(data, dy, top, bottom):
 	#> param type bottom:
 	#> return (type): 
 	#> test-method:
-	NbinY   = nb.int32((top-bottom)/dy)
+	NbinY   = nb.int32(np.ceil((top-bottom)/dy))
 	hist    = np.zeros((data.shape[1], NbinY))
 	for i in range(data.shape[0]):
 		for j in range(data.shape[1]):

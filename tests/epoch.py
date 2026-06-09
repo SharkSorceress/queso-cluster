@@ -88,16 +88,24 @@ if __name__ == '__main__':
 	fig3a = p.clusterMapSequence(timeAxis=False)
 	fig3a.savefig("./figure03_sequence.png")
 
+	fig4 = p.clusterProfiles()
+	fig4.savefig("./clusterLabels.png")
+
+
 	hiIntMask = np.zeros(p.optLabels.shape[1:])
 	for t in range(p.optLabels.shape[0]):
 		hiIntMask = np.logical_or(hiIntMask, p.optLabels[t, ...] == 311)
 
-	# hiIntMask[hiIntMask == 0] = np.nan
+	hiIntMask = hiIntMask.astype(float)
+	hiIntMask[hiIntMask == 0] = np.nan
+
 	hiIntMask = np.broadcast_to(hiIntMask, p.optLabels.shape)
 
 	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels*hiIntMask)
 	fig3c = p.clusterMapCompound(compoundLabels)
 	fig3c.savefig("./figure03_compound_peak.png")
+
+	p.clusterProfilesCompound(compoundLabels)
 
 	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
 	fig3b = p.clusterMapCompound(compoundLabels)
@@ -105,6 +113,4 @@ if __name__ == '__main__':
 
 	# #plt.close()
 
-	fig4 = p.clusterProfiles()
-	fig4.savefig("./clusterLabels.png")
 

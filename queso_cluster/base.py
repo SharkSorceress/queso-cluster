@@ -1,4 +1,5 @@
 import numpy as np
+import numba as nb
 from numba_progress import ProgressBar
 import functools
 
@@ -104,8 +105,7 @@ class interface:
 		loading.close()
 		return(self.framework, labelSquare)
 	
-import numba as nb
-from timeit import default_timer as timer
+
 @loggTimer
 def mainIntrinsic(config, prepSquare):
 	intrinsicLine = np.zeros(prepSquare.shape[0])

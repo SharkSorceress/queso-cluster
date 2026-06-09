@@ -60,12 +60,29 @@ class Products:
 		#self.optLabels 	= optLabels
 		self.optLabels[self.optLabels == 0] = np.nan
 		self.vindx 	= np.where(~np.isnan(self.optLabels))#[0]
-		#print(self.vindx.type)
 
 		self.vfindx = np.ravel_multi_index(self.vindx, self.optLabels.shape)
 
+		ii, jj = [self._quesoOut._config.blueEdge, self._quesoOut._config.redEdge]
+
+		self._raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()
+		self._raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
+
+		if hasattr(self._quesoOut._config, "waveFit"):
+			self._wavelambda  = self._quesoOut._config.waveFit.magnitude
+			self._wavelambda -= self._wavelambda[self._quesoOut._config.lineCenter]
+			waveUnit = self._quesoOut._config.waveFit.units
+		else:
+			self._wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
+			waveUnit = "index"
+
+		self._extent  = self._wavelambda[ii], self._wavelambda[jj], self._raw_min, self._raw_max
+		#print(self._extent)
+
 		self.xlim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
 		self.ylim = np.array([self.vindx[2].min(), self.vindx[2].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
+
+		print([self.xlim, self.ylim])
 
 		self.aspect = (np.diff(self.ylim)[0]/np.diff(self.xlim)[0])
 	
@@ -77,7 +94,7 @@ class Products:
 
 	def load(self):
 		loading = np.load("./{}.npz".format(self._config.flavor))
-		print(loading)
+		logger.info(loading)
 		self.optLabels 				= loading['labelSquare']
 		self._quesoOut.maskLine 	= loading['maskLine']
 		self._quesoOut.prepSquare 	= loading['prepSquare']
@@ -140,13 +157,15 @@ class Products:
 
 		"""	
 
-		compoundLabels[~np.char.isalnum(compoundLabels)] = np.nan
+		#compoundLabels[~np.char.isalnum(compoundLabels)] = np.nan
 
 		recountedCompoundLabels = np.zeros(compoundLabels.shape) + np.nan
-		labelLst = np.unique(compoundLabels[:-2])
-		#print(np.unique(labelLst).size)
+		labelLst = np.unique(compoundLabels)
 		for l in range(labelLst.size):
 			#for t in range(self.optLabels.shape[0]):
+			if labelLst[l] == 'X':
+				continue
+
 			lindx = np.where(compoundLabels == labelLst[l])
 			if len(lindx[0]) > 3:
 				recountedCompoundLabels[lindx] = l+1
@@ -192,22 +211,11 @@ class Products:
 		labelLst = np.unique(compoundLabels)
 
 		ncols = self.optLabels.shape[0]
-		ii, jj = [self._quesoOut._config.blueEdge, 
-					self._quesoOut._config.redEdge]
-
-		if hasattr(self._quesoOut._config, "waveFit"):
-			wavelambda  = self._quesoOut._config.waveFit.magnitude
-			wavelambda -= wavelambda[self._quesoOut._config.lineCenter]
-			waveUnit = self._quesoOut._config.waveFit.units
-		else:
-			wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
-			waveUnit = "index"
-
-		raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()
-		raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()	
-		extent  = wavelambda[ii], wavelambda[jj], raw_min, raw_max
 
 		for ll in range(labelLst.size):
+			if labelLst[ll] == "X":
+				continue
+
 			fig = plt.figure(layout='constrained', figsize=((ncols + 0.2)*3, 1*3), dpi=300)
 		
 			gs  = GridSpec(1, ncols + 1, 
@@ -215,19 +223,17 @@ class Products:
 					width_ratios=[1 for x in range(ncols)] + [0.2],
 					height_ratios=[1 for x in range(1)],
 					figure=fig)		
-
 			indx2D = np.where(compoundLabels == labelLst[ll])
 			for oo in range(ncols):
-					indx = np.ravel_multi_index((oo*np.ones(indx2D[0].size, dtype=int), *indx2D), 
-								 self.optLabels.shape)
+				indx = np.ravel_multi_index((oo*np.ones(indx2D[0].size, dtype=int), *indx2D), 
+								self.optLabels.shape)
 
-					#print(indx)
-					if indx.size > 1:
-						ax  = plt.subplot(gs[0, oo])
-						ax  = self.spectralEntry(ax, indx, "black", wavelambda, extent, False)
+				if indx.size > 1:
+					ax  = plt.subplot(gs[0, oo])
+					ax  = self.spectralEntry(ax, indx, "black", True)
 
-						if not gs[0, oo].is_first_col():
-							ax.set_yticklabels([])
+					if not gs[0, oo].is_first_col():
+						ax.set_yticklabels([])
 			fig.savefig("./sequences/labelTest_{}.png".format(int(labelLst[ll])))
 			plt.close()
 
@@ -345,8 +351,6 @@ class Products:
 		# cmap = mpl.colors.ListedColormap(color_pallet)
 		# norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
 
-		#print(labelLst)
-		#print(labelLst.size)
 
 		#compoundLabels = np.zeros(self.optLabels.shape[1:], dtype=str)
 
@@ -501,7 +505,6 @@ class Products:
 			# 		xytext=(0.035, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
             # 		va='center', ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black', alpha=0.4))
 
-			#print(self.figDir + 'figure03_{}.pdf'.format(types[t]))
 			fig.savefig('./figure03_{}.png'.format(types[t]))
 			#fig.savefig(self.figDir + 'figure03_{}.pdf'.format(types[t]))
 
@@ -555,8 +558,8 @@ class Products:
 					height_ratios=[1 for x in range(nrows)],
 					figure=fig)
 
-		raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()
-		raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*10)/10.)#.compute()	
+		raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()
+		raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
 		extent  	= wavelambda[ii], wavelambda[jj], raw_min, raw_max
 
 		color = "black"
@@ -567,9 +570,9 @@ class Products:
 
 			if i0_indx.size <= 1:
 				continue
-
 			ax0      = plt.subplot(gs[j, 0])
-			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], color, wavelambda, extent, showContinuum)
+
+			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], color, showContinuum)
 			if gs[j,0].is_last_row():
 				#ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")
 				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(waveUnit))
@@ -594,7 +597,7 @@ class Products:
 				#sindx = np.where(i0Arr == sArr[0])[0]
 
 				score = 0#scoresAtom.calcSingleSilhouetteScore(self.quesoOut.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
-				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], color, wavelambda, extent, showContinuum, scores=score)
+				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], color, showContinuum, scores=score)
 				if gs[j,k+1].is_last_row():
 					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(waveUnit))	
 				else:
@@ -605,7 +608,7 @@ class Products:
 				# 	axR.tick_params(labelright=False)
 		return(fig)
 
-	def spectralEntry(self, ax, indx, color, wavelambda, extent, showContinuum, scores=None, dev=False):
+	def spectralEntry(self, ax, indx, color, showContinuum, scores=None, dev=False):
 		"""
 		Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
 		
@@ -645,29 +648,28 @@ class Products:
 			centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
 			axR = ax.twinx()
 			axR.set_ylim([-1, 1])
-			axR.plot(wavelambda[ii:jj+1], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
-			ax.plot(wavelambda[ii:jj+1], centroid_min, color='blue', linewidth=0.75)
-			ax.plot(wavelambda[ii:jj+1], centroid_max, color='blue', linewidth=0.75)
+			axR.plot(self._wavelambda[ii:jj+1], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+			ax.plot(self._wavelambda[ii:jj+1], centroid_min, color='blue', linewidth=0.75)
+			ax.plot(self._wavelambda[ii:jj+1], centroid_max, color='blue', linewidth=0.75)
 			logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
-		ax.plot(wavelambda[ii:jj+1], centroid_i, color='black', linewidth=0.75)
+		ax.plot(self._wavelambda[ii:jj+1], centroid_i, color='black', linewidth=0.75)
 
 		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
-		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, extent[3], extent[2])
+		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, self._extent[3], self._extent[2])
 
-		ww, insty = np.meshgrid(wavelambda[ii:jj+1+1], np.arange(extent[2], extent[3]+0.01, 0.01))
+		ww, insty = np.meshgrid(self._wavelambda[ii:jj+1+1], np.arange(self._extent[2], self._extent[3]+0.01, 0.01))
 		#print([ww.shape, insty.shape, temp_im.shape])
 		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', color]))
 
-		ax.axvline(x = wavelambda[self._config.lineCenter], linestyle='dashed', color='black')
+		ax.axvline(x = self._wavelambda[self._config.lineCenter], linestyle='dashed', color='black')
 
 		#tindx = self.vindx[0][indx]
 		#xindx = self.vindx[1][indx]
 		#yindx = self.vindx[2][indx]
 		tindx, xindx, yindx = np.unravel_index(indx, self.optLabels.shape)
 		labelLst = np.unique(self.optLabels[tindx, xindx, yindx]).astype(int).astype(str)
-		#print(labelLst)
 		commonLabel = [labelLst[0][j] for j in range(len(labelLst[0])) if np.unique([a[j] for a in [list(x) for x in labelLst]]).size == 1]
-		#print(commonLabel)
+
 		label = "{}{}".format(int("".join(commonLabel)), "X"*(len(labelLst[0]) - len(commonLabel)))
 		ax.annotate("{}".format(label),
 			xy=(0.01, 1-0.05), xycoords='axes fraction',
@@ -685,7 +687,10 @@ class Products:
 					xytext=(0.01, 1-0.15), textcoords='axes fraction', fontfamily='sans-serif',
             		va='center', ha='left')				
 
-			
+		if showContinuum:
+			ax.axhline(y = 1, color='black', linestyle='dotted')
+
+
 		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=1))
 		
 

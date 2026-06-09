@@ -68,19 +68,38 @@ class timeIndependent:
 			return(unmaskLabelLine, scoreTuple)
 		
 		return(labelLine, scoreTuple)
-
+	
 	def clusterCompoundLabels(self, optLabels):
+		"""
+		Concatenates the labels by time to form a sequence cluster
+
+		Parameters
+		----------
+		optLabels : ndarray
+			3D array containing the finalized cluster labels
+
+		Returns
+		--------
+		compoundLabels : ndarray
+			2D array containing the cluster *sequence* labels
+
+		"""
 		labelLst = np.unique(optLabels)
 		recountedLabels = np.zeros(optLabels.shape) + np.nan
 		for l in range(labelLst.size):
 			#for t in range(self.optLabels.shape[0]):
 			if np.isnan(labelLst[l]):
 				continue
+
 			lindx = np.where(optLabels == labelLst[l])
 			recountedLabels[lindx] = l+1
 
 		compoundLabels = np.zeros((self._instrumentObj.dimInfo['rasterSize'], self._instrumentObj.dimInfo['alongSlitSize']), dtype=str)
+		nindxT, nindxX, nindxY = np.where(np.isnan(recountedLabels))
 		for t in range(optLabels.shape[0]):
 			compoundLabels = np.char.add(compoundLabels, 
 								np.char.zfill(recountedLabels[t, ...].astype(np.uint).astype(str), 2))
+			
+		compoundLabels[nindxX, nindxY] = "X"
+		#print(np.unique(compoundLabels))
 		return(compoundLabels)
