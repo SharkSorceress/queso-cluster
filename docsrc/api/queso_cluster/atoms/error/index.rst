@@ -5,16 +5,10 @@ queso_cluster.atoms.error
 
 .. autoapi-nested-parse::
 
-       :file:  queso_cluster/atom/error.py
-       :lang:  python
-       :synopsis: 
-       :author: Sarah Riley <academic@sriley.dev>
-
-
-   Attributes
-   ----------
-   convergeLimit : int
-       Maximum number of interations before ConvergenceError is raised
+   :file:  queso_cluster/atom/error.py
+   :lang:  python
+   :synopsis:
+   :author: Sarah Riley <academic@sriley.dev>
 
    ..
        !! processed by numpydoc !!
@@ -98,4 +92,25 @@ Module Contents
 .. py:data:: convergeLimit
    :value: 1000
 
+
+   
+   Maximum number of interations before ConvergenceError is raised
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
 

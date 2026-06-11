@@ -12,6 +12,8 @@ from .atoms import aux as auxAtom
 from .addon.logg import loggTimer, logg
 from .atoms import mask as maskAtom
 
+from functools import cached_property
+
 class timeIndependent:
 	"""
 	Time independent clustering framework
@@ -69,6 +71,28 @@ class timeIndependent:
 		
 		return(labelLine, scoreTuple)
 	
+
+	@cached_property
+	def geometry(self):
+		"""
+		Imports spatial and temporal properties from instrumentObj 
+		
+		Returns
+		-------
+		dict
+			Dictionary containing the geometry and cadence of the observations
+		"""
+		
+		return({"numRasters": self._instrumentObj.dimInfo['numRasters'],
+					"rasterSize": self._instrumentObj.dimInfo['rasterSize'],
+					"alongSlitSize": self._instrumentObj.dimInfo['alongSlitSize'],
+					"pxlSlitWidth": self._instrumentObj.pxlDelta['pxlSlitWidth'],
+					"pxlAlongSlit": self._instrumentObj.pxlDelta['pxlAlongSlit'],
+					"stepCadence": self._instrumentObj.stepCadence,
+					"mapCadence": self._instrumentObj.mapCadence,
+					"resetDuration": self._instrumentObj.resetDuration,
+		})
+	
 	def clusterCompoundLabels(self, optLabels):
 		"""
 		Concatenates the labels by time to form a sequence cluster
@@ -79,7 +103,8 @@ class timeIndependent:
 			3D array containing the finalized cluster labels
 
 		Returns
-		--------
+		-------
+		
 		compoundLabels : ndarray
 			2D array containing the cluster *sequence* labels
 
@@ -101,5 +126,4 @@ class timeIndependent:
 								np.char.zfill(recountedLabels[t, ...].astype(np.uint).astype(str), 2))
 			
 		compoundLabels[nindxX, nindxY] = "X"
-		#print(np.unique(compoundLabels))
 		return(compoundLabels)

@@ -4,15 +4,11 @@
 	:synopsis: 
 	:author: Sarah Riley <academic@sriley.dev>
 
-
-    Attributes
-    ----------
-    convergeLimit : int
-        Maximum number of interations before ConvergenceError is raised
 """
 import numpy as np
 
 convergeLimit = int(1000)
+"""Maximum number of interations before ConvergenceError is raised"""
 
 class ConvergenceError(Exception):
     """

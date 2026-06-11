@@ -29,14 +29,6 @@ class clusterColormap:
 	tolColorLabel : str, optional
 		the name of the TOL colormap to use
 
-	Attributes
-	----------
-	cmap : ListedColormap
-		The matplotlib colormap to use
-	norm : BoundaryNorm
-		The matplotlib normalization to use
-	bound_ticks : ndarray
-		Tick locations for plt.colorbar
 	"""
 
 	def __init__(self, nbounds, tolColorLabel='rainbow_PuRd'):
@@ -102,18 +94,6 @@ class mapMaker:
 	deltas : dict
 		dictinary containing the raster pixel scale as 'pxlSlitWidth' and the along slit pixel scale as 'pxlAlongSlit'
 	
-	Attributes
-	----------
-	flatten : lambda function
-		creates a 1D array from a spatial 2D array
-	unflatten : lambda function
-		creates a spatial 2D array from a flattened 1D array
-	bbox : ndarray
-		1D array containing the extent of the region in pixel units
-	extent : ndarray
-		1D array containing the extent of the region in arcseconds
-	correct : lambda function
-		Flattens a transposed array (for IDL maps only)
 
 	"""
 	def __init__(self, spaceInfo, deltas):

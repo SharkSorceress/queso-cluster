@@ -1,28 +1,36 @@
 import os
 import sys
 
-
 sys.path.insert(0, os.path.abspath('./'))
+
+from queso_cluster import __version__
 
 #from queso_cluster import __version__
 
 project = 'QuESO'
 copyright = '2026, Sarah Riley'
 author = 'Sarah Riley'
-version = 'v0.2.0-alpha'
-#release = __version__
+version = __version__
+release = __version__
 
 # -- General configuration
 
 extensions = [
     "autoapi.extension",
-    'sphinx.ext.autodoc',
+    "sphinx.ext.napoleon",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.todo",
+    "sphinx.ext.viewcode",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.graphviz",
+    "sphinx_design",
+    "sphinx_copybutton",
+    #"_extension.gallery_directive",
+    "sphinx.ext.githubpages",
     'numpydoc',
     "myst_nb",
-    'sphinx.ext.todo',
     'sphinx.ext.coverage',
-    'sphinx.ext.viewcode',
-    "sphinx.ext.graphviz",  
 ]
 
 autosummary_generate = True
@@ -37,6 +45,7 @@ _autoapi_source = os.path.abspath(
 autoapi_dirs = [_autoapi_source]
 autoapi_keep_files = True
 autoapi_root = "api"
+autoapi_add_toctree_entry = True
 autoapi_options = ["members", "undoc-members", "show-inheritance", "show-module-summary"]
 autoapi_member_order = "groupwise"
 
@@ -80,25 +89,24 @@ html_theme_options = {
          "icon": "devicon-pypi-plain",
       }],
     "logo": {
-         "text": "QuESO",
-         'image_dark': '_static/img/iconTeal_small.png'
+         'image_dark': '_static/img/iconTeal_small.png',
+         'image_light': '_static/img/iconTeal_small.png'
     },
     "show_nav_level": 2,
     "show_toc_level": 1,
-    "navbar_center": ["navbar-nav"],
+    #"navbar_center": ["navbar-nav"],
     "header_links_before_dropdown": 3,
     #"navbar_center": ["contributors"],
     #"navbar_end": ["navbar-icon-links"],
     "navbar_end": ["theme-switcher", "navbar-icon-links"],
     "back_to_top_button": True,
     "collapse_navigation": True,
-    "announcement": "This is under active development",
+    "announcement": "queso-cluster v{} is out now! Have it with chips.".format(version),
 }
 
 html_sidebars = {
-    "getting-started": [],
-    "contributors": [],
-    "api-reference": ["sidebar-collapse", "sidebar-nav-bs"],
+    "getting-started/**": [],
+    "contributors/**": [],
     "tutorials": ["sidebar-collapse", "sidebar-nav-bs"],
     "api/**": ["sidebar-collapse", "sidebar-nav-bs"],
 }

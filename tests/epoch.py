@@ -82,6 +82,16 @@ if __name__ == '__main__':
 	eventManager = eventRunner("./eventManager.yml", eventIndx=2, runIndx=0)
 	tiDev  = main_time(eventManager)
 
+	geoLst = list(tiDev.geometry.keys())
+
+	for g in range(len(geoLst)):
+		print("{}: {}".format(geoLst[g], tiDev.geometry[geoLst[g]]))
+
+	exit()
+
+
+	print(tiDev._instrumentObj.dimInfo)
+
 	from queso_cluster.addon import products
 	p = products.Products(tiDev, eventManager)
 	#p.figure03()
@@ -98,7 +108,6 @@ if __name__ == '__main__':
 
 	hiIntMask = hiIntMask.astype(float)
 	hiIntMask[hiIntMask == 0] = np.nan
-
 	hiIntMask = np.broadcast_to(hiIntMask, p.optLabels.shape)
 
 	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels*hiIntMask)

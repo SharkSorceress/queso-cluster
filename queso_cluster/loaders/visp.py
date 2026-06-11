@@ -98,7 +98,7 @@ class visp(eventLoad.eventRunner):
 	@cached_property
 	def resetDuration(self):
 		"""the time it takes to go from the end of the raster to the start of a new raster"""
-		return(self._datetime[self.dimInfo['rasterSize']-1:self.dimInfo['rasterSize']+1] * pint.Unit("second"))
+		return(np.diff(self._datetime[self.dimInfo['rasterSize']-1:self.dimInfo['rasterSize']+1]) * pint.Unit("second"))
 
 
 	@cached_property

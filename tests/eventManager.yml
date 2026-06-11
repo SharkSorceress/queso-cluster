@@ -60,7 +60,7 @@
     label: 'Strong flare signatures'
     run: 
       - label: 'timeIndependentXClass'
-        overwrite: True
+        overwrite: False
         config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'narrow'}
     src: 
       - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}

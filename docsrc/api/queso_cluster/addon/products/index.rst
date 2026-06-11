@@ -7,7 +7,7 @@ queso_cluster.addon.products
 
    :file:  queso_cluster/addon/products.py
    :lang:  python
-   :synopsis: 
+   :synopsis:
    :author: Sarah Riley <academic@sriley.dev>
 
    ..
@@ -30,37 +30,12 @@ Module Contents
    
    Detail
 
+   :param quesoOut: summary
+   :type quesoOut: type
+   :param optLabels: summary
+   :type optLabels: type
 
-   :Parameters:
 
-       **quesoOut** : type
-           summary
-
-       **optLabels** : type
-           summary
-
-   :Attributes:
-
-       **vindx** : ndarray
-           tuple of the indicies corresponding to non-nan labels
-
-       **vfindx** : ndarray
-           1D array containing the indicies of non-nan labels
-
-       **xlim** : ndarray
-           The physical minimum and maximum of the raster direction
-
-       **ylim** : ndarray
-           The physical minimum and maximum of the along slit direction
-
-       **aspect** : float
-           Half of the aspect ratio
-
-       **clusterCmap** : :class:`~queso_cluster.addon.style.clusterColormap`
-           default color configuration for cluster maps
-
-       **mapMake** : :class:`~queso_cluster.addon.style.mapMaker`
-           A map object to plot the data
 
 
 
@@ -82,21 +57,17 @@ Module Contents
       
       Creates a figure showing all of the distinct sequences of spectra
 
+      :param compoundLabels: Character array for all sequence labels
+      :type compoundLabels: char.array
+      :param timeAxis: Boolean to add an extra axis for time
+      :type timeAxis: bool
 
-      :Parameters:
-
-          **compoundLabels** : char.array
-              Character array for all sequence labels
-
-          **timeAxis** : bool
-              Boolean to add an extra axis for time
-
+      :returns: **fig** -- Figure showing the distribution of cluster sequences
+      :rtype: mpl.Figure
 
 
-      :Returns:
 
-          **fig** : mpl.Figure
-              Figure showing the distribution of cluster sequences
+
 
 
 
@@ -115,23 +86,15 @@ Module Contents
    .. py:method:: clusterMapSequence(timeAxis=False)
 
       
+      :param timeAxis: Boolean to add an extra axis for time
+      :type timeAxis: bool, optional
+
+      :returns: * **figA** (*mpl.Figure*) -- Map of the cluster results for individual time steps
+                * **figB** (*mpl.Figure*) -- Map of all distinct sequences
 
 
 
-      :Parameters:
 
-          **timeAxis** : bool, optional
-              Boolean to add an extra axis for time
-
-
-
-      :Returns:
-
-          **figA** : mpl.Figure
-              Map of the cluster results for individual time steps
-
-          **figB** : mpl.Figure
-              Map of all distinct sequences
 
 
 
@@ -152,24 +115,17 @@ Module Contents
       
       Horizontal oriented maps of the cluster results for individual time steps
 
+      :param compoundLabels:
+      :type compoundLabels: char.array
+      :param timeAxis: Boolean to add an extra axis for time
+      :type timeAxis: bool
 
-      :Parameters:
-
-          **compoundLabels** : char.array
-              ..
-
-          **timeAxis** : bool
-              Boolean to add an extra axis for time
-
+      :returns: * **fig** (*mpl.figure*) -- Map of the cluster results for individual time steps
+                * **compoundLabels** (*np.char.array*) -- Character array for all sequence labels
 
 
-      :Returns:
 
-          **fig** : mpl.figure
-              Map of the cluster results for individual time steps
 
-          **compoundLabels** : np.char.array
-              Character array for all sequence labels
 
 
 
@@ -190,24 +146,17 @@ Module Contents
       
       Vertically oriented maps of the cluster results for individual time steps
 
+      :param compoundLabels:
+      :type compoundLabels: char.array
+      :param timeAxis: Boolean to add an extra axis for time
+      :type timeAxis: bool
 
-      :Parameters:
-
-          **compoundLabels** : char.array
-              ..
-
-          **timeAxis** : bool
-              Boolean to add an extra axis for time
-
+      :returns: * **fig** (*mpl.figure*) -- Map of the cluster results for individual time steps
+                * **compoundLabels** (*np.char.array*) -- Character array for all sequence labels
 
 
-      :Returns:
 
-          **fig** : mpl.figure
-              Map of the cluster results for individual time steps
 
-          **compoundLabels** : np.char.array
-              Character array for all sequence labels
 
 
 
@@ -228,21 +177,17 @@ Module Contents
       
       Figure showing the representative profiles of each of the clusters and the raw data histogram
 
+      :param showContinuum: Adds a horizontal line at the continuum. Useful only if normalized to continuum
+      :type showContinuum: bool, optional
+      :param dev: secret testing
+      :type dev: bool
 
-      :Parameters:
-
-          **showContinuum** : bool, optional
-              Adds a horizontal line at the continuum. Useful only if normalized to continuum
-
-          **dev** : bool
-              secret testing
-
+      :returns: **fig** -- Figure
+      :rtype: mpl.figure
 
 
-      :Returns:
 
-          **fig** : mpl.figure
-              Figure          
+
 
 
 
@@ -267,44 +212,34 @@ Module Contents
    .. py:method:: load()
 
 
-   .. py:method:: spectralEntry(ax, indx, color, wavelambda, extent, showContinuum, scores=None, dev=False)
+   .. py:method:: spectralEntry(ax, indx, color, showContinuum, scores=None, dev=False)
 
       
       Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
 
+      :param ax: matplotlib axes to add content to
+      :type ax: mpl.Axes
+      :param indx: 1D array of data indexes for a given cluster
+      :type indx: ndarray
+      :param color: color string for 2D histogram of raw data. gradient goes as white -> color
+      :type color: str
+      :param wavelambda: 1D array containing the wavelength
+      :type wavelambda: ndarray
+      :param extent: List containing the left, right, bottom, top of the content
+      :type extent: list
+      :param showContinuum: Adds a horizontal line at the continuum. Useful only if normalized to continuum
+      :type showContinuum: bool
+      :param scores: Validation score to be shown in the figure window
+      :type scores: float, optional
+      :param dev: secret testing
+      :type dev: bool, optional
 
-      :Parameters:
-
-          **ax** : mpl.Axes
-              matplotlib axes to add content to
-
-          **indx** : ndarray
-              1D array of data indexes for a given cluster
-
-          **color** : str
-              color string for 2D histogram of raw data. gradient goes as white -> color
-
-          **wavelambda** : ndarray
-              1D array containing the wavelength
-
-          **extent** : list
-              List containing the left, right, bottom, top of the content
-
-          **showContinuum** : bool
-              Adds a horizontal line at the continuum. Useful only if normalized to continuum
-
-          **scores** : float, optional
-              Validation score to be shown in the figure window
-
-          **dev** : bool, optional
-              secret testing
+      :returns: **ax** -- Updated axis with all the content added
+      :rtype: mpl.Axes
 
 
 
-      :Returns:
 
-          **ax** : mpl.Axes
-              Updated axis with all the content added
 
 
 

@@ -46,38 +46,27 @@ Module Contents
    
    Calculates the set of k decisions with a convergence threshold
 
+   :param k: The number of groups
+   :type k: int
+   :param data: The data to be clustered
+   :type data: ndarray
+   :param decision: The previous iteration's decisions
+   :type decision: ndarray
+   :param threshold: The convergence threshold
+   :type threshold: float, optional
 
-   :Parameters:
+   :raises ConvergenceError: If the convergence criteria cannot be evaulated or if the convergence criterion is not met after :obj:`~queso_cluster.atoms.error.covergeLimit`
 
-       **k** : int
-           The number of groups
-
-       **data** : ndarray
-           The data to be clustered
-
-       **decision** : ndarray
-           The previous iteration's decisions
-
-       **threshold** : float, optional
-           The convergence threshold
-
-
-
-   :Returns:
-
-       **decision** : ndarray
-           The current iteration's representative profiles
-
-       **data_label** : ndarray
-           The labels for the data
+   :returns: * **decision** (*ndarray*) -- The current iteration's representative profiles
+             * **data_label** (*ndarray*) -- The labels for the data
 
 
 
 
-   :Raises:
 
-       ConvergenceError
-           If the convergence criteria cannot be evaulated or if the convergence criterion is not met after :obj:`~queso_cluster.atoms.error.covergeLimit`
+
+
+
 
 
 
@@ -95,18 +84,15 @@ Module Contents
    
    Function to concatenate several channels of data into one array for clustering
 
+   :param dataSquareLst: dask arrays containing spectral data to be concatenated
+   :type dataSquareLst: dask.array
 
-   :Parameters:
-
-       **dataSquareLst** : dask.array
-           dask arrays containing spectral data to be concatenated
+   :returns: Concatenated spectral profiles
+   :rtype: dask.array
 
 
 
-   :Returns:
 
-       dask.array
-           Concatenated spectral profiles
 
 
 
@@ -144,27 +130,19 @@ Module Contents
    
    Numba accelerated histogram function
 
+   :param a: detail
+   :type a: int
+   :param bins: the number of bins in the histogram
+   :type bins: int
+   :param lim: the top and bottom of the histogram
+   :type lim: ndarray
 
-   :Parameters:
-
-       **a** : int
-           detail
-
-       **bins** : int
-           the number of bins in the histogram
-
-       **lim** : ndarray
-           the top and bottom of the histogram             
+   :returns: * **hist** (*ndarray*) -- the histogram
+             * **bin_edges** (*ndarray*) -- 1D array of the bin edges
 
 
 
-   :Returns:
 
-       **hist** : ndarray
-           the histogram
-
-       **bin_edges** : ndarray
-           1D array of the bin edges
 
 
 
@@ -184,21 +162,17 @@ Module Contents
    
    Rotates an array
 
+   :param image: 2D array to be rotated
+   :type image: ndarray
+   :param turns: Number of pi/2 turns to rotate
+   :type turns: int
 
-   :Parameters:
-
-       **image** : ndarray
-           2D array to be rotated
-
-       **turns** : int
-           Number of pi/2 turns to rotate
-
+   :returns: Rotated array
+   :rtype: ndarray
 
 
-   :Returns:
 
-       ndarray
-           Rotated array
+
 
 
 
@@ -218,27 +192,22 @@ Module Contents
 .. py:function:: startMax(data, k, decisions)
 
    
-   Heuristic k-means++. 
+   Heuristic k-means++.
    Rather than selecting from a distribution around the furtherest datapoint, this initialization simply selects the furtherest datapoint as the next representative
 
+   :param data: data pool for finding the initial representative profiles
+   :type data: ndarray
+   :param k: The number of clusters
+   :type k: int
+   :param decisions: Array containing the initial, randomly selected representative profile and empty slots for remaining profiles
+   :type decisions: ndarray
 
-   :Parameters:
-
-       **data** : ndarray
-           data pool for finding the initial representative profiles
-
-       **k** : int
-           The number of clusters
-
-       **decisions** : ndarray
-           Array containing the initial, randomly selected representative profile and empty slots for remaining profiles
+   :returns: **decisions** -- Array containing a full set of representative profiles
+   :rtype: ndarray
 
 
 
-   :Returns:
 
-       **decisions** : ndarray
-           Array containing a full set of representative profiles
 
 
 
@@ -258,24 +227,19 @@ Module Contents
    
    k-means++ initialization
 
+   :param data: data pool for finding the initial representative profiles
+   :type data: ndarray
+   :param k: The number of clusters
+   :type k: int
+   :param decisions: Array containing the initial, randomly selected representative profile and empty slots for remaining profiles
+   :type decisions: ndarray
 
-   :Parameters:
-
-       **data** : ndarray
-           data pool for finding the initial representative profiles
-
-       **k** : int
-           The number of clusters
-
-       **decisions** : ndarray
-           Array containing the initial, randomly selected representative profile and empty slots for remaining profiles
+   :returns: **decisions** -- Array containing a full set of representative profiles
+   :rtype: ndarray
 
 
 
-   :Returns:
 
-       **decisions** : ndarray
-           Array containing a full set of representative profiles
 
 
 

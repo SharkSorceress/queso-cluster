@@ -7,7 +7,7 @@ queso_cluster.td
 
    :file:  queso_cluster/td.py
    :lang:  python
-   :synopsis: 
+   :synopsis:
    :author: Sarah Riley <academic@sriley.dev>
 
    ..
@@ -30,17 +30,13 @@ Module Contents
    
    Time dependent clustering framework
 
+   :param config: object containing yaml configuration
+   :type config: :class:`~queso_cluster.loaders.event.eventInput`
+   :param catalogBase: base string for catalog name
+   :type catalogBase: str
+   :param instrumentObj: A `loader` object for specific instruments
+   :type instrumentObj: :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris`
 
-   :Parameters:
-
-       **config** : :class:`~queso_cluster.loaders.event.eventInput`
-           object containing yaml configuration
-
-       **catalogBase** : str
-           base string for catalog name
-
-       **instrumentObj** : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris`
-           A `loader` object for specific instruments
 
 
 

@@ -28,23 +28,6 @@ class Products:
 		summary
 	optLabels : type
 		summary
-
-	Attributes
-	----------
-	vindx : ndarray
-		tuple of the indicies corresponding to non-nan labels
-	vfindx : ndarray
-		1D array containing the indicies of non-nan labels
-	xlim : ndarray
-		The physical minimum and maximum of the raster direction
-	ylim : ndarray
-		The physical minimum and maximum of the along slit direction
-	aspect : float
-		Half of the aspect ratio
-	clusterCmap : :class:`~queso_cluster.addon.style.clusterColormap`
-		default color configuration for cluster maps
-	mapMake : :class:`~queso_cluster.addon.style.mapMaker`
-		A map object to plot the data
 		
 	"""
 	

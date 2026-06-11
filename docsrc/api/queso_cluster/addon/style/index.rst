@@ -7,7 +7,7 @@ queso_cluster.addon.style
 
    :file:  queso_cluster/addon/style
    :lang:  python
-   :synopsis: 
+   :synopsis:
    :author: Sarah Riley <academic@sriley.dev>
 
    ..
@@ -31,25 +31,12 @@ Module Contents
    
    Creates a colormap to be used with the cluster maps
 
+   :param nbounds: the number of labels to use
+   :type nbounds: int
+   :param tolColorLabel: the name of the TOL colormap to use
+   :type tolColorLabel: str, optional
 
-   :Parameters:
 
-       **nbounds** : int
-           the number of labels to use
-
-       **tolColorLabel** : str, optional
-           the name of the TOL colormap to use
-
-   :Attributes:
-
-       **cmap** : ListedColormap
-           The matplotlib colormap to use
-
-       **norm** : BoundaryNorm
-           The matplotlib normalization to use
-
-       **bound_ticks** : ndarray
-           Tick locations for plt.colorbar
 
 
 
@@ -69,19 +56,14 @@ Module Contents
    .. py:method:: cbar_bounds()
 
       
-      Creates a list of uniform spaced tick locations 
+      Creates a list of uniform spaced tick locations
+
+      :returns: * **actual_bounds** (*ndarray*) -- The edges of the bins to be used with mpl.colors.BoundaryNorm
+                * **bound_ticks** (*ndarray*) -- Tick locations for plt.colorbar
 
 
 
 
-
-      :Returns:
-
-          **actual_bounds** : ndarray
-              The edges of the bins to be used with mpl.colors.BoundaryNorm
-
-          **bound_ticks** : ndarray
-              Tick locations for plt.colorbar
 
 
 
@@ -100,16 +82,14 @@ Module Contents
    .. py:method:: genColorPalette()
 
       
-      Creates a list of uniform spaced tick locations 
+      Creates a list of uniform spaced tick locations
+
+      :returns: **color_palette** -- The hexcodes for the colors to be used in the colormap
+      :rtype: list
 
 
 
 
-
-      :Returns:
-
-          **color_palette** : list
-              The hexcodes for the colors to be used in the colormap
 
 
 
@@ -144,31 +124,12 @@ Module Contents
    
    A class to format maps in a consistent way.
 
+   :param spaceInfo: dictionary containing number of pixels in each spatial dimension
+   :type spaceInfo: dict
+   :param deltas: dictinary containing the raster pixel scale as 'pxlSlitWidth' and the along slit pixel scale as 'pxlAlongSlit'
+   :type deltas: dict
 
-   :Parameters:
 
-       **spaceInfo** : dict
-           dictionary containing number of pixels in each spatial dimension 
-
-       **deltas** : dict
-           dictinary containing the raster pixel scale as 'pxlSlitWidth' and the along slit pixel scale as 'pxlAlongSlit'
-
-   :Attributes:
-
-       **flatten** : lambda function
-           creates a 1D array from a spatial 2D array
-
-       **unflatten** : lambda function
-           creates a spatial 2D array from a flattened 1D array
-
-       **bbox** : ndarray
-           1D array containing the extent of the region in pixel units
-
-       **extent** : ndarray
-           1D array containing the extent of the region in arcseconds
-
-       **correct** : lambda function
-           Flattens a transposed array (for IDL maps only)
 
 
 

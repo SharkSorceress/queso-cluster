@@ -23,17 +23,13 @@ Module Contents
    
    Detail
 
+   :param fname: File path of the eventManager.yml
+   :type fname: str
+   :param eventIndx: integer for the order of the event in the eventManager.yml
+   :type eventIndx: list
+   :param runIndx: integer for the order of the runner in the eventManager.yml
+   :type runIndx: int
 
-   :Parameters:
-
-       **fname** : str
-           File path of the eventManager.yml
-
-       **eventIndx** : list
-           integer for the order of the event in the eventManager.yml
-
-       **runIndx** : int
-           integer for the order of the runner in the eventManager.yml
 
 
 

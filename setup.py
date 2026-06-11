@@ -1,8 +1,10 @@
 from distutils.core import setup
 
+from queso_cluster import __version__
+
 setup(
     name='queso_cluster',
-    version='0.2.0a1',
+    version=__version__,
     author='Sarah Olivia Riley',
     author_email='sarah.riley1@montana.edu',
     packages=['queso_cluster', 'queso_cluster.atoms', 'queso_cluster.runners', 'queso_cluster.addon', 'queso_cluster.loaders', 'tests'],
