@@ -32,9 +32,9 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css?v=4ae1632d" />
     <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=0dc286ab" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/css/custom.css?v=11ab0656" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
   
   <!-- So that users can add custom icons -->
@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../_static/documentation_options.js?v=36e4ee28"></script>
+    <script src="../../../_static/documentation_options.js?v=9bb49ee4"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,7 +56,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a1" />
+  <meta name="docsearch:version" content="0.2.0a2" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -101,7 +101,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">This site is under active development</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -132,7 +132,7 @@
     
     
     <img src="../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../_static/iconTeal_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -150,13 +150,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../contributors/index.html">
-    Contributors
   </a>
 </li>
 
@@ -281,13 +274,6 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
-  </a>
-</li>
-
-
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../contributors/index.html">
-    Contributors
   </a>
 </li>
 
@@ -429,6 +415,8 @@
  
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 
+<span class="kn">from</span><span class="w"> </span><span class="nn">..atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">scores</span> <span class="k">as</span> <span class="n">scoreAtom</span>
+
 <div class="viewcode-block" id="eventRunner">
 <a class="viewcode-back" href="../../../api/queso_cluster/loaders/event/index.html#queso_cluster.loaders.event.eventRunner">[docs]</a>
 <span class="k">class</span><span class="w"> </span><span class="nc">eventRunner</span><span class="p">:</span>
@@ -450,28 +438,50 @@
 		<span class="n">inputLst</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_load</span><span class="p">(</span><span class="n">fname</span><span class="p">)[</span><span class="n">eventIndx</span><span class="p">]</span>
 
 		<span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span> 	<span class="o">=</span> <span class="n">inputLst</span><span class="p">[</span><span class="s1">&#39;event&#39;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span> 	<span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">][</span><span class="n">runIndx</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_flavor</span> 	<span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">runIndx</span><span class="p">]</span>
+		<span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span> 	<span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;run&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_flavor</span><span class="p">]</span>
 
 		<span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">])):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">srcMeta</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">])</span>
-			<span class="n">id_mod</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span><span class="p">))</span>
-			<span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">+</span> <span class="n">id_mod</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">][</span><span class="s1">&#39;src&#39;</span><span class="p">]:</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">][</span><span class="s1">&#39;line&#39;</span><span class="p">]]</span>
-				<span class="c1">#self.srcLabelLst = srcObj.id + id_mod</span>
-				<span class="bp">self</span><span class="o">.</span><span class="n">clusterConfig</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">srcCluster</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">][</span><span class="s1">&#39;line&#39;</span><span class="p">]]</span>
+			<span class="c1">#self.srcMeta(self._eventRaw[&#39;src&#39;][s])</span>
+
+			<span class="c1"># id_mod = &quot;&quot;	</span>
+			<span class="c1"># if &#39;mod&#39; in list(id.keys()):</span>
+			<span class="c1"># 	id_mod = id[&#39;mod&#39;]</span>
+						
+			<span class="c1">#id_mod = (&#39;-&#39; + id_mod)*(bool(id_mod))</span>
+			<span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">][</span><span class="s1">&#39;src&#39;</span><span class="p">]:</span>
+				<span class="n">lines</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="n">s</span><span class="p">][</span><span class="s1">&#39;spectralParams&#39;</span><span class="p">][</span><span class="s1">&#39;lineList&#39;</span><span class="p">]</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">lines</span> <span class="k">if</span> <span class="n">x</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;config&#39;</span><span class="p">][</span><span class="s1">&#39;line&#39;</span><span class="p">]]</span>
+				<span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span> <span class="o">=</span> <span class="n">s</span>
+				<span class="k">if</span> <span class="s2">&quot;axisFit&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+					<span class="n">waveCoeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;coeff&#39;</span><span class="p">])</span>
+					<span class="bp">self</span><span class="o">.</span><span class="n">waveFitFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">waveCoeff</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="o">*</span><span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span>
 				<span class="k">break</span>
-		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">)</span>
-		<span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">clusterConfig</span><span class="p">)</span>
-		<span class="c1"># self._flavor = None</span>
-		<span class="c1"># self._overwrite = None</span>
-		<span class="c1"># self._runnerConfig = None</span>
-		<span class="c1"># self._datasetID = None</span>
-		<span class="c1"># self._directoryDate = None</span>
-		<span class="c1"># self._blueEdge = None</span>
-		<span class="c1"># self._redEdge = None</span>
-		<span class="c1"># self._lineCenter = None</span>
-		<span class="c1"># self._lineContinuum = None</span>
-		<span class="c1"># self._timeFrames = None</span>
+
+	<span class="c1"># def validation(self):</span>
+	<span class="c1"># 	match </span>
+	<span class="c1"># 	return()</span>
+
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;instrument&#39;</span><span class="p">])</span>
+
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;residual&#39;</span><span class="p">]))</span>
+
+	<span class="c1"># @cached_property</span>
+	<span class="c1"># def waveFitFunc(self):</span>
+		
+	<span class="c1"># 	return(waveFitFunc)</span>
+
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">lineTheme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;theme&quot;</span><span class="p">])</span>
+
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">clusterConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;clustering&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_flavor</span><span class="p">])</span>
 
 	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">QSConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -479,7 +489,7 @@
 
 	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">flavor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_runRaw</span><span class="p">[</span><span class="s1">&#39;label&#39;</span><span class="p">])</span>
+		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_flavor</span><span class="p">)</span>
 
 	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">overwrite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -501,22 +511,34 @@
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">blueEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;int containing the index for the beginning of the spectral window used for clustering&quot;&quot;&quot;</span>
-		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;window&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+		<span class="n">blueEdge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;window&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">blueEdge</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Window indexes must be integers&quot;</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">blueEdge</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">redEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;int containing the index for the end of the spectral window used for clustering&quot;&quot;&quot;</span>
-		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;window&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+		<span class="n">redEdge</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;window&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">redEdge</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Window indexes must be integers&quot;</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">redEdge</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">lineCenter</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The index for a center position in the window. This may coinside with the line center of the spectrum&quot;&quot;&quot;</span>
-		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center&#39;</span><span class="p">])</span>
+		<span class="n">center</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;center&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">center</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;lineCenter index must be an integer&quot;</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">center</span><span class="p">)</span>
 	
 	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">lineContinuum</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The index of the continuum for the spectrum. This may be used for normalization&quot;&quot;&quot;</span>
-		<span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">continuum</span><span class="p">)</span>
+		<span class="n">continuum</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;spectralParams&#39;</span><span class="p">][</span><span class="s1">&#39;continuum&#39;</span><span class="p">]</span>
+		<span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">continuum</span><span class="p">)</span> <span class="o">==</span> <span class="nb">int</span><span class="p">):</span>
+			<span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;lineContinuum index must be an integer&quot;</span><span class="p">)</span>
+		<span class="k">return</span><span class="p">(</span><span class="n">continuum</span><span class="p">)</span>
 
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">timeFrames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -534,46 +556,23 @@
 				<span class="n">configInput</span> <span class="o">=</span> <span class="n">yaml</span><span class="o">.</span><span class="n">safe_load</span><span class="p">(</span><span class="n">configFile</span><span class="p">)</span>
 				<span class="k">return</span><span class="p">(</span><span class="n">configInput</span><span class="p">)</span> 
 			<span class="k">except</span> <span class="n">yaml</span><span class="o">.</span><span class="n">YAMLError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
-				<span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+				<span class="nb">print</span><span class="p">(</span><span class="n">error</span><span class="p">)</span></div>
 
-<div class="viewcode-block" id="eventRunner.srcMeta">
-<a class="viewcode-back" href="../../../api/queso_cluster/loaders/event/index.html#queso_cluster.loaders.event.eventRunner.srcMeta">[docs]</a>
-	<span class="k">def</span><span class="w"> </span><span class="nf">srcMeta</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">srcInput</span><span class="p">):</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">id</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">instrument</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;instrument&#39;</span><span class="p">]</span>
-		<span class="k">if</span> <span class="s1">&#39;mod&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">][</span><span class="s1">&#39;mod&#39;</span><span class="p">]</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">id_mod</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-						
-		<span class="c1"># if &#39;theme&#39; in list(srcInput.keys()):</span>
-		<span class="c1"># 	self.theme = srcInput[&#39;theme&#39;]</span>
+
+
+		<span class="c1"># if &#39;clustering&#39; in list(srcInput.keys()):</span>
+		<span class="c1"># 	self.srcCluster 	= srcInput[&#39;clustering&#39;]</span>
 		<span class="c1"># else:</span>
-		<span class="c1"># 	self.theme = &#39;#0000FF&#39;</span>
+		<span class="c1"># 	self.srcCluster = {&#39;main&#39;: {&#39;intrinsic&#39;: [{&#39;label&#39;: &#39;window&#39;, &#39;layerConfig&#39;: {&#39;bins&#39;: [-1, 999]}}], </span>
+		<span class="c1"># 				&#39;optimized&#39;: [{&#39;layerGroups&#39;: [30], &#39;layerConfig&#39;: {&#39;converge&#39;: 1e-6, &#39;similarity&#39;: &#39;dist&#39;}}]}}</span>
 
-		<span class="k">if</span> <span class="s1">&#39;clustering&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">srcCluster</span> 	<span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;clustering&#39;</span><span class="p">]</span>
-		<span class="k">else</span><span class="p">:</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">srcCluster</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;main&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;S0&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;label&#39;</span><span class="p">:</span> <span class="s1">&#39;window&#39;</span><span class="p">,</span> <span class="s1">&#39;layerConfig&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;bins&#39;</span><span class="p">:</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">999</span><span class="p">]}}],</span> 
-						<span class="s1">&#39;S1&#39;</span><span class="p">:</span> <span class="p">[{</span><span class="s1">&#39;layerGroups&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">30</span><span class="p">],</span> <span class="s1">&#39;layerConfig&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s1">&#39;converge&#39;</span><span class="p">:</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="s1">&#39;similarity&#39;</span><span class="p">:</span> <span class="s1">&#39;dist&#39;</span><span class="p">}}]}}</span>
+			
 
 
-		<span class="k">if</span> <span class="s1">&#39;residual&#39;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">residual</span> <span class="o">=</span> <span class="nb">bool</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;residual&#39;</span><span class="p">])</span>
-
-		<span class="c1"># self.clusterConfig = {&#39;intrinsic&#39;: srcCluster[&#39;S0&#39;],</span>
-		<span class="c1"># 						&#39;optimized&#39;: srcCluster[&#39;S1&#39;]}</span>
-
-
-		<span class="bp">self</span><span class="o">.</span><span class="n">lines</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;spectralParams&#39;</span><span class="p">][</span><span class="s1">&#39;lineList&#39;</span><span class="p">]</span>
-		<span class="bp">self</span><span class="o">.</span><span class="n">continuum</span> <span class="o">=</span> <span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;spectralParams&#39;</span><span class="p">][</span><span class="s1">&#39;continuum&#39;</span><span class="p">]</span>
-
-		<span class="k">if</span> <span class="s2">&quot;axisFit&quot;</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="n">srcInput</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-			<span class="n">waveCoeff</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;coeff&#39;</span><span class="p">])</span>
-			<span class="c1">#self.waveUnit = srcInput[&#39;axisFit&#39;][&#39;unit&#39;]</span>
-			<span class="bp">self</span><span class="o">.</span><span class="n">waveFitFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">waveCoeff</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="o">*</span><span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="n">srcInput</span><span class="p">[</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span></div>
-</div>
-
+		<span class="c1">#self.lines = srcInput[&#39;spectralParams&#39;][&#39;lineList&#39;]</span>
+		<span class="c1">#self.continuum = srcInput[&#39;spectralParams&#39;][&#39;continuum&#39;]</span>
+		<span class="c1">#print(list(srcInput.keys()))</span>
+		<span class="c1"># if &quot;axisFit&quot; in list(srcInput.keys()):</span>
 
 
 	<span class="c1"># def loadSource(self):</span>

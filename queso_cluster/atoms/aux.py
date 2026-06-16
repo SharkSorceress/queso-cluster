@@ -19,10 +19,28 @@ from  datetime import datetime as dt
 # 	return(out)
 
 
-def convertTime(dates, ref=False):
-	calc_diff_wF = lambda t: (dt.strptime(t, "%Y-%m-%dT%H:%M:%S.%f") - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
+def convertTime(dates, baseFormat="%Y-%m-%dT%H:%M:%S", ref=False):
+	"""
+	Converts time stamps into seconds
 
-	calc_diff_woF = lambda t: (dt.strptime(t, "%Y-%m-%dT%H:%M:%S") - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
+	Parameters
+	----------
+	dates : list
+		list containing the datetime stamps from header information
+	baseFormat : str, optional
+		String format for the datetime without microseconds
+	ref : boolean, optional
+		Boolean to decide if you want to use the initial datetime stamp as a reference
+	
+	Returns
+	-------
+	ndarray 
+		1D array containing time in units of seconds since 1970 Jan 01
+	
+	"""
+	calc_diff_wF = lambda t: (dt.strptime(t, baseFormat + ".%f") - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
+
+	calc_diff_woF = lambda t: (dt.strptime(t, baseFormat) - datetime.datetime(1970, 1, 1)) / datetime.timedelta(microseconds=1)
 	#print([dates, len(dates)])
 	if type(dates) != np.str_:
 		unixTime = np.zeros(len(dates))
@@ -108,6 +126,11 @@ def density_hist2d(data, dy, top, bottom):
 	hist    = np.zeros((data.shape[1], NbinY))
 	for i in range(data.shape[0]):
 		for j in range(data.shape[1]):
+			if not np.isfinite(data[i,j]):
+				print((i, j, data[i, j], (data[i, j]-bottom)/dy))
+				continue
+				#raise ValueError("Data is not finite")
+			
 			k = nb.int32(np.floor((data[i,j]-bottom)/ dy))
 			hist[j,k] += 1
 	return(hist)

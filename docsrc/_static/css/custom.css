@@ -54,6 +54,10 @@ html[data-theme="light"] {
     --pst-color-secondary-highlight: #08724B;
 }
 
+html[data-theme="dark"] .bd-content img:not(.only-dark, .dark-light){
+    background-color: transparent;
+}
+
 /* .bd-header-announcement {
     background: repeating-linear-gradient(45deg, #d4a500, #d4a500 10px, #0989a0 10px, #0989a0 20px);
     font-size: 20px;
@@ -75,4 +79,9 @@ html {
 
 .bd-header .navbar-item {
     align-items: none;
+}
+
+
+.navbar-brand img {
+    height: 70%;
 }

@@ -118,6 +118,9 @@ def mainIntrinsic(config, prepSquare):
 				indxs = nb.int16(np.arange(config.blueEdge, config.redEdge+1))
 			case 'lineCenter':
 				indxs = nb.int16(np.array(config.lineCenter))
+			case _:
+				raise errAtom.IntrinsicLabelError()
+			
 		iframe = prepSquare[:, indxs]
 		if indxs.size > 1:
 			iframe = iframe.mean(axis=-1)
@@ -192,10 +195,17 @@ def mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 
 					else:
 						k = baseRun.runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
-					nxtLabelLineUnsorted, scoreLine = baseRun.runOptimization(k, prepSquare[indx, :], 1e-6)
-					nxtLabelLineSorted, sortIndx 	= baseRun.runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted) 
-
-					scoreLst.append(scoreLine[sortIndx])
+					
+					if k > 1:
+						nxtLabelLineUnsorted, scoreLine = baseRun.runOptimization(k, prepSquare[indx, :], 1e-6)
+						nxtLabelLineSorted, sortIndx 	= baseRun.runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted)
+						scoreLst.append(scoreLine[sortIndx])
+					elif k == 1:
+						nxtLabelLineSorted = np.ones(indx.size, dtype=int)
+						scoreLst.append(np.zeros(1, dtype=float))
+					else:
+						raise errAtom.ClusterError()
+					
 					labelLine[indx] += nxtLabelLineSorted*pwrSeq[stageCounter]
 
 					p.update(1)

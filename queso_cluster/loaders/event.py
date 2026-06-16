@@ -11,6 +11,8 @@ import numpy as np
  
 from functools import cached_property
 
+from ..atoms import scores as scoreAtom
+
 class eventRunner:
 	"""
 
@@ -30,28 +32,50 @@ class eventRunner:
 		inputLst = self._load(fname)[eventIndx]
 
 		self._eventRaw 	= inputLst['event']
-		self._runRaw 	= self._eventRaw['run'][runIndx]
+		self._flavor 	= list(self._eventRaw['run'].keys())[runIndx]
+		self._runRaw 	= self._eventRaw['run'][self._flavor]
 
 		for s in range(len(self._eventRaw['src'])):
-			self.srcMeta(self._eventRaw['src'][s])
-			id_mod = ('-' + self.id_mod)*(bool(self.id_mod))
-			if (self.id + id_mod) == self._runRaw['config']['src']:
-				self.lines = [x for x in self.lines if x['label'] == self._runRaw['config']['line']]
-				#self.srcLabelLst = srcObj.id + id_mod
-				self.clusterConfig = self.srcCluster[self._runRaw['config']['line']]
+			#self.srcMeta(self._eventRaw['src'][s])
+
+			# id_mod = ""	
+			# if 'mod' in list(id.keys()):
+			# 	id_mod = id['mod']
+						
+			#id_mod = ('-' + id_mod)*(bool(id_mod))
+			if self._eventRaw['src'][s]['id']['data'] == self._runRaw['config']['src']:
+				lines = self._eventRaw['src'][s]['spectralParams']['lineList']
+				self.lines = [x for x in lines if x['label'] == self._runRaw['config']['line']]
+				self._srcIndx = s
+				if "axisFit" in list(self._eventRaw['src'][self._srcIndx].keys()):
+					waveCoeff = np.array(self._eventRaw['src'][self._srcIndx]['axisFit']['coeff'])
+					self.waveFitFunc = lambda N: np.poly1d(waveCoeff)(np.arange(N))*pint.Unit(self._eventRaw['src'][self._srcIndx]['axisFit']['unit'])
 				break
-		print(self.lines)
-		print(self.clusterConfig)
-		# self._flavor = None
-		# self._overwrite = None
-		# self._runnerConfig = None
-		# self._datasetID = None
-		# self._directoryDate = None
-		# self._blueEdge = None
-		# self._redEdge = None
-		# self._lineCenter = None
-		# self._lineContinuum = None
-		# self._timeFrames = None
+
+	# def validation(self):
+	# 	match 
+	# 	return()
+
+	@cached_property
+	def instrument(self):
+		return(self._eventRaw['src'][self._srcIndx]['id']['instrument'])
+
+	@cached_property
+	def residual(self):
+		return(bool(self._eventRaw['src'][self._srcIndx]['residual']))
+
+	# @cached_property
+	# def waveFitFunc(self):
+		
+	# 	return(waveFitFunc)
+
+	@cached_property
+	def lineTheme(self):
+		return(self.lines[0]["theme"])
+
+	@cached_property
+	def clusterConfig(self):
+		return(self._eventRaw['src'][self._srcIndx]['clustering'][self._flavor])
 
 	@cached_property
 	def QSConfig(self):
@@ -59,7 +83,7 @@ class eventRunner:
 
 	@cached_property
 	def flavor(self):
-		return(self._runRaw['label'])
+		return(self._flavor)
 
 	@cached_property
 	def overwrite(self):
@@ -81,22 +105,34 @@ class eventRunner:
 	@property
 	def blueEdge(self):
 		"""int containing the index for the beginning of the spectral window used for clustering"""
-		return(self.lines[0]['window'][0])
+		blueEdge = self.lines[0]['window'][0]
+		if not (type(blueEdge) == int):
+			raise TypeError("Window indexes must be integers")
+		return(blueEdge)
 
 	@property
 	def redEdge(self):
 		"""int containing the index for the end of the spectral window used for clustering"""
-		return(self.lines[0]['window'][1])
+		redEdge = self.lines[0]['window'][1]
+		if not (type(redEdge) == int):
+			raise TypeError("Window indexes must be integers")
+		return(redEdge)
 
 	@property
 	def lineCenter(self):
 		"""The index for a center position in the window. This may coinside with the line center of the spectrum"""
-		return(self.lines[0]['center'])
+		center = self.lines[0]['center']
+		if not (type(center) == int):
+			raise TypeError("lineCenter index must be an integer")
+		return(center)
 	
 	@cached_property
 	def lineContinuum(self):
 		"""The index of the continuum for the spectrum. This may be used for normalization"""
-		return(self.continuum)
+		continuum = self._eventRaw['src'][self._srcIndx]['spectralParams']['continuum']
+		if not (type(continuum) == int):
+			raise TypeError("lineContinuum index must be an integer")
+		return(continuum)
 
 	@property
 	def timeFrames(self):
@@ -116,40 +152,20 @@ class eventRunner:
 			except yaml.YAMLError as error:
 				print(error)
 
-	def srcMeta(self, srcInput):
-		self.id = srcInput['id']['data']
-		self.instrument = srcInput['id']['instrument']
-		if 'mod' in list(srcInput['id'].keys()):
-			self.id_mod = srcInput['id']['mod']
-		else:
-			self.id_mod = ""
-						
-		# if 'theme' in list(srcInput.keys()):
-		# 	self.theme = srcInput['theme']
+
+		# if 'clustering' in list(srcInput.keys()):
+		# 	self.srcCluster 	= srcInput['clustering']
 		# else:
-		# 	self.theme = '#0000FF'
+		# 	self.srcCluster = {'main': {'intrinsic': [{'label': 'window', 'layerConfig': {'bins': [-1, 999]}}], 
+		# 				'optimized': [{'layerGroups': [30], 'layerConfig': {'converge': 1e-6, 'similarity': 'dist'}}]}}
 
-		if 'clustering' in list(srcInput.keys()):
-			self.srcCluster 	= srcInput['clustering']
-		else:
-			self.srcCluster = {'main': {'S0': [{'label': 'window', 'layerConfig': {'bins': [-1, 999]}}], 
-						'S1': [{'layerGroups': [30], 'layerConfig': {'converge': 1e-6, 'similarity': 'dist'}}]}}
+			
 
 
-		if 'residual' in list(srcInput.keys()):
-			self.residual = bool(srcInput['residual'])
-
-		# self.clusterConfig = {'intrinsic': srcCluster['S0'],
-		# 						'optimized': srcCluster['S1']}
-
-
-		self.lines = srcInput['spectralParams']['lineList']
-		self.continuum = srcInput['spectralParams']['continuum']
-
-		if "axisFit" in list(srcInput.keys()):
-			waveCoeff = np.array(srcInput['axisFit']['coeff'])
-			#self.waveUnit = srcInput['axisFit']['unit']
-			self.waveFitFunc = lambda N: np.poly1d(waveCoeff)(np.arange(N))*pint.Unit(srcInput['axisFit']['unit'])
+		#self.lines = srcInput['spectralParams']['lineList']
+		#self.continuum = srcInput['spectralParams']['continuum']
+		#print(list(srcInput.keys()))
+		# if "axisFit" in list(srcInput.keys()):
 
 
 	# def loadSource(self):

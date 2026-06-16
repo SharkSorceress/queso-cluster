@@ -54,9 +54,6 @@ Module Contents
    ..
        !! processed by numpydoc !!
 
-   .. py:method:: srcMeta(srcInput)
-
-
    .. py:property:: QSConfig
 
 
@@ -82,6 +79,9 @@ Module Contents
 
       ..
           !! processed by numpydoc !!
+
+
+   .. py:property:: clusterConfig
 
 
    .. py:property:: datasetID
@@ -112,6 +112,9 @@ Module Contents
 
 
    .. py:property:: flavor
+
+
+   .. py:property:: instrument
 
 
    .. py:property:: lineCenter
@@ -162,6 +165,9 @@ Module Contents
           !! processed by numpydoc !!
 
 
+   .. py:property:: lineTheme
+
+
    .. py:property:: overwrite
 
 
@@ -187,6 +193,9 @@ Module Contents
 
       ..
           !! processed by numpydoc !!
+
+
+   .. py:property:: residual
 
 
    .. py:property:: runnerConfig

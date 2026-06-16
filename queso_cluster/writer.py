@@ -4,6 +4,7 @@
 #> author:   <>
 from astropy.io import fits
 import numpy as np
+import os, glob
 
 # from globals import __version__
 
@@ -64,4 +65,10 @@ def exportFITS(spectralDataset, labelLine, fname):
 		hdul = fits.HDUList([hdu])
 		hdul.writeto("./{}-{}.fits".format(fileFormat[h], fname))
 		h += 1
-	
+
+
+def dirCleanUp(flavor):
+	files = glob.glob('./{}/sequences/*.png'.format(flavor))
+	for f in files:
+		os.remove(f)
+	os.makedirs('./{}/sequences/'.format(flavor), exist_ok=True)

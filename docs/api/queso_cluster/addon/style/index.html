@@ -35,7 +35,7 @@
     <link rel="stylesheet" type="text/css" href="../../../../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css?v=8cd3d715" />
     <link rel="stylesheet" type="text/css" href="../../../../_static/sphinx-design.min.css?v=95c83b7e" />
-    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=0dc286ab" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/css/custom.css?v=11ab0656" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/devicon.min.css" />
   
   <!-- So that users can add custom icons -->
@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../_static/documentation_options.js?v=36e4ee28"></script>
+    <script src="../../../../_static/documentation_options.js?v=9bb49ee4"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -59,7 +59,7 @@
     <link rel="prev" title="queso_cluster.addon.products" href="../products/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a1" />
+  <meta name="docsearch:version" content="0.2.0a2" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -104,7 +104,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a1 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -135,7 +135,7 @@
     
     
     <img src="../../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../../_static/iconTeal_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -158,8 +158,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../contributors/index.html">
-    Contributors
+  <a class="nav-link nav-internal" href="../../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -291,8 +291,8 @@
 
 
 <li class="nav-item ">
-  <a class="nav-link nav-internal" href="../../../../contributors/index.html">
-    Contributors
+  <a class="nav-link nav-internal" href="../../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -496,7 +496,7 @@
 <h2>Module Contents<a class="headerlink" href="#module-contents" title="Link to this heading">#</a></h2>
 <dl class="py class">
 <dt class="sig sig-object py" id="queso_cluster.addon.style.clusterColormap">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">clusterColormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nbounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolColorLabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rainbow_PuRd'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/style.html#clusterColormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">clusterColormap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bounds</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tolColorLabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rainbow_PuRd'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/style.html#clusterColormap"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap" title="Link to this definition">#</a></dt>
 <dd><p>Creates a colormap to be used with the cluster maps</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -551,6 +551,11 @@
 <dd></dd></dl>
 
 <dl class="py attribute">
+<dt class="sig sig-object py" id="queso_cluster.addon.style.clusterColormap.tickLabels">
+<span class="sig-name descname"><span class="pre">tickLabels</span></span><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap.tickLabels" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
 <dt class="sig sig-object py" id="queso_cluster.addon.style.clusterColormap.tolColorLabel">
 <span class="sig-name descname"><span class="pre">tolColorLabel</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'rainbow_PuRd'</span></span><a class="headerlink" href="#queso_cluster.addon.style.clusterColormap.tolColorLabel" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
@@ -559,7 +564,7 @@
 
 <dl class="py class">
 <dt class="sig sig-object py" id="queso_cluster.addon.style.mapMaker">
-<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mapMaker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spaceInfo</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">deltas</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/style.html#mapMaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.mapMaker" title="Link to this definition">#</a></dt>
+<span class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">mapMaker</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">instrumentObj</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/style.html#mapMaker"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.style.mapMaker" title="Link to this definition">#</a></dt>
 <dd><p>A class to format maps in a consistent way.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -572,11 +577,6 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="queso_cluster.addon.style.mapMaker.bbox">
 <span class="sig-name descname"><span class="pre">bbox</span></span><a class="headerlink" href="#queso_cluster.addon.style.mapMaker.bbox" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="queso_cluster.addon.style.mapMaker.cadence">
-<span class="sig-name descname"><span class="pre">cadence</span></span><span class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">15.667</span></span><a class="headerlink" href="#queso_cluster.addon.style.mapMaker.cadence" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -602,6 +602,11 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="queso_cluster.addon.style.mapMaker.spaceInfo">
 <span class="sig-name descname"><span class="pre">spaceInfo</span></span><a class="headerlink" href="#queso_cluster.addon.style.mapMaker.spaceInfo" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="queso_cluster.addon.style.mapMaker.stepCadence">
+<span class="sig-name descname"><span class="pre">stepCadence</span></span><a class="headerlink" href="#queso_cluster.addon.style.mapMaker.stepCadence" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py attribute">
@@ -662,24 +667,25 @@
   <nav id="pst-page-toc-nav" class="page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#classes">Classes</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap"><code class="docutils literal notranslate"><span class="pre">clusterColormap</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.cbar_bounds"><code class="docutils literal notranslate"><span class="pre">clusterColormap.cbar_bounds()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.genColorPalette"><code class="docutils literal notranslate"><span class="pre">clusterColormap.genColorPalette()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.cmap"><code class="docutils literal notranslate"><span class="pre">clusterColormap.cmap</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.nbounds"><code class="docutils literal notranslate"><span class="pre">clusterColormap.nbounds</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.norm"><code class="docutils literal notranslate"><span class="pre">clusterColormap.norm</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.tickLabels"><code class="docutils literal notranslate"><span class="pre">clusterColormap.tickLabels</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.clusterColormap.tolColorLabel"><code class="docutils literal notranslate"><span class="pre">clusterColormap.tolColorLabel</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker"><code class="docutils literal notranslate"><span class="pre">mapMaker</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.bbox"><code class="docutils literal notranslate"><span class="pre">mapMaker.bbox</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.cadence"><code class="docutils literal notranslate"><span class="pre">mapMaker.cadence</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.correct"><code class="docutils literal notranslate"><span class="pre">mapMaker.correct</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.deltas"><code class="docutils literal notranslate"><span class="pre">mapMaker.deltas</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.extent"><code class="docutils literal notranslate"><span class="pre">mapMaker.extent</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.flatten"><code class="docutils literal notranslate"><span class="pre">mapMaker.flatten</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.spaceInfo"><code class="docutils literal notranslate"><span class="pre">mapMaker.spaceInfo</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.stepCadence"><code class="docutils literal notranslate"><span class="pre">mapMaker.stepCadence</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.style.mapMaker.unflatten"><code class="docutils literal notranslate"><span class="pre">mapMaker.unflatten</span></code></a></li>
 </ul>
 </li>

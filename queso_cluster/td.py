@@ -25,11 +25,6 @@ class timeDependent:
 		A `loader` object for specific instruments
 	
 	"""
-	# def __init__(self, config, catalogName, instrumentObj):
-	# 	baseMain.clusterBase.__init__(self, config, catalogName, instrumentObj)
-
-	# def __getattr__(self, name):
-	# 	baseMain.clusterBase.__getattr__(self, name)
 
 	def __init__(self, config, instrumentObj):
 		self._config 		= config 
@@ -83,7 +78,8 @@ class timeDependent:
 		self.prepSquare = prepSquare[maskLine, :]
 		intrinsicLine = intrinsicLine[maskLine]
 
-		labelLine, scoreTuple = baseMain.mainOptimization(self.prepSquare[:, ii:jj].compute(), intrinsicLine, kLst=kLst, stageMax=1)
+		labelLine, scoreTuple = baseMain.mainOptimization(self.prepSquare[:, ii:jj].compute(), 
+													intrinsicLine, kLst=kLst, stageMax=1)
 
 		if not maskLine.all():
 			print(labelLine.shape)

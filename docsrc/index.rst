@@ -1,4 +1,3 @@
-
 ==============================================
 ``queso-cluster`` Documentation
 ==============================================
@@ -6,10 +5,15 @@
 .. warning::
    This documentation is under active development.
 
-Quantifying the Evolution of Spectra with Optimization (QuESO; ``queso-cluster``) designed around applying k-means clustering to spectroscopic observations. The primary objective of this package is to develop and streamline the clustering of spectroscopic observations of solar flares to study the evolution of line profiles. 
+.. image:: _static/img/iconTeal_small.png
+  :width: 50%
+  :align: center
 
-At present, we only support observations from the Visible Spectropolarimeter (ViSP) on the Daniel Inoyue Solar Telescope (DKIST). We do have plans to expand this to the Fast Imaging Solar Spectrograph (FISS) on the Goode Solar Telescope (GST) and the Interface Region Imaging Spectrograph (IRIS).
 
+| 
+| Quantifying the Evolution of Spectra with Optimization (QuESO; ``queso-cluster``) designed around applying k-means clustering to spectroscopic observations. The primary objective of this package is to develop and streamline the clustering of spectroscopic observations of solar flares to study the evolution of line profiles. 
+| 
+| At present, we only support observations from the Visible Spectropolarimeter (ViSP) on the Daniel Inoyue Solar Telescope (DKIST). We do have plans to expand this to the Fast Imaging Solar Spectrograph (FISS) on the Goode Solar Telescope (GST) and the Interface Region Imaging Spectrograph (IRIS).
 
 .. grid:: 2
   :gutter: 1
@@ -22,15 +26,16 @@ At present, we only support observations from the Visible Spectropolarimeter (Vi
 
       pip3 install queso-cluster
 
-  .. grid-item-card::  :fas:`users` :doc:`Contributors <contributors/index>`
+  .. grid-item-card::  :fas:`users` :doc:`Contribute <contribute/index>`
 
-    The people involved in development and testing. 
-    
-    Interested in contributing? Review the :doc:`Contributors guide <contributors/guide>` and fork it!
+    | The people involved in development and testing.
+    | 
+    | Interested in contributing? 
+    | Review the :doc:`Contributors guide <contribute/guide>` and fork it!
     
   .. grid-item-card::  :fas:`user-graduate` :doc:`Tutorials <tutorials/index>`
 
-    Step-by-step Jupyter Notebooks to get you comfortable with the package.
+    Step-by-step Jupyter Notebooks to get you comfortable working with QuESO.
 
   .. grid-item-card:: :fas:`code` :doc:`API Documentation <api/index>`
 
@@ -38,11 +43,11 @@ At present, we only support observations from the Visible Spectropolarimeter (Vi
 
 
 .. toctree::
-  :maxdepth: 2
-  :caption: Contents:
+  :titlesonly:
+  :hidden:
 
   /getting_started/index
-  /contributors/index
+  /contribute/index
   /tutorials/index
   /api/index
 

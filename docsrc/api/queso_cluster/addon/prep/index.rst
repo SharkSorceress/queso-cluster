@@ -15,5 +15,5 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: figureBackup01(analysisObj, dataSquare=None)
+.. py:function:: figureBackup01(analysisObj, mode, dataSquare=None)
 

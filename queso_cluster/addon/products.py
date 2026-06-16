@@ -24,20 +24,17 @@ class Products:
 
 	Parameters
 	----------
-	quesoOut : type
-		summary
-	optLabels : type
-		summary
+	quesoOut : :class:`~queso_cluster.ti.timeIndependent` or :class:`~queso_cluster.td.timeDependent`
+		Analysis object that stores all of the configuration
+		
 		
 	"""
 	
-	def __init__(self, quesoOut, config):
+	def __init__(self, quesoOut):
 
 		self._quesoOut 	= quesoOut
-		self._config 	= config 
-		self.keepI0 	= config.runnerConfig['keepI0']
-		#self.ii, self.jj = self.quesoOut.spectralWindow
-		
+
+
 		self.load()
 
 		#self.optLabels 	= optLabels
@@ -51,46 +48,38 @@ class Products:
 		self._raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()
 		self._raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
 
-		if hasattr(self._quesoOut._config, "waveFit"):
-			self._wavelambda  = self._quesoOut._config.waveFit.magnitude
+		if hasattr(self._quesoOut._config, "waveFitFunc"):
+			waveFit	= self._quesoOut._config.waveFitFunc(self._quesoOut._instrumentObj.nSpectral+1).to('angstrom')
+			self._wavelambda = waveFit.magnitude
 			self._wavelambda -= self._wavelambda[self._quesoOut._config.lineCenter]
-			waveUnit = self._quesoOut._config.waveFit.units
+			self._waveUnit = waveFit.units
+			print(self._waveUnit)
 		else:
 			self._wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
-			waveUnit = "index"
+			self._waveUnit = "index"
+
 
 		self._extent  = self._wavelambda[ii], self._wavelambda[jj], self._raw_min, self._raw_max
-		#print(self._extent)
+		print(self._extent)
 
 		self.xlim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
 		self.ylim = np.array([self.vindx[2].min(), self.vindx[2].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
 
-		print([self.xlim, self.ylim])
 
-		self.aspect = (np.diff(self.ylim)[0]/np.diff(self.xlim)[0])
+		self.aspect = np.diff(self.xlim)[0]/np.diff(self.ylim)[0]
 	
-		self.clusterCmap = sty.clusterColormap(np.unique(self.optLabels[self.vindx]).astype(int).size)
+		self.clusterCmap = sty.clusterColormap(np.unique(self.optLabels[self.vindx]).astype(int))
 
-		self.mapMake = sty.mapMaker(self._quesoOut._instrumentObj.dimInfo, 
-							  		self._quesoOut._instrumentObj.pxlDelta)
+		self.mapMake = sty.mapMaker(self._quesoOut._instrumentObj)
 
 
 	def load(self):
-		loading = np.load("./{}.npz".format(self._config.flavor))
+		loading = np.load("./{0}/{0}.npz".format(self._quesoOut._config.flavor))
 		logger.info(loading)
 		self.optLabels 				= loading['labelSquare']
 		self._quesoOut.maskLine 	= loading['maskLine']
 		self._quesoOut.prepSquare 	= loading['prepSquare']
 		loading.close()
-
-	# def __getattr__(self, name):
-	# 	parentLst = [self.quesoOut]
-	# 	for p in parentLst:
-	# 		if hasattr(p, name):
-	# 			return getattr(p, name)
-	# 		else:
-	# 			continue
-	# 	raise AttributeError("No parents have object with attribute '%s'" % name)
 	
 	@loggTimer
 	def clusterMapSequence(self, timeAxis=False):
@@ -142,8 +131,16 @@ class Products:
 
 		#compoundLabels[~np.char.isalnum(compoundLabels)] = np.nan
 
+		maskSquare = self._quesoOut.maskLine.reshape((self.optLabels.shape[0], *compoundLabels.shape)).sum(axis=0)
+		maskSquare[maskSquare > 0] = True
+		maskSquare[maskSquare == 0] = False
+		compoundLabels[maskSquare] = 'X'
+		#compoundLabels *= maskSquare
+
+
 		recountedCompoundLabels = np.zeros(compoundLabels.shape) + np.nan
 		labelLst = np.unique(compoundLabels)
+		lcounter = 1
 		for l in range(labelLst.size):
 			#for t in range(self.optLabels.shape[0]):
 			if labelLst[l] == 'X':
@@ -151,42 +148,42 @@ class Products:
 
 			lindx = np.where(compoundLabels == labelLst[l])
 			if len(lindx[0]) > 3:
-				recountedCompoundLabels[lindx] = l+1
+				recountedCompoundLabels[lindx] = lcounter
+				lcounter += 1
 		
-		maskSquare = self._quesoOut.maskLine.reshape((4, *recountedCompoundLabels.shape)).sum(axis=0).astype(float)
-		maskSquare[maskSquare > 0] = 1
-		maskSquare[maskSquare == 0] = np.nan
-		recountedCompoundLabels *= maskSquare
+		boxNew = np.where(np.isfinite(recountedCompoundLabels))
+		xlim = np.array([np.max([self.xlim[0], (boxNew[0].min())*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude]), 
+				   		 np.min([self.xlim[1], (boxNew[0].max())*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude])])
+		ylim = np.array([np.max([self.ylim[0], (boxNew[1].min())*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude]), 
+				   		 np.min([self.ylim[1], (boxNew[1].max())*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude])])
+
+		boxAspect = np.diff(xlim)[0]/np.diff(ylim)[0]
 
 		#self.clusterProfilesCompound(recountedCompoundLabels)
 		labelLst = np.unique(recountedCompoundLabels)
-
 		labelLst = labelLst[~np.isnan(labelLst)]
 
-		if self.aspect < 1:
-			fig = plt.figure(layout='compressed', figsize=(10, 5*self.aspect), dpi=300)
-		else:
-			fig = plt.figure(layout='compressed', figsize=(10, 10*self.aspect), dpi=300)
+		# if self.aspect <= 1:
+		# 	fig = plt.figure(layout='compressed', figsize=(10, 10*self.aspect), dpi=300)
+		# else:
+		fig = plt.figure(layout='compressed', figsize=(10*boxAspect, 10), dpi=300)
 
-		gs = GridSpec(1, 2, figure=fig,  width_ratios=[1, 0.025], hspace=0, wspace=0)	
-		compoundClusterCmap = sty.clusterColormap(np.unique(labelLst).astype(int).size)	
-		#_, color_pallet = sty._genColorPallet(len(np.unique(labelLst)))
-		#cmap = mpl.colors.ListedColormap(color_pallet)
-		#cmap.set_bad("#FFFFFF")
+		gs = GridSpec(1, 2, figure=fig,  width_ratios=[1, 0.025], hspace=0, wspace=0)
+		compoundClusterCmap = sty.clusterColormap(np.unique(labelLst).astype(int))	
 		kwargsDict = {'cmap': compoundClusterCmap.cmap, 'norm': compoundClusterCmap.norm}
 		ax, im  = self.mapMake._mapGen(fig, gs[0, 0], 
 												recountedCompoundLabels,
 												timeAxis=timeAxis, 
+												xlim=xlim,
+												ylim=ylim,
 												#flareContour=self.mask_map, 
 												**kwargsDict)
-		ax.set_xlim(self.xlim)
-		ax.set_ylim(self.ylim)
-		ax.set_aspect("equal")
 
 		cax = fig.add_subplot(gs[0, 1])
 		cbar = fig.colorbar(im, spacing='uniform', 
-					  ticks=compoundClusterCmap.bound_ticks,
 					  orientation="vertical", cax=cax)
+		cbar.minorticks_off()
+		cbar.set_ticks(compoundClusterCmap.bound_ticks, labels=compoundClusterCmap.tickLabels) 
 		return(fig)
 	
 	@loggTimer
@@ -194,33 +191,37 @@ class Products:
 		labelLst = np.unique(compoundLabels)
 
 		ncols = self.optLabels.shape[0]
-
+		lcounter = 1
 		for ll in range(labelLst.size):
 			if labelLst[ll] == "X":
 				continue
-
-			fig = plt.figure(layout='constrained', figsize=((ncols + 0.2)*3, 1*3), dpi=300)
-		
-			gs  = GridSpec(1, ncols + 1, 
-					left=0, right=1, top=1, bottom=0, 
-					width_ratios=[1 for x in range(ncols)] + [0.2],
-					height_ratios=[1 for x in range(1)],
-					figure=fig)		
 			indx2D = np.where(compoundLabels == labelLst[ll])
-			for oo in range(ncols):
-				indx = np.ravel_multi_index((oo*np.ones(indx2D[0].size, dtype=int), *indx2D), 
-								self.optLabels.shape)
 
-				if indx.size > 1:
+			if indx2D[0].size > 3:
+
+				fig = plt.figure(layout='constrained', figsize=((ncols + 0.2)*3, 1*3), dpi=300)
+			
+				gs  = GridSpec(1, ncols + 1, 
+						left=0, right=1, top=1, bottom=0, 
+						width_ratios=[1 for x in range(ncols)] + [0.2],
+						height_ratios=[1 for x in range(1)],
+						figure=fig)		
+				
+				for oo in range(ncols):
+					indx = np.ravel_multi_index((oo*np.ones(indx2D[0].size, dtype=int), *indx2D), 
+									self.optLabels.shape)
+
 					ax  = plt.subplot(gs[0, oo])
 					ax  = self.spectralEntry(ax, indx, "black", True)
 
 					if not gs[0, oo].is_first_col():
 						ax.set_yticklabels([])
-			fig.savefig("./sequences/labelTest_{}.png".format(int(labelLst[ll])))
+					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))	
+
+				fig.savefig("./{}/sequences/labelTest_{}.png".format(self._quesoOut._config.flavor, int(lcounter)))
+				lcounter += 1
 			plt.close()
 
-	@loggTimer
 	def clusterMapSequenceVertical(self, timeAxis):
 		"""
 		Vertically oriented maps of the cluster results for individual time steps
@@ -241,7 +242,7 @@ class Products:
 		"""			
 		ncols = self.optLabels.shape[0]
 		#> Error?: Maximum number of clients reached		
-		fig = plt.figure(layout='compressed', figsize=(2*ncols, 2*ncols/self.aspect), dpi=300)
+		fig = plt.figure(layout='constrained', figsize=((3*self.aspect)*1.2, 3*ncols), dpi=300)
 		
 		
 		nrows = ncols
@@ -275,12 +276,10 @@ class Products:
 			ax, im  = self.mapMake._mapGen(fig, gs[t, 0], 
 												recountedLabels[t, ...],
 												timeAxis=timeAxis, 
+												xlim=self.xlim,
+												ylim=self.ylim,
 												#flareContour=self.mask_map, 
 												**kwargsDict)
-			ax.set_xlim(self.xlim)
-			ax.set_ylim(self.ylim)
-
-			ax.set_aspect("equal")
 
 			if not gs[t, 0].is_last_row():
 				ax.set_xticklabels([])
@@ -295,9 +294,9 @@ class Products:
 									ticks=self.clusterCmap.bound_ticks, orientation="vertical",
 									cax=cax)
 		cbar.ax.set_yticklabels(["{}".format(int(x)) for x in np.unique(labelLst)])
+		cbar.minorticks_off()
 		return(fig)
 	
-	@loggTimer
 	def clusterMapSequenceHorizontal(self, timeAxis):
 		"""
 		Horizontal oriented maps of the cluster results for individual time steps
@@ -319,7 +318,7 @@ class Products:
 			
 		ncols = self.optLabels.shape[0]
 		#> Error?: Maximum number of clients reached		
-		fig = plt.figure(layout='compressed', figsize=(3*ncols, ncols*self.aspect), dpi=300)
+		fig = plt.figure(layout='compressed', figsize=(3*ncols, (3*ncols*self.aspect) * 1.2), dpi=300)
 		
 		nrows = 2
 		height_ratios=[0.025, 1]
@@ -348,12 +347,10 @@ class Products:
 			ax, im  = self.mapMake._mapGen(fig, gs[1, t], 
 												recountedLabels[t, ...],
 												timeAxis=timeAxis, 
+												xlim=self.xlim,
+												ylim=self.ylim,
 												#flareContour=self.mask_map, 
 												**kwargsDict)
-			ax.set_xlim(self.xlim)
-			ax.set_ylim(self.ylim)
-			ax.set_aspect("equal")
-
 			if not gs[0, t].is_first_col():
 				ax.set_yticklabels([])
 
@@ -368,128 +365,129 @@ class Products:
 									ticks=self.clusterCmap.bound_ticks, orientation="horizontal",
 									cax=cax)
 		cbar.ax.set_xticklabels(["{}".format(int(x)) for x in np.unique(labelLst)])
+		cbar.minorticks_off()
 		
 
 		return(fig)#, compoundLabels)
 
-	@loggTimer
-	def figure03(self):
-#> detail: 
-#> param type self:
-#> return (type): 
-#> test-method:
+# 	@loggTimer
+# 	def figure03(self):
+# #> detail: 
+# #> param type self:
+# #> return (type): 
+# #> test-method:
 
-		width = [2, 0.025]
-		types = ['intensity', 'labels']
-		for t in range(len(types)):
+# 		width = [2, 0.025]
+# 		types = ['intensity', 'labels']
+# 		for t in range(len(types)):
 
-			fig = plt.figure(layout='compressed', figsize=(2*4, 3.25*4), dpi=300)
+# 			fig = plt.figure(layout='compressed', figsize=(2*4, 3.25*4), dpi=300)
 
-			gs = GridSpec(3,2, figure=fig, width_ratios=width, height_ratios=[1, 1, 1], hspace=0, wspace=0)
+# 			gs = GridSpec(3,2, figure=fig, width_ratios=width, height_ratios=[1, 1, 1], hspace=0, wspace=0)
 
 
-			intrinsicConfig = self.config.srcLst.clusterConfig['intrinsic']
-			for i in range(len(intrinsicConfig)):
-				match intrinsicConfig[i]['label']:
-					case 'window':
-						moment0 = self.quesoOut.instrumentObj.dataSquare[:, self.ii:self.jj+1].mean(axis=-1).compute()
-						bins = intrinsicConfig[i]['layerConfig']['bins']
-						cbar_label = "Mean Window Intensity"
-					case 'continuum':
-						moment0 = self.quesoOut.instrumentObj.dataSquare[:, self.quesoOut.continuum].compute()
-						bins = intrinsicConfig[i]['layerConfig']['bins']
-						cbar_label = "Continuum Intensity"
+# 			intrinsicConfig = self.config.srcLst.clusterConfig['intrinsic']
+# 			for i in range(len(intrinsicConfig)):
+# 				match intrinsicConfig[i]['label']:
+# 					case 'window':
+# 						moment0 = self._quesoOut._instrumentObj.dataSquare[:, self.ii:self.jj+1].mean(axis=-1).compute()
+# 						bins = intrinsicConfig[i]['layerConfig']['bins']
+# 						cbar_label = "Mean Window Intensity"
+# 					case 'continuum':
+# 						moment0 = self._quesoOut._instrumentObj.dataSquare[:, self._quesoOut.lineContinuum].compute()
+# 						bins = intrinsicConfig[i]['layerConfig']['bins']
+# 						cbar_label = "Continuum Intensity"
 
-				intrinsicLayerMap = baseRun.runIntrinsic(len(np.diff(bins)), np.floor(moment0*100)/100., 
-											  edgeOverride=np.array(bins).astype(float))
+# 				intrinsicLayerMap = baseRun.runIntrinsic(len(np.diff(bins)), np.floor(moment0*100)/100., 
+# 											  edgeOverride=np.array(bins).astype(float))
 
 				
-				match types[t]:
-					case 'intensity':
-						present = moment0
-						cmap = 'Greys_r'
-					case 'labels':
-						instrinsicCmap = sty.clusterColormap(np.unique(intrinsicLayerMap).size)
-						present = intrinsicLayerMap
-						cmap = instrinsicCmap.cmap
-						norm = instrinsicCmap.norm
-						#cmap = mpl.colors.ListedColormap(color_pallet)
-						#norm = mpl.colors.BoundaryNorm(np.array(bins).astype(float), cmap.N)
+# 				match types[t]:
+# 					case 'intensity':
+# 						present = moment0
+# 						cmap = 'Greys_r'
+# 					case 'labels':
+# 						instrinsicCmap = sty.clusterColormap(np.unique(intrinsicLayerMap).size)
+# 						present = intrinsicLayerMap
+# 						cmap = instrinsicCmap.cmap
+# 						norm = instrinsicCmap.norm
+# 						#cmap = mpl.colors.ListedColormap(color_pallet)
+# 						#norm = mpl.colors.BoundaryNorm(np.array(bins).astype(float), cmap.N)
 
-				kwargsDict = {'cmap': cmap}
-				# if i > np.inf:
-				# 	ax, im, tax = self.mapMake._mapGen(fig, gs[i, 0], 
-				# 									present,
-				# 									timeAxis=True,
-				# 									#flareContour=self.mask_map, 
-				# 									**kwargsDict)
+# 				kwargsDict = {'cmap': cmap}
+# 				# if i > np.inf:
+# 				# 	ax, im, tax = self.mapMake._mapGen(fig, gs[i, 0], 
+# 				# 									present,
+# 				# 									timeAxis=True,
+# 				# 									#flareContour=self.mask_map, 
+# 				# 									**kwargsDict)
 
-				# 	ax.set_xlabel("Raster Direction [arcseconds]")
-				# 	tax.set_xlabel('Time  [hours after 20:02:42 UTC]')	
-				# else:
-				ax, im = self.mapMake._mapGen(fig, gs[i, 0], 
-												present,
-												#flareContour=self.mask_map, 
-												**kwargsDict)
+# 				# 	ax.set_xlabel("Raster Direction [arcseconds]")
+# 				# 	tax.set_xlabel('Time  [hours after 20:02:42 UTC]')	
+# 				# else:
+# 				ax, im = self.mapMake._mapGen(fig, gs[i, 0], 
+# 												present,
+# 												#flareContour=self.mask_map, 
+# 												**kwargsDict)
 
-				ax.set_xticklabels([])
-				ax.set_aspect("equal")
-				ax.set_ylabel("Along Slit Direction [arcseconds]")
+# 				ax.set_xticklabels([])
+# 				ax.set_aspect("equal")
+# 				ax.set_ylabel("Along Slit Direction [arcseconds]")
 
-				#ax.text(20, 2250, " ({})".format(self.alphaLst[i]), va="center", ha="center", bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.25', alpha=0.3), font='monospace')
-				# ax.annotate('({})'.format(self.alphaLst[i]),
-            	# 	xy=(0.035, 1-0.05), xycoords='axes fraction',
-				# 	xytext=(0.035, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
-            	# 	va='center', ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black', alpha=0.4))
+# 				#ax.text(20, 2250, " ({})".format(self.alphaLst[i]), va="center", ha="center", bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.25', alpha=0.3), font='monospace')
+# 				# ax.annotate('({})'.format(self.alphaLst[i]),
+#             	# 	xy=(0.035, 1-0.05), xycoords='axes fraction',
+# 				# 	xytext=(0.035, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
+#             	# 	va='center', ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black', alpha=0.4))
 				
-				cax = fig.add_subplot(gs[i, 1])
-				match types[t]:
-					case 'intensity':
-						im_cbar = im
-					case 'labels':
-						im_cbar = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
-				cbar = fig.colorbar(im_cbar, cax=cax, spacing='uniform', label=cbar_label)
+# 				cax = fig.add_subplot(gs[i, 1])
+# 				match types[t]:
+# 					case 'intensity':
+# 						im_cbar = im
+# 					case 'labels':
+# 						im_cbar = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
+# 				cbar = fig.colorbar(im_cbar, cax=cax, spacing='uniform', label=cbar_label)
 
-			intrinsicLayerMap_oldCount = auxAtom.pick_jth_label(self.optLabels[self.vindx], 0).astype(float)
-			intrinsicLayerMap = np.zeros(self.optLabels.shape) + np.nan
-			recountLst = np.unique(intrinsicLayerMap_oldCount)
-			for rc in range(recountLst.size):
-				lindx = np.where(intrinsicLayerMap_oldCount == recountLst[rc])[0]
-				intrinsicLayerMap[self.vindx[lindx]] = rc+1
+# 			intrinsicLayerMap_oldCount = auxAtom.pick_jth_label(self.optLabels[self.vindx], 0).astype(float)
+# 			intrinsicLayerMap = np.zeros(self.optLabels.shape) + np.nan
+# 			recountLst = np.unique(intrinsicLayerMap_oldCount)
+# 			for rc in range(recountLst.size):
+# 				lindx = np.where(intrinsicLayerMap_oldCount == recountLst[rc])[0]
+# 				intrinsicLayerMap[self.vindx[lindx]] = rc+1
 
 
-			compoundInstrinsicColor = sty.clusterColormap(np.unique(intrinsicLayerMap[self.vindx]).size)
-			# actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list())
-			# cmap = mpl.colors.ListedColormap(color_pallet)
-			# norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
+# 			compoundInstrinsicColor = sty.clusterColormap(np.unique(intrinsicLayerMap[self.vindx]).size)
+# 			# actual_bounds, bound_ticks, color_pallet = sty.cbar_bounds(list())
+# 			# cmap = mpl.colors.ListedColormap(color_pallet)
+# 			# norm = mpl.colors.BoundaryNorm(actual_bounds, cmap.N+1)
 
-			kwargsDict = {'cmap': compoundInstrinsicColor.cmap, "norm": compoundInstrinsicColor.norm}
-			ax, im, tax = self.mapMake._mapGen(fig, gs[-1, 0], 
-												intrinsicLayerMap,
-												timeAxis=True, 
-												#flareContour=self.mask_map, 
-												**kwargsDict)
-			cax = fig.add_subplot(gs[-1, 1])
-			ax.set_aspect("equal")
+# 			kwargsDict = {'cmap': compoundInstrinsicColor.cmap, "norm": compoundInstrinsicColor.norm}
+# 			ax, im, tax = self.mapMake._mapGen(fig, gs[-1, 0], 
+# 												intrinsicLayerMap,
+# 												timeAxis=True, 
+# 												#flareContour=self.mask_map, 
+# 												**kwargsDict)
+# 			cax = fig.add_subplot(gs[-1, 1])
+# 			ax.set_aspect("equal")
 
-			#cbar = fig.colorbar(im, cax=cax, ticks=bounds_ticks)#, label='Binned Intensity')
-			cbar = fig.colorbar(im, spacing='proportional',
-									ticks=compoundInstrinsicColor.bound_ticks,
-									cax=cax, label='Intrinsic bins')
-			cbar.ax.set_yticklabels(["{}XX".format(int(x)) for x in recountLst])
+# 			#cbar = fig.colorbar(im, cax=cax, ticks=bounds_ticks)#, label='Binned Intensity')
+# 			cbar = fig.colorbar(im, spacing='proportional',
+# 									ticks=compoundInstrinsicColor.bound_ticks,
+# 									cax=cax, label='Intrinsic bins')
+# 			cbar.ax.set_yticklabels(["{}XX".format(int(x)) for x in recountLst])
 
-			ax.set_xlabel("Raster Direction [arcseconds]")
-			tax.set_xlabel('Time  [hours after 20:02:42 UTC]')
-			ax.set_ylabel("Along Slit Direction [arcseconds]")
+# 			ax.set_xlabel("Raster Direction [arcseconds]")
+# 			tax.set_xlabel('Time  [hours after 20:02:42 UTC]')
+# 			ax.set_ylabel("Along Slit Direction [arcseconds]")
 
-			#ax.text(20, 2250, " ({})".format(self.alphaLst[2]), va="center", ha="center", bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.25', alpha=0.3))
-			# ax.annotate('({})'.format(self.alphaLst[2]),
-            # 		xy=(0.035, 1-0.05), xycoords='axes fraction',
-			# 		xytext=(0.035, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
-            # 		va='center', ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black', alpha=0.4))
+# 			#ax.text(20, 2250, " ({})".format(self.alphaLst[2]), va="center", ha="center", bbox=dict(facecolor='white', edgecolor='black', boxstyle='round,pad=0.25', alpha=0.3))
+# 			# ax.annotate('({})'.format(self.alphaLst[2]),
+#             # 		xy=(0.035, 1-0.05), xycoords='axes fraction',
+# 			# 		xytext=(0.035, 1-0.05), textcoords='axes fraction', fontfamily='sans-serif',
+#             # 		va='center', ha='center', bbox=dict(boxstyle='square', facecolor='white', edgecolor='black', alpha=0.4))
 
-			fig.savefig('./figure03_{}.png'.format(types[t]))
-			#fig.savefig(self.figDir + 'figure03_{}.pdf'.format(types[t]))
+# 			fig.savefig('./figure03_{}.png'.format(types[t]))
+# 			#fig.savefig(self.figDir + 'figure03_{}.pdf'.format(types[t]))
 
 
 	@loggTimer
@@ -513,19 +511,18 @@ class Products:
 		
 		ii, jj = [self._quesoOut._config.blueEdge, 
 					self._quesoOut._config.redEdge]
-		#self.quesoOut.prepSquare = self.quesoOut.prepSquare.persist()
 
-		if hasattr(self._quesoOut._config, "waveFit"):
-			wavelambda  = self._quesoOut._config.waveFit.magnitude
-			wavelambda -= wavelambda[self._quesoOut._config.lineCenter]
-			waveUnit = self._quesoOut._config.waveFit.units
-		else:
-			wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
-			waveUnit = "index"
+		# if hasattr(self._quesoOut._config, "waveFit"):
+		# 	wavelambda  = self._quesoOut._config.waveFit.magnitude
+		# 	wavelambda -= wavelambda[self._quesoOut._config.lineCenter]
+		# 	waveUnit = self._quesoOut._config.waveFit.units
+		# else:
+		# 	wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
+		# 	waveUnit = "index"
 
 		validLabels = self.optLabels[self.vindx]
 
-		#i0Arr = auxAtom.pick_jth_label(validLabels, 0)
+		i0Arr = auxAtom.pick_jth_label(validLabels, 0)
 
 		i0o1Arr = auxAtom.pick_jth_label(validLabels, 0)*10 + auxAtom.pick_jth_label(validLabels, 1)
 
@@ -543,7 +540,7 @@ class Products:
 
 		raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()
 		raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
-		extent  	= wavelambda[ii], wavelambda[jj], raw_min, raw_max
+		extent  	= self._wavelambda[ii], self._wavelambda[jj], raw_min, raw_max
 
 		color = "black"
 		panel_bounds = []
@@ -555,10 +552,10 @@ class Products:
 				continue
 			ax0      = plt.subplot(gs[j, 0])
 
-			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], color, showContinuum)
+			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], showContinuum)
 			if gs[j,0].is_last_row():
 				#ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")
-				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(waveUnit))
+				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))
 			ax0.tick_params(labelleft=True)
 			#axR0.tick_params(labelright=False)
 			if not gs[j, 0].is_last_row():
@@ -576,13 +573,13 @@ class Products:
 				ax      	= plt.subplot(gs[j, k+1])
 				o2_indx 	= i0_indx[np.where(o2Arr == o2Lst[k])[0]]
 
-				#sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
-				#sindx = np.where(i0Arr == sArr[0])[0]
+				sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
+				sindx = np.where(i0Arr == sArr[0])[0]
 
-				score = 0#scoresAtom.calcSingleSilhouetteScore(self.quesoOut.prepSquare[sindx.astype(np.uint32), ii:jj+1].compute(), validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
-				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], color, showContinuum, scores=score)
+				#score = scoresAtom.calcSingleSilhouetteScore(self._quesoOut.prepSquare[sindx.astype(np.uint32), ii:jj+1], validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
+				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], showContinuum)#, scores=score)
 				if gs[j,k+1].is_last_row():
-					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(waveUnit))	
+					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))	
 				else:
 					ax.tick_params(labelbottom=False)				
 										
@@ -591,7 +588,7 @@ class Products:
 				# 	axR.tick_params(labelright=False)
 		return(fig)
 
-	def spectralEntry(self, ax, indx, color, showContinuum, scores=None, dev=False):
+	def spectralEntry(self, ax, indx, showContinuum, scores=None, dev=False):
 		"""
 		Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
 		
@@ -631,20 +628,20 @@ class Products:
 			centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
 			axR = ax.twinx()
 			axR.set_ylim([-1, 1])
-			axR.plot(self._wavelambda[ii:jj+1], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
-			ax.plot(self._wavelambda[ii:jj+1], centroid_min, color='blue', linewidth=0.75)
-			ax.plot(self._wavelambda[ii:jj+1], centroid_max, color='blue', linewidth=0.75)
+			axR.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+			ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_min, color='blue', linewidth=0.75)
+			ax.plot(self._wavelambda[ii:jj+1]--self._wavelambda[self._quesoOut._config.lineCenter], centroid_max, color='blue', linewidth=0.75)
 			logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
-		ax.plot(self._wavelambda[ii:jj+1], centroid_i, color='black', linewidth=0.75)
+		ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_i, color='black', linewidth=0.75)
 
 		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
 		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, self._extent[3], self._extent[2])
 
-		ww, insty = np.meshgrid(self._wavelambda[ii:jj+1+1], np.arange(self._extent[2], self._extent[3]+0.01, 0.01))
+		ww, insty = np.meshgrid(self._wavelambda[ii:jj+1+1]-self._wavelambda[self._quesoOut._config.lineCenter], np.arange(self._extent[2], self._extent[3]+0.01, 0.01))
 		#print([ww.shape, insty.shape, temp_im.shape])
-		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', color]))
+		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', self._quesoOut._config.lineTheme]))
 
-		ax.axvline(x = self._wavelambda[self._config.lineCenter], linestyle='dashed', color='black')
+		ax.axvline(x = 0, linestyle='dashed', color='black')
 
 		#tindx = self.vindx[0][indx]
 		#xindx = self.vindx[1][indx]
@@ -674,7 +671,14 @@ class Products:
 			ax.axhline(y = 1, color='black', linestyle='dotted')
 
 
-		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=1))
+
+		wdiff = np.floor(np.abs(self._wavelambda[jj] - self._wavelambda[ii]))
+		wMajor = 10**np.floor(np.log10(wdiff))
+		wMajor *= np.ceil(wdiff/wMajor)/4.
+
+
+		ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(base=wMajor))
+		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=wMajor/2.))
 		
 
 		return(ax)

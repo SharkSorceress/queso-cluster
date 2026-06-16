@@ -26,15 +26,15 @@
     date: '2023-05-03'
     label: 'Strong flare signatures'
     run: 
-      - label: 'timeIndependent'
+      Cclass20230503_kernel:
         overwrite: True
         config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
     src: 
-      - id: {'instrument': 'ViSP', 'data': 'AEVEG', mod: ""}
+      - id: {instrument: 'ViSP', data: 'AEVEG', mod: ""}
         clustering:
-          main:
+          Cclass20230503_kernel:
             intrinsic: 
-              - {label: 'window', layerConfig: {'bins': [0, 0.45, 0.60, 1]}}
+              - {label: 'window', layerConfig: {bins: [0, 0.45, 0.60, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2]}
               - {layerGroups: [1, 1, 5, 5]}
@@ -45,8 +45,8 @@
             - {label: 'main?', window: [462, 568], center: 515, theme: '#527A00'}
             - {label: 'main', window: [525, 611], center: 568, theme: '#527A00'}
 
-      - id: {'instrument': 'ViSP', 'data': 'BZNNG', mod: ""}
-        theme: {'D1': '#0000FF', 'D2': '#FF0000', 'Ni': '#FF0000'}
+      - id: {instrument: 'ViSP', data': 'BZNNG', mod: ""}
+        theme: {D1: '#0000FF', D2: '#FF0000', Ni: '#FF0000'}
         residual: True
         axisFit: {coeff: [-1.60283877e-8, 1.42050858e-3,  5.88875195e+2], unit: "nm"}
         spectralParams:
@@ -59,20 +59,40 @@
     date: '2024-08-08'
     label: 'Strong flare signatures'
     run: 
-      - label: 'timeIndependentXClass'
+      Xclass20240808_ribbon_mNorm:
+        overwrite: True
+        config: {keepI0: [6], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'tight'}
+      Xclass20240808_ribbon_cNorm:
         overwrite: False
-        config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'narrow'}
+        config: {keepI0: [6], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'narrow'}
+      Xclass20240808_midregion:
+        overwrite: False
+        config: {keepI0: [2,3,4], timeFrames: [21, 30], bbox: [50, 91, 1041, 1458], src: 'BWVCXN', line: 'broad'}
     src: 
-      - id: {'instrument': 'ViSP', 'data': 'BWVCXN', mod: ""}
+      - id: {instrument: 'ViSP', data: 'BWVCXN'}
         clustering:
-          narrow:
+          Xclass20240808_ribbon_mNorm:
             intrinsic: 
-              - {label: 'window', layerConfig: {'bins': [0, 0.45, 0.55, 1]}}
+              - {label: 'lineContinuum', layerConfig: {bins: [0, 0.55, 1.4]}}
+              - {label: 'window', layerConfig: {bins: [0, 0.5, 1]}}
             optimized: 
-              - {layerGroups: [1, 1, 3]}
-              - {layerGroups: [1, 4, 4, 4, 4]}
+              - {layerGroups: [1, 1, 2, 2]}
+              - {layerGroups: [1, 1, 3, 3, 3, 3]}
+          Xclass20240808_ribbon_cNorm:
+            intrinsic: 
+              - {label: 'lineContinuum', layerConfig: {bins: [0, 0.5, 1.3]}}
+              - {label: 'window', layerConfig: {bins: [0, 0.45, 0.57, 1.1]}}
+            optimized: 
+              - {layerGroups: [1, 1, 1, 1, 1, 2]}
+              - {layerGroups: [1, 1, 1, 3, 1, 4, 4]}
+          Xclass20240808_midregion:
+            intrinsic:
+              - {label: 'window', layerConfig: {bins: [0, 0.45, 0.54, 0.65, 1]}}
+            optimized:
+              - {layerGroups: [1, 1, 1, 1]}
         spectralParams:
           continuum: 825
           lineList:
-            - {label: 'narrow', window: [390, 545], center: 467, theme: '#527A00'}
-            - {label: 'broad', window: [375, 505], center: 517, theme: '#527A00'}
+            - {label: 'narrow',   window: [390, 545], center: 467, theme: '#527A00'}
+            - {label: 'tight',    window: [425, 510], center: 467, theme: '#000000'}
+            - {label: 'broad',    window: [375, 560], center: 467, theme: '#527A00'}

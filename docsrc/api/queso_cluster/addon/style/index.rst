@@ -26,7 +26,7 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: clusterColormap(nbounds, tolColorLabel='rainbow_PuRd')
+.. py:class:: clusterColormap(bounds, tolColorLabel='rainbow_PuRd')
 
    
    Creates a colormap to be used with the cluster maps
@@ -114,12 +114,15 @@ Module Contents
    .. py:attribute:: norm
 
 
+   .. py:attribute:: tickLabels
+
+
    .. py:attribute:: tolColorLabel
       :value: 'rainbow_PuRd'
 
 
 
-.. py:class:: mapMaker(spaceInfo, deltas)
+.. py:class:: mapMaker(instrumentObj)
 
    
    A class to format maps in a consistent way.
@@ -149,11 +152,6 @@ Module Contents
    .. py:attribute:: bbox
 
 
-   .. py:attribute:: cadence
-      :value: 15.667
-
-
-
    .. py:attribute:: correct
 
 
@@ -167,6 +165,9 @@ Module Contents
 
 
    .. py:attribute:: spaceInfo
+
+
+   .. py:attribute:: stepCadence
 
 
    .. py:attribute:: unflatten

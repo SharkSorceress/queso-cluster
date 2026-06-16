@@ -31,17 +31,19 @@ class clusterColormap:
 
 	"""
 
-	def __init__(self, nbounds, tolColorLabel='rainbow_PuRd'):
+	def __init__(self, bounds, tolColorLabel='rainbow_PuRd'):
 		self.tolColorLabel = tolColorLabel
-		self.nbounds = nbounds
+		self.nbounds = bounds.size
 		#cleanLst = list(labelLst[~np.isnan(labelLst)])
 		
 		color_palette = self.genColorPalette()
 		actual_bounds, self.bound_ticks = self.cbar_bounds()
 
+		self.tickLabels = bounds
+
 		self.cmap = mpl.colors.ListedColormap(color_palette)
 		self.cmap.set_bad("#FFFFFF")
-		self.norm = mpl.colors.BoundaryNorm(actual_bounds, self.cmap.N+1)	
+		self.norm = mpl.colors.BoundaryNorm(actual_bounds, self.cmap.N)	
 
 
 	def cbar_bounds(self):
@@ -96,10 +98,10 @@ class mapMaker:
 	
 
 	"""
-	def __init__(self, spaceInfo, deltas):
-		self.spaceInfo 	= spaceInfo
-		self.deltas 	= deltas
-		self.cadence 	= 15.667
+	def __init__(self, instrumentObj):
+		self.spaceInfo 		= instrumentObj.dimInfo#spaceInfo
+		self.deltas 		= instrumentObj.pxlDelta#deltas
+		self.stepCadence 	= instrumentObj.stepCadence
 
 		self.flatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])  
 		self.unflatten = lambda arr: arr.reshape(self.spaceInfo['rasterSize'], self.spaceInfo['alongSlitSize']) 
@@ -114,7 +116,7 @@ class mapMaker:
 		self.correct = lambda x: x.reshape(self.spaceInfo['alongSlitSize'], self.spaceInfo['rasterSize']).T.reshape(self.spaceInfo['rasterSize']*self.spaceInfo['alongSlitSize'])
 
 
-	def _mapGen(self, fig, pos, arr, flareContour=None, timeAxis=None, **kwargsDict):		
+	def _mapGen(self, fig, pos, arr, flareContour=None, xlim=None, ylim=None, timeAxis=None, **kwargsDict):		
 		if mpl.axes._axes.Axes == type(pos):
 			ax = pos
 		else:
@@ -125,13 +127,6 @@ class mapMaker:
 		yScale = self.deltas['pxlAlongSlit'].magnitude
 		xScale = self.deltas['pxlSlitWidth'].magnitude
 
-		# if bbox is None:
-		# 	xShift = self.bbox[0]
-		# 	yShift = self.bbox[2]
-		# else:
-		# 	xShift = bbox[0]
-		# 	yShift = bbox[2]
-
 		dat = self.unflatten(arr)
 
 		x = (np.arange(np.array(dat.shape)[0]+1))*xScale
@@ -141,18 +136,44 @@ class mapMaker:
 		im = ax.pcolormesh(XX, YY, dat.T, 
 					 rasterized=True, snap=True, 
 					 shading='flat', **kwargsDict)
-		
-		ax.yaxis.set_major_locator(mpl.ticker.MultipleLocator(base=5))
-		ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(base=10))
 
-		ax.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=2.5))
-		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=5))
+		if ylim is None:
+			ydiff = np.floor(np.abs(y[-1]-y[0]))
+		else:
+			ydiff = np.floor(np.abs(ylim[1]-ylim[0]))
+			ax.set_ylim(ylim)
+
+		if xlim is None:
+			xdiff = np.floor(np.abs(x[-1]-x[0]))
+		else:
+			xdiff = np.floor(np.abs(xlim[1]-xlim[0]))
+			ax.set_xlim(xlim)
+
+
+		if ydiff > 0:
+			yMajor = 10**np.floor(np.log10(ydiff))
+			yMajor *= np.ceil(ydiff//yMajor)/4.
+		else:
+			yMajor = yScale*2
+
+		if xdiff > 0:
+			xMajor = 10**np.floor(np.log10(xdiff))
+			xMajor *= np.ceil(xdiff//xMajor)/4.
+		else:
+			xMajor = xScale*2
+		
+		ax.yaxis.set_major_locator(mpl.ticker.MultipleLocator(base=yMajor))
+		ax.xaxis.set_major_locator(mpl.ticker.MultipleLocator(base=xMajor))
+
+		ax.yaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=yMajor/2.))
+		ax.xaxis.set_minor_locator(mpl.ticker.MultipleLocator(base=xMajor/2.))
 
 		fmtr = mpl.ticker.StrMethodFormatter('{x:,g}\"')
+
 		ax.xaxis.set_major_formatter(fmtr)
 		ax.yaxis.set_major_formatter(fmtr)
 
-		ax.set_aspect("equal")
+		ax.set_aspect('equal')
 
 		if not (flareContour is None):
 		

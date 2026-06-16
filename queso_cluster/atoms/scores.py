@@ -152,7 +152,7 @@ def calcSingleSilhouetteScore(data, labels, lab):
 		# for j in range(len(labelLst)):
 		intraIndx = np.where(labels == lab)[0]
 		interIndx = np.where(labels != lab)[0]
-
+		
 		centroid = data[intraIndx, :].sum(axis=0)/len(intraIndx)
 		intra_d2 = 0.0
 		for k in range(len(intraIndx)):

@@ -53,10 +53,10 @@ Module Contents
    .. py:property:: dimInfo
 
 
-   .. py:property:: fitWavelength
+   .. py:property:: mapCadence
 
       
-      If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms
+      the time between rasters
 
 
 
@@ -77,10 +77,10 @@ Module Contents
           !! processed by numpydoc !!
 
 
-   .. py:property:: mapCadence
+   .. py:property:: nSpectral
 
       
-      the time between rasters
+      If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms
 
 
 

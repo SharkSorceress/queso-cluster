@@ -90,6 +90,8 @@ Module Contents
    :returns: Concatenated spectral profiles
    :rtype: dask.array
 
+   .. todo:: This feature needs to be properly tested
+
 
 
 
@@ -119,11 +121,52 @@ Module Contents
 
 .. py:function:: minimize(data, decisions, size)
 
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
 .. py:function:: np_all_axis0(x)
 
 .. py:function:: np_all_axis1(x)
 
 .. py:function:: np_gradient(f)
+
+   
+   Numba accelerated gradient
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
 
 .. py:function:: numba_histogram(a, bins, lim)
 

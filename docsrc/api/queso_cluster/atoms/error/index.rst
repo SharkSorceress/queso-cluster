@@ -27,12 +27,40 @@ Exceptions
 
 .. autoapisummary::
 
+   queso_cluster.atoms.error.ClusterError
    queso_cluster.atoms.error.ConvergenceError
+   queso_cluster.atoms.error.IntrinsicLabelError
    queso_cluster.atoms.error.LoadError
 
 
 Module Contents
 ---------------
+
+.. py:exception:: ClusterError
+
+   Bases: :py:obj:`Exception`
+
+
+   
+   Creates an Exception to handle the case when the user uses a value of k which is strictly less than one
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
 
 .. py:exception:: ConvergenceError(msg)
 
@@ -62,6 +90,32 @@ Module Contents
 
    .. py:attribute:: msg
 
+
+.. py:exception:: IntrinsicLabelError
+
+   Bases: :py:obj:`Exception`
+
+
+   
+   Creates an Exception to handle the case when the instrinic label is incorrect
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
 
 .. py:exception:: LoadError
 

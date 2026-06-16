@@ -114,8 +114,7 @@ class visp(eventLoad.eventRunner):
 			
 
 	@cached_property
-	def fitWavelength(self):
+	def nSpectral(self):
 		"""If a wavelength calibration is present in the eventManager.yml, this attribute will store the physical wavelength axis in Angstroms"""	
 		n = self._dataset.wcs.pixel_axis_names.index('dispersion axis')
-		waveIndex = self._dataset.headers['DNAXIS' + str(n+1)][0]
-		return(self._config.srcLst.waveFitFunc(waveIndex+1).to('angstrom'))
+		return(self._dataset.headers['DNAXIS' + str(n+1)][0])

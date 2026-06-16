@@ -3,3 +3,4 @@ queso_cluster.egg-info/*
 tests/*.png
 tests/*.npz
 tests/.*
+tests/*

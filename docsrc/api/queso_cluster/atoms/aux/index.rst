@@ -36,7 +36,37 @@ Module Contents
 
 .. py:function:: common_elements(ar1, ar2, ar3)
 
-.. py:function:: convertTime(dates, ref=False)
+.. py:function:: convertTime(dates, baseFormat='%Y-%m-%dT%H:%M:%S', ref=False)
+
+   
+   Converts time stamps into seconds
+
+   :param dates: list containing the datetime stamps from header information
+   :type dates: list
+   :param baseFormat: String format for the datetime without microseconds
+   :type baseFormat: str, optional
+   :param ref: Boolean to decide if you want to use the initial datetime stamp as a reference
+   :type ref: boolean, optional
+
+   :returns: 1D array containing time in units of seconds since 1970 Jan 01
+   :rtype: ndarray
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
 
 .. py:function:: density_hist2d(data, dy, top, bottom)
 

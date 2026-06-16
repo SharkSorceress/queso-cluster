@@ -36,3 +36,25 @@ class LoadError(Exception):
     
     def __str__(self):
         return("Overwrite is set to False. Cannot run.")
+
+
+class IntrinsicLabelError(Exception):
+    """
+    Creates an Exception to handle the case when the instrinic label is incorrect
+    """
+    def __init__(self):
+        super().__init__()
+    
+    def __str__(self):
+        return("Invalid intrinsic layer selection. Allowed labels include lineCenter, window, and lineContinuum")
+
+
+class ClusterError(Exception):
+    """
+    Creates an Exception to handle the case when the user uses a value of k which is strictly less than one
+    """
+    def __init__(self):
+        super().__init__()
+
+    def __str__(self):
+        return("Value of k must be positive and at least 1.")

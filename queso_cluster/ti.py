@@ -22,7 +22,7 @@ class timeIndependent:
 	----------
 	config : :class:`~queso_cluster.loaders.event.eventInput`
 		object containing yaml configuration
-	instrumentObj : :class:`~queso_cluster.loaders.visp.visp` :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
+	instrumentObj : :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris` 
 		A `loader` object for specific instruments
 	"""
 	def __init__(self, config, instrumentObj):
@@ -51,17 +51,20 @@ class timeIndependent:
 													self._config.timeFrames.size)
 
 		intrinsicLine = intrinsicLine[self.maskLine]
-		#prepSquare = self.prepSquare[self.maskLine, :]
 		#>> End of Intrinsic Layer
 
 		_ct_ = logg("start", "compute Time")
-		prepSquare = self.prepSquare[self.maskLine, 
+		try:
+			prepSquare = self.prepSquare[self.maskLine, 
 							   self._config.blueEdge:self._config.redEdge+1].compute()
+		except AttributeError:
+			prepSquare = self.prepSquare[self.maskLine, 
+							   self._config.blueEdge:self._config.redEdge+1]
 		logg("stop", _log=_ct_)
 
 		#> Start of Optimized Layer
-		labelLine, scoreTuple = baseMain.mainOptimization(prepSquare, 
-															intrinsicLine, kLst=kLst)
+		labelLine, scoreTuple = baseMain.mainOptimization(prepSquare, intrinsicLine, 
+															kLst=kLst, stageMax=len(kLst))
 		#>> End of Optimized Layer
 
 		if not self.maskLine.all():

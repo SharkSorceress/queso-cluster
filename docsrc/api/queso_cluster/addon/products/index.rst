@@ -25,15 +25,13 @@ Classes
 Module Contents
 ---------------
 
-.. py:class:: Products(quesoOut, config)
+.. py:class:: Products(quesoOut)
 
    
    Detail
 
-   :param quesoOut: summary
-   :type quesoOut: type
-   :param optLabels: summary
-   :type optLabels: type
+   :param quesoOut: Analysis object that stores all of the configuration
+   :type quesoOut: :class:`~queso_cluster.ti.timeIndependent` or :class:`~queso_cluster.td.timeDependent`
 
 
 
@@ -206,13 +204,10 @@ Module Contents
    .. py:method:: clusterProfilesCompound(compoundLabels)
 
 
-   .. py:method:: figure03()
-
-
    .. py:method:: load()
 
 
-   .. py:method:: spectralEntry(ax, indx, color, showContinuum, scores=None, dev=False)
+   .. py:method:: spectralEntry(ax, indx, showContinuum, scores=None, dev=False)
 
       
       Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
@@ -259,9 +254,6 @@ Module Contents
 
 
    .. py:attribute:: clusterCmap
-
-
-   .. py:attribute:: keepI0
 
 
    .. py:attribute:: mapMake

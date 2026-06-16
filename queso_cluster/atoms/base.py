@@ -23,6 +23,10 @@ def concatSpectra(dataSquareLst):
 	-------
 	dask.array
 		Concatenated spectral profiles
+	
+	TODO
+	----
+	This feature needs to be properly tested
 
 	"""
 	return(da.concatenate(dataSquareLst))	
@@ -125,29 +129,32 @@ def compute_bin(x, bin_edges):
 
 @nb.njit
 def np_gradient(f):
-	#> detail: 
-	#> param type f:
-	#> return (type): 
-	#> test-method:
-    # def np_gradient_impl(f):
+	"""
+	Numba accelerated gradient
+
+	Paramters
+	---------
+	f : ndarray
+		1D array to take the gradient of
+	
+	Returns
+	-------
+	ndarray
+		Gradient of f
+	"""
+
 	out = np.empty_like(f, np.float64)
 	out[1:-1] = (f[2:] - f[:-2]) / 2.0
 	out[0] = f[1] - f[0]
 	out[-1] = f[-1] - f[-2]
 	return(out)
 
-# @nb.njit
-# def np_diff(x):
-#     return(x[1:] - x[:-1])
-
 @nb.njit(cache=True)
 def minimize(data, decisions, size):
-	#> detail: 
-	#> param type data:
-	#> param type decisions:
-	#> param type size:
-	#> return (type): 
-	#> test-method:
+	"""
+	
+	"""
+
 	data_label      = np.zeros(data.shape[0], dtype=np.int32)
 	D_x             = np.zeros(data.shape[0], dtype=data.dtype)
 	sq_dist         = np.zeros(size, dtype=data.dtype)

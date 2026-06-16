@@ -1,0 +1,8 @@
+===========
+Contribute
+===========
+
+
+.. toctree::
+        people
+        guide

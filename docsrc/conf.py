@@ -56,6 +56,9 @@ numpydoc_show_class_members = False
 add_module_names = False
 
 html_static_path = ["_static"]
+templates_path = ["_templates"]
+
+#master_doc = 'homeIndex'
 
 # -- Options for HTML output
 html_title = 'QuESO Documentation'
@@ -75,6 +78,11 @@ html_theme = 'pydata_sphinx_theme' #'sphinx_rtd_theme'
 #     'logo_only': True,
 # }
 
+# html_additional_pages = {
+# 	"index": "landing.html"
+# }
+
+
 html_theme_options = {
     "navbar_start": ["navbar-logo"],
     "navbar_align": 'left',
@@ -89,12 +97,12 @@ html_theme_options = {
          "icon": "devicon-pypi-plain",
       }],
     "logo": {
-         'image_dark': '_static/img/iconTeal_small.png',
+         'image_dark': '_static/img/quesoBanner_small.png',
          'image_light': '_static/img/iconTeal_small.png'
     },
     "show_nav_level": 2,
-    "show_toc_level": 1,
-    #"navbar_center": ["navbar-nav"],
+    "show_toc_level": 2,
+    "navbar_center": ["navbar-nav"],
     "header_links_before_dropdown": 3,
     #"navbar_center": ["contributors"],
     #"navbar_end": ["navbar-icon-links"],
@@ -107,7 +115,7 @@ html_theme_options = {
 html_sidebars = {
     "getting-started/**": [],
     "contributors/**": [],
-    "tutorials": ["sidebar-collapse", "sidebar-nav-bs"],
+    "tutorials/**": ["sidebar-collapse", "sidebar-nav-bs"],
     "api/**": ["sidebar-collapse", "sidebar-nav-bs"],
 }
 
