@@ -10,7 +10,7 @@ import numpy as np
 convergeLimit = int(1000)
 """Maximum number of interations before ConvergenceError is raised"""
 
-class ConvergenceError(Exception):
+class ConvergenceError(Warning):
     """
     Create an Exception for when convergence doesn't occur after :obj:`~queso_cluster.atoms.error.convergeLimit` iterations
     """
@@ -24,6 +24,7 @@ class ConvergenceError(Exception):
         #else:
         return(self.msg)
         #return("Convergence condition not met after 1000 steps")
+
 
 
 class LoadError(Exception):
@@ -48,6 +49,13 @@ class IntrinsicLabelError(Exception):
     def __str__(self):
         return("Invalid intrinsic layer selection. Allowed labels include lineCenter, window, and lineContinuum")
 
+class RPConflictWarning(Warning):
+
+    def __init__(self):
+        super().__init__()
+    
+    def __str__(self):
+        return("Something occured and the number of labels is no longer equal to the input k")
 
 class ClusterError(Exception):
     """

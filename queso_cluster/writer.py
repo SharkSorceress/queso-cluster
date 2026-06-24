@@ -67,8 +67,8 @@ def exportFITS(spectralDataset, labelLine, fname):
 		h += 1
 
 
-def dirCleanUp(flavor):
-	files = glob.glob('./{}/sequences/*.png'.format(flavor))
+def dirCleanUp(directoryFlavor):
+	files = glob.glob('./{}/sequences/*.png'.format(directoryFlavor))
 	for f in files:
 		os.remove(f)
-	os.makedirs('./{}/sequences/'.format(flavor), exist_ok=True)
+	os.makedirs('./{}/sequences/'.format(directoryFlavor), exist_ok=True)

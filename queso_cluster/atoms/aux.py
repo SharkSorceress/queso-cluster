@@ -127,7 +127,7 @@ def density_hist2d(data, dy, top, bottom):
 	for i in range(data.shape[0]):
 		for j in range(data.shape[1]):
 			if not np.isfinite(data[i,j]):
-				print((i, j, data[i, j], (data[i, j]-bottom)/dy))
+				#print((i, j, data[i, j], (data[i, j]-bottom)/dy))
 				continue
 				#raise ValueError("Data is not finite")
 			

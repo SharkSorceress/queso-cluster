@@ -9,6 +9,9 @@ import dask.array as da
 import numba as nb
 
 from . import error as errAtom
+from ..addon.logg import logger
+
+import warnings
 
 def concatSpectra(dataSquareLst):
 	"""
@@ -149,20 +152,19 @@ def np_gradient(f):
 	out[-1] = f[-1] - f[-2]
 	return(out)
 
-@nb.njit(cache=True)
+@nb.njit()
 def minimize(data, decisions, size):
 	"""
 	
 	"""
-
-	data_label      = np.zeros(data.shape[0], dtype=np.int32)
+	data_label      = np.zeros(data.shape[0], dtype=np.uint32)
 	D_x             = np.zeros(data.shape[0], dtype=data.dtype)
 	sq_dist         = np.zeros(size, dtype=data.dtype)
 	for ii in range(data.shape[0]):
 		for kk in range(size):
 			sq_dist[kk] 	= similarityMetric(data[ii,:], decisions[kk, :])
 		data_label[ii]  = sq_dist.argmin()
-		D_x[ii]         = sq_dist[nb.u4(data_label[ii])]
+		D_x[ii]         = sq_dist[int(data_label[ii])]
 	return(data_label, D_x)
 
 @nb.njit(cache=True)
@@ -227,16 +229,6 @@ def similarityMetric(x, y, type='dist', ref=0):
 		metric = 1 - similarityCoeff
 	return(metric)
 
-@nb.njit(cache=True)
-def curvature(y):
-	#> detail: 
-	#> param type y:
-	#> return (type): 
-	#> test-method:
-	grady = np_gradient(y)
-	signedCurvature = np_gradient(grady)/(np.power(np.sqrt(1 + grady.dot(grady)), 3))
-	return(np.sqrt(np.power(signedCurvature, 2)))
-#	return(np.abs(np.gradient(np.gradient(y)))/(np.sqrt(1 + np.gradient(y)**2)**3))
 
 @nb.njit()
 def startMax(data, k, decisions):
@@ -261,18 +253,24 @@ def startMax(data, k, decisions):
 	"""
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
-		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
+		dc_left = np.flatnonzero(1-np_all_axis1(decisions))		
 		if len(dc_left) == 0:
 			return(decisions)
-		_, D_x = minimize(data, decisions, k-len(dc_left))        
-	
-		if (killer - data[nb.u4(D_x.argmax()), :]).sum() == 0:
+		D_x = np.zeros(data.shape[0])
+		for ii in range(data.shape[0]):
+			for kk in range(k-len(dc_left)):
+				D_x[ii] 	+= similarityMetric(data[ii,:], decisions[kk, :])
+		D_x /= (k - len(dc_left))
+
+		
+
+		if (killer - data[D_x.argmax(), :]).sum() == 0:
 			return(decisions)
 		
-		decisions[dc_left[0], :]    = data[nb.u4(D_x.argmax()), :]
-		killer = data[nb.u4(D_x.argmax()), :]
+		decisions[dc_left[0], :]    = data[D_x.argmax(), :]
+		killer = data[D_x.argmax(), :]
 
-@nb.njit(cache=True)
+@nb.njit()
 def startPlusPlus(data, k, decisions):
 	"""
 	k-means++ initialization
@@ -292,29 +290,22 @@ def startPlusPlus(data, k, decisions):
 		Array containing a full set of representative profiles
 
 	"""
-	#> detail: 
-	#> param type data:
-	#> param type k:
-	#> param type decisions:
-	#> return (type): 
-	#> test-method:
 	killer = np.ones(decisions.shape[1], dtype=decisions.dtype)
 	while True:
 		dc_left = np.flatnonzero(1-np_all_axis1(decisions))
 		if len(dc_left) == 0:
 			return(decisions)
+
 		_, D_x = minimize(data, decisions, k-len(dc_left))     
-		probs = D_x/D_x.sum()
-		r = np.random.rand()
-		for j, p in enumerate(probs.cumsum()):
-			if r < p:
-				i = j
-				break
-		if (killer - data[nb.u4(i), :]).sum() == 0:
+
+		Dx2 = D_x**2 / (D_x**2).sum()
+		indx = np.searchsorted(np.cumsum(Dx2), np.random.rand(1))[0]
+
+		if (killer - data[indx, :]).sum() == 0:
 			return(decisions)
 
-		decisions[dc_left[0], :]    = data[nb.u4(i), :]
-		killer = data[nb.u4(i), :]
+		decisions[dc_left[0], :]    = data[indx, :]
+		killer = data[indx, :]
 
 
 @nb.njit(cache=True)
@@ -394,17 +385,33 @@ def calcOptimization(k, data, decision, threshold=1e-6):
 	"""
 	killCounter = 0
 	while True:
-		data_label, _ = minimize(data, decision, k)
-		new_centroid = np.zeros((k, data.shape[1]), dtype=data.dtype)
-		converge = 0
-		for kk in range(k):
-			sub_data = data[np.where(data_label == kk)[0], :]
-			new_centroid[kk,:]  = sub_data.sum(axis=0)/sub_data.shape[0]
+		converge = -1
+		newCentroid = np.zeros((k, data.shape[1]), dtype=data.dtype)
+		dataLabel, _ = minimize(data, decision, k)
+		labelLst = np.unique(dataLabel)
+		if labelLst.size != k:
+			# print(labelLst)
+			# print(np.arange(k))
+			# print((data.shape, labelLst.size, k))
+			# print(decision.shape)
+			for qq in range(decision.shape[0]):
+				for rr in range(decision.shape[0]):
+					if rr != qq:
+						dd = similarityMetric(decision[rr,:], decision[qq, :])
+						print(dd)
+			raise errAtom.RPConflictWarning
+
+		for kk in range(labelLst.size):
+			#print(np.where(data_label == kk))
+			subData = data[np.where(dataLabel == labelLst[kk])[0], :]
+			newCentroid[kk,:]  = subData.sum(axis=0)/subData.shape[0]
 			# new_centroid[kk,:]  = np.median(sub_data, axis=0)
 
-			diff_centroid   = new_centroid[kk,:] - decision[kk,:]
+			diffCentroid   = newCentroid[kk,:] - decision[kk,:]
+			#print(np.asarray([converge, len(np.where(data_label == labelLst[kk])[0]), 
+			#		 	sub_data.shape[0], diff_centroid.dot(diff_centroid)]))
 			converge        = np.max(np.asarray([converge, 
-												np.sqrt(diff_centroid.dot(diff_centroid))]))
+												np.sqrt(diffCentroid.dot(diffCentroid))]))
 		
 			if not np.isfinite(converge):
 				raise errAtom.ConvergenceError(f"Converge criteria cannot be evaluated. Convergence is not finite")
@@ -412,9 +419,9 @@ def calcOptimization(k, data, decision, threshold=1e-6):
 		if killCounter == errAtom.convergeLimit:
 			raise errAtom.ConvergenceError(f"Convergence condition not met after {killCounter} steps")
 		
-		decision = new_centroid
+		decision = newCentroid
 		if converge <= threshold:
-			return(decision, data_label) 
+			return(decision, dataLabel) 
 
 		killCounter += 1
 

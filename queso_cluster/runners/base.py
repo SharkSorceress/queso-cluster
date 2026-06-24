@@ -59,7 +59,7 @@ def runLabelSort(dataSquare, labelLine):
 
 	return(sortedLabelLine, sortIndx)
 
-@nb.jit()
+@nb.njit()
 def runIntrinsic(edges, data):
 	init_label  = np.ones(data.shape[0], dtype=np.uint16)
 	for q in range(edges.size-1):
@@ -68,27 +68,63 @@ def runIntrinsic(edges, data):
 	return(init_label)
 
 
-@nb.njit
-def runStart(k, data, start='max'):
+@nb.njit()
+def kFinder(data):
+
+	k = 20
+	startLst = ("++", "max")
+	distanceK = np.zeros((len(startLst), k-1))
+	distanceAvgK = np.zeros(distanceK.shape)
+	for s in range(len(startLst)):
+		ic = runStart(20, data, startLst[s])
+
+		for kk in range(k):
+			if kk == 0:
+				continue
+
+			avgD = 0
+			counter = 0
+			for ll in range(k):
+				if ll < kk:
+					avgD += baseAtom.similarityMetric(ic[kk, :], ic[ll, :])
+					counter += 1
+
+			distanceAvgK[s, kk] = avgD/counter
+
+
+			distanceK[s, kk] = baseAtom.similarityMetric(ic[kk-1, :], ic[kk, :])
+
+
+
+	return(distanceK, distanceAvgK)
+
+
+
+@nb.njit()
+def runStart(k, data, initialize):
 	N                          = data.shape[0]
 	starting_centroid          = np.zeros((k, data.shape[1]), data.dtype)
-	starting_centroid[0, :]    = data[nb.u4(N * np.random.random()), :]
-	match start:
+	starter 				   = nb.u4(N * np.random.random())
+	starting_centroid[0, :]    = data[starter, :]
+	match initialize:
 		case '++':
 			initial_condition  = baseAtom.startPlusPlus(data, k, starting_centroid)
 		case 'max':
 			initial_condition  = baseAtom.startMax(data, k, starting_centroid)
+		case _:
+			raise Exception("Invalid Initialization")
+		
 	return(initial_condition)
 
-@nb.njit
-def runOptimization(k, sub_data, converge):
-	ic                      = runStart(k, sub_data)
+@nb.njit()
+def runOptimization(k, sub_data, converge, initialize='++'):
+	ic                      = runStart(k, sub_data, initialize)
 	_, data_label           = baseAtom.calcOptimization(k, sub_data, ic, converge)
-	scoreLine 				= scoresAtom.calcSilhouetteScore(sub_data, data_label)
-	return(data_label+1, scoreLine)
+	#scoreLine 				= scoresAtom.calcGlobalSilhouetteScore(sub_data, data_label)
+	return(data_label+1)
 
 
-@nb.njit
+@nb.njit()
 def findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 	with ProgressBar(total=30, ascii=False, leave=False, 
 					desc='findOptimalK',
@@ -103,7 +139,6 @@ def findOptimalK(dataSquare,funcLst, criteriaLst, converge=1e-6):
 				ff += 1
 			k += 1
 			p.update(1)
-
 		
 		cc = 0
 		kLst = np.zeros(len(criteriaLst))

@@ -103,8 +103,53 @@ def criteriaSilhouetteScore(score):
 	#> test-method:
 	return(score.argmax())
 
+
+@nb.njit(cache=True)
+def calcNeighborSilhouetteScore(dataSquare, labelLine, neighbor=None, unbound=False):
+	labelLst = np.unique(labelLine)
+	scores = np.zeros(labelLst.size)
+	for l in range(labelLst.size):
+		#scores[l] = calcNeighborSingleSilhouetteScore(dataSquare, labelLine, 
+		#										labelLst[l], unbound)
+		intraIndxs = np.where(labelLine == labelLst[l])[0]
+
+		sampleScore = np.zeros(intraIndxs.size)
+
+		for j in range(intraIndxs.size):
+			intraIndx = intraIndxs[j]
+			neighbor = findSampleNeighbor(dataSquare, labelLine, intraIndx)
+
+			interIndxs = np.where(labelLine == neighbor)[0]
+			
+			intraSample = dataSquare[intraIndx, :]#.sum(axis=0)/len(intraIndx)
+
+			intra_d2 = 0.0
+			for k in range(len(intraIndxs)):
+				d = dataSquare[intraIndxs[k], :] - intraSample
+			intra_d2 += np.sqrt(d.dot(d))		
+			
+			inter_d2 = 0.0
+			for k in range(len(interIndxs)):
+				d = dataSquare[interIndxs[k], :] - intraSample
+				inter_d2 += np.sqrt(d.dot(d))
+
+			intraDistance = intra_d2/len(intraIndxs)
+			interDistance = inter_d2/len(interIndxs)
+
+			if unbound:
+				sampleScore[j] = 1 - intraDistance/interDistance
+			else:
+				sampleScore[j] = (interDistance - intraDistance)/np.maximum(intraDistance, interDistance)
+
+		scores[l] = sampleScore.mean()
+
+		if neighbor == labelLst[l]:
+			return(scores[l])
+		
+	return(scores.min())
+
 @nb.njit()
-def calcSilhouetteScore(dataSquare, labelLine):
+def calcGlobalSilhouetteScore(dataSquare, labelLine):
 	#> detail: 
 	#> param type dataSquare:
 	#> param type labelLine:
@@ -112,34 +157,15 @@ def calcSilhouetteScore(dataSquare, labelLine):
 	#> test-method:
 	
 	labelLst = np.unique(labelLine)
-	# intraDistance = np.zeros(len(labelLst))
-	# interDistance = np.zeros(len(labelLst))
 	scoreLine = np.zeros(labelLst.size)
 	if len(labelLst) > 1:
 		for j in range(labelLst.size):
-			scoreLine[j] = calcSingleSilhouetteScore(dataSquare, labelLine, labelLst[j])
-			# intraIndx = np.where(labelLine == labelLst[j])[0]
-			# interIndx = np.where(labelLine != labelLst[j])[0]
-
-			# centroid = dataSquare[intraIndx, :].sum(axis=0)/len(intraIndx)
-			# intra_d2 = 0.0
-			# for k in range(len(intraIndx)):
-			# 	d = dataSquare[intraIndx[k], :] - centroid
-			# 	intra_d2 += np.sqrt(d.dot(d))		
-			
-			# inter_d2 = 0.0
-			# for k in range(len(interIndx)):
-			# 	d = dataSquare[interIndx[k], :] - centroid
-			# 	inter_d2 += np.sqrt(d.dot(d))
-
-			#intraDistance[j] = intra_d2/len(intraIndx)
-			#interDistance[j] = inter_d2/len(interIndx)
-
+			scoreLine[j] = calcGlobalSingleSilhouetteScore(dataSquare, labelLine, labelLst[j], False)
 	return(scoreLine)
 
 
 @nb.njit()
-def calcSingleSilhouetteScore(data, labels, lab):
+def calcGlobalSingleSilhouetteScore(data, labels, lab, unbound):
 	#> detail: 
 	#> param type data:
 	#> param type labels:
@@ -172,10 +198,68 @@ def calcSingleSilhouetteScore(data, labels, lab):
 
 	# denomArr 	= np.array([intraDistance, interDistance])
 	# maxIndx = np.argmax(np.array([intraDistance.max(), interDistance.max()]))
+	if unbound:
+		return(1 - intraDistance/interDistance)
+	else:
+		return((interDistance - intraDistance)/np.maximum(intraDistance, interDistance))
 
-#	return((interDistance - intraDistance)/np.maximum(intraDistance, interDistance))
+@nb.njit(cache=True)
+def findSampleNeighbor(dataSquare, labelLine, pointIndx):
+	labelLst = np.unique(labelLine)
+	store = np.zeros((dataSquare.shape[0])) + np.nan
 
-	return(1 - intraDistance/interDistance)
+	interIndx = np.where(labelLine != labelLine[pointIndx])[0]
+	if len(labelLst) > 1:
+		for l in range(interIndx.size):
+			interCentroid = dataSquare[interIndx[l], :]
+
+			delta = dataSquare[pointIndx, :] - interCentroid
+			store[interIndx[l]] = np.sqrt(delta.dot(delta))
+	
+	neighborLabel = labelLine[np.argmin(store)]
+	return(neighborLabel)
+
+
+@nb.njit()
+def calcDaviesBouldin(data, labels, q=2):
+
+	labelLst = np.unique(labels)
+	Ri = np.zeros(labelLst.size) 
+	for i in range(labelLst.size):
+		intraIndx = np.where(labels == labelLst[i])[0]
+		
+		intraCentroid = data[intraIndx, :].sum(axis=0)/len(intraIndx)
+		si = 0.0
+		for k in range(len(intraIndx)):
+			d = data[intraIndx[k], :] - intraCentroid
+			si += np.sqrt(d.dot(d))	
+		si /= np.sqrt(intraIndx.size)
+
+		Rij = np.zeros(labelLst.size) + np.nan
+		for j in range(labelLst.size):
+			if i == j:
+				continue
+
+			interIndx = np.where(labels == labelLst[j])[0]
+			interCentroid = data[interIndx, :].sum(axis=0)/intraIndx.size
+			sj = 0.0
+			for k in range(len(interIndx)):
+				d = data[interIndx[k], :] - interCentroid
+				sj += np.sqrt(d.dot(d))
+			
+			sj /= interIndx.size
+
+
+			dij = intraCentroid - interCentroid
+			dij = np.sqrt(dij.dot(dij))
+
+			Rij[j] = (np.sqrt(si) + np.sqrt(sj)) / dij
+
+		Ri[i] = np.nanmax(Rij)
+
+	return(Ri.sum()/labelLst.size)
+
+
 
 @nb.njit()
 def calcCHindex(data, labels):

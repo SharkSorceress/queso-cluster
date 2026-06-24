@@ -2,6 +2,7 @@ import numpy as np
 import dask.array as da
 import numba as nb
 
+
 def normFunc(dataSquare, func):
 	"""
 	Normalizes the data with a user-defined function

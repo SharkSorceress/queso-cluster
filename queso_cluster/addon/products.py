@@ -45,6 +45,8 @@ class Products:
 
 		ii, jj = [self._quesoOut._config.blueEdge, self._quesoOut._config.redEdge]
 
+		#print(self.vfindx)
+
 		self._raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()
 		self._raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
 
@@ -53,18 +55,24 @@ class Products:
 			self._wavelambda = waveFit.magnitude
 			self._wavelambda -= self._wavelambda[self._quesoOut._config.lineCenter]
 			self._waveUnit = waveFit.units
-			print(self._waveUnit)
+			#print(self._waveUnit)
 		else:
 			self._wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
 			self._waveUnit = "index"
 
 
 		self._extent  = self._wavelambda[ii], self._wavelambda[jj], self._raw_min, self._raw_max
-		print(self._extent)
 
-		self.xlim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
-		self.ylim = np.array([self.vindx[2].min(), self.vindx[2].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
+		if len(self.vindx) == 2:
+			self.xlim = np.array([self.vindx[0].min(), self.vindx[0].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
+			self.ylim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
+		elif len(self.vindx) == 3:
+			self.xlim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
+			self.ylim = np.array([self.vindx[2].min(), self.vindx[2].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
 
+
+
+		print([self.xlim, self.ylim])
 
 		self.aspect = np.diff(self.xlim)[0]/np.diff(self.ylim)[0]
 	
@@ -74,7 +82,7 @@ class Products:
 
 
 	def load(self):
-		loading = np.load("./{0}/{0}.npz".format(self._quesoOut._config.flavor))
+		loading = np.load("./{}/{}.npz".format(self._quesoOut._config.directoryFlavor, self._quesoOut._config.flavor))
 		logger.info(loading)
 		self.optLabels 				= loading['labelSquare']
 		self._quesoOut.maskLine 	= loading['maskLine']
@@ -108,8 +116,141 @@ class Products:
 		#figB = self.clusterMapCompound(compoundLabels, timeAxis)
 		return(figA)
 	
+
+	@loggTimer
+	def intensityMapSequence(self, timeAxis=False, **kwargs):
+
+		if np.abs(np.diff(self.ylim)) > np.abs(np.diff(self.xlim)):
+			figA = self.intensityMapSequenceHorizontal(timeAxis, **kwargs)
+		else:
+			figA = self.intensityMapSequenceVertical(timeAxis)
+			
+		#figB = self.clusterMapCompound(compoundLabels, timeAxis)
+		return(figA)
 	
-	
+
+	def intensityMapSequenceHorizontal(self, timeAxis, **kwargs):
+		"""
+		Horizontal oriented maps of the cluster results for individual time steps
+		
+		Parameters
+		----------
+		compoundLabels : char.array
+		timeAxis : bool
+			Boolean to add an extra axis for time
+
+		Returns
+		-------
+		fig : mpl.figure
+			Map of the cluster results for individual time steps
+		compoundLabels : np.char.array
+			Character array for all sequence labels
+			
+		"""	
+			
+		ncols = self.optLabels.shape[0]
+		#> Error?: Maximum number of clients reached		
+		fig = plt.figure(layout='compressed', figsize=(3*ncols, (3*ncols*self.aspect) * 1.2), dpi=300)
+		
+		nrows = 2
+		height_ratios=[0.025, 1]
+		width_ratios = [1 for x in range(ncols)]
+		gs = GridSpec(nrows, ncols, figure=fig, 
+				height_ratios=height_ratios, width_ratios=width_ratios, hspace=0, wspace=0)
+
+
+		intensitySequence = np.nanmean(self._quesoOut._instrumentObj.dataPrism[self._quesoOut._config.timeFrames, ..., 
+																		 self._quesoOut._config.blueEdge:self._quesoOut._config.redEdge], axis=-1)
+		intensitySequence = intensitySequence.reshape(self._quesoOut._config.timeFrames.size, 
+														self._quesoOut.geometry['rasterSize'], 
+														self._quesoOut.geometry['alongSlitSize'])
+		print(intensitySequence.shape)
+
+		for t in range(self.optLabels.shape[0]):
+			kwargs['cmap'] = "Greys_r"
+			ax, im  = self.mapMake._mapGen(fig, gs[1, t], 
+												intensitySequence[t, ...],
+												timeAxis=timeAxis, 
+												xlim=self.xlim,
+												ylim=self.ylim,
+												#flareContour=self.mask_map, 
+												**kwargs)
+			if not gs[0, t].is_first_col():
+				ax.set_yticklabels([])
+
+		cax = fig.add_subplot(gs[0, :])
+		cbar = fig.colorbar(im, spacing='uniform',
+									orientation="horizontal",
+									cax=cax)
+
+		#cbar.minorticks_off()
+		
+
+		return(fig)#, compoundLabels)		
+
+
+
+	def intensityMapSequenceVertical(self, timeAxis, **kwargs):
+		"""
+		Vertical oriented maps of the cluster results for individual time steps
+		
+		Parameters
+		----------
+		compoundLabels : char.array
+		timeAxis : bool
+			Boolean to add an extra axis for time
+
+		Returns
+		-------
+		fig : mpl.figure
+			Map of the cluster results for individual time steps
+		compoundLabels : np.char.array
+			Character array for all sequence labels
+			
+		"""	
+			
+		ncols = self.optLabels.shape[0]
+		#> Error?: Maximum number of clients reached		
+		fig = plt.figure(layout='constrained', figsize=((3*self.aspect)*1.2, 3*ncols), dpi=300)
+		
+		
+		nrows = ncols
+		ncols = 2
+		height_ratios = [1 for x in range(nrows)]
+		width_ratios = [1, 0.025]		
+		gs = GridSpec(nrows, ncols, figure=fig, 
+				height_ratios=height_ratios, width_ratios=width_ratios, hspace=0, wspace=0)
+
+
+		intensitySequence = np.nanmean(self._quesoOut._instrumentObj.dataPrism[self._quesoOut._config.timeFrames, ..., 
+																		 self._quesoOut._config.blueEdge:self._quesoOut._config.redEdge], axis=-1)
+		intensitySequence = intensitySequence.reshape(self._quesoOut._config.timeFrames.size, 
+														self._quesoOut.geometry['rasterSize'], 
+														self._quesoOut.geometry['alongSlitSize'])
+		print(intensitySequence.shape)
+
+		for t in range(self.optLabels.shape[0]):
+			kwargs['cmap'] = "Greys_r"
+			ax, im  = self.mapMake._mapGen(fig, gs[t, 0], 
+												intensitySequence[t, ...],
+												timeAxis=timeAxis, 
+												xlim=self.xlim,
+												ylim=self.ylim,
+												#flareContour=self.mask_map, 
+												**kwargs)
+			if not gs[t, 0].is_last_row():
+				ax.set_xticklabels([])
+
+		cax = fig.add_subplot(gs[:, 1])
+		cbar = fig.colorbar(im, spacing='uniform',
+									orientation="horizontal",
+									cax=cax)
+
+		#cbar.minorticks_off()
+		
+
+		return(fig)#, compoundLabels)		
+
 
 	def clusterMapCompound(self, compoundLabels, timeAxis=False):	
 		"""
@@ -342,6 +483,8 @@ class Products:
 			lindx = np.where(self.optLabels == labelLst[l])
 			recountedLabels[lindx] = l+1
 
+		print(recountedLabels.shape)
+
 		for t in range(self.optLabels.shape[0]):
 			kwargsDict = {'cmap': self.clusterCmap.cmap, 'norm': self.clusterCmap.norm}
 			ax, im  = self.mapMake._mapGen(fig, gs[1, t], 
@@ -542,7 +685,6 @@ class Products:
 		raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
 		extent  	= self._wavelambda[ii], self._wavelambda[jj], raw_min, raw_max
 
-		color = "black"
 		panel_bounds = []
 		bounds_ticker = int(str(i0o1Lst[0])[0])
 		for j in range(len(i0o1Lst)):
@@ -573,10 +715,14 @@ class Products:
 				ax      	= plt.subplot(gs[j, k+1])
 				o2_indx 	= i0_indx[np.where(o2Arr == o2Lst[k])[0]]
 
-				sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
-				sindx = np.where(i0Arr == sArr[0])[0]
+				#sArr = auxAtom.pick_jth_label(validLabels[o2_indx], 0)
+				sindx = np.where(i0Arr == i0Arr[o2_indx[0]])[0].astype(np.uint32)
+				#print(sindx)
 
-				#score = scoresAtom.calcSingleSilhouetteScore(self._quesoOut.prepSquare[sindx.astype(np.uint32), ii:jj+1], validLabels[sindx.astype(np.uint32)], validLabels[o2_indx[0]])
+				# score = scoresAtom.calcNeighborSilhouetteScore(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], 
+				# 								   validLabels[sindx], 
+				# 								   neighbor=validLabels[o2_indx[0]], unbound=False)
+
 				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], showContinuum)#, scores=score)
 				if gs[j,k+1].is_last_row():
 					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))	
@@ -588,7 +734,7 @@ class Products:
 				# 	axR.tick_params(labelright=False)
 		return(fig)
 
-	def spectralEntry(self, ax, indx, showContinuum, scores=None, dev=False):
+	def spectralEntry(self, ax, indx, showContinuum, scores=None, dev=False, neighbor=None):
 		"""
 		Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
 		
@@ -646,8 +792,13 @@ class Products:
 		#tindx = self.vindx[0][indx]
 		#xindx = self.vindx[1][indx]
 		#yindx = self.vindx[2][indx]
-		tindx, xindx, yindx = np.unravel_index(indx, self.optLabels.shape)
-		labelLst = np.unique(self.optLabels[tindx, xindx, yindx]).astype(int).astype(str)
+		# if self.optLabels.shape == 3:
+		# 	tindx, xindx, yindx = np.unravel_index(indx, self.optLabels.shape)
+		# 	labelLst = np.unique(self.optLabels[tindx, xindx, yindx]).astype(int).astype(str)
+		# else:
+		# 	xindx, yindx = np.unravel_index(indx, self.optLabels.shape)
+		labelLst = np.unique(self.optLabels[np.unravel_index(indx, self.optLabels.shape)]).astype(int).astype(str)
+		
 		commonLabel = [labelLst[0][j] for j in range(len(labelLst[0])) if np.unique([a[j] for a in [list(x) for x in labelLst]]).size == 1]
 
 		label = "{}{}".format(int("".join(commonLabel)), "X"*(len(labelLst[0]) - len(commonLabel)))
@@ -665,7 +816,13 @@ class Products:
 			ax.annotate("S={:.3f}".format(float(scores)),
             		xy=(0.01, 1-0.15), xycoords='axes fraction',
 					xytext=(0.01, 1-0.15), textcoords='axes fraction', fontfamily='sans-serif',
-            		va='center', ha='left')				
+            		va='center', ha='left')	
+
+		if not (neighbor is None):
+				ax.annotate("N={:d}".format(int(neighbor)),
+            		xy=(0.01, 1-0.2), xycoords='axes fraction',
+					xytext=(0.01, 1-0.2), textcoords='axes fraction', fontfamily='sans-serif',
+            		va='center', ha='left')			
 
 		if showContinuum:
 			ax.axhline(y = 1, color='black', linestyle='dotted')

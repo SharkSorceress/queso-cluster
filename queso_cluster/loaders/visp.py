@@ -9,52 +9,17 @@ from . import event as eventLoad
 from functools import cached_property
 
 class visp(eventLoad.eventRunner):
+	"""
+	
+	
+	"""
 
 	stokes_lst 		= ['I', 'Q', 'U', 'V']
 
 	def __init__(self, dataDirectory=None, stokes='I'):
 		
-
 		self._dataset = dkist.load_dataset(dataDirectory)
 		self._datetime = auxAtom.convertTime(self._dataset.headers['DATE-BEG'])
-
-
-		# print(self._dataset.wcs.pixel_axis_names)
-
-
-		# flat_axis = 1
-		# numRasters = 1
-		#test = []
-		#crval = []
-
-		# for n in range(self._dataset.headers['DNAXIS'][0]):
-		# 	dnaxis_entry = self._dataset.headers['DNAXIS' + str(n+1)][0]
-			
-		# 	match self._dataset.headers['DTYPE' + str(n+1)][0]: 
-		# 		case 'SPECTRAL':
-		# 				spectral_len = dnaxis_entry
-		# 				spectral_loc = int(np.where(np.asarray(dataCube.shape) == dnaxis_entry)[0])
-		# 		case 'TEMPORAL':
-		# 				numRasters = dnaxis_entry
-		# 				#flat_axis *= numRasters
-		# 		case 'SPATIAL':
-		# 				#crval.append(dataset.headers['CRVAL' + str(n+1)][0])
-		# 				flat_axis *= dnaxis_entry
-		# 				#test.append(dnaxis_entry)
-
-
-		#self.shape = self._dataset.data.shape
-		#if numRasters == 1:
-		#	self.shape = self.dataCube.shape
-		#	self.dataSquare = self.dataCube.reshape(flat_axis, spectral_len)#.rechunk('auto')
-		#else:
-		# self.dataPrism = 
-
-		# self.dimInfo = {
-		# 	"numRasters" : numRasters,
-		# 	"alongSlitSize" : np.max(test),
-		# 	"rasterSize" : (flat_axis // np.max(test)) // numRasters,
-		# }
 
 	@cached_property
 	def dataPrism(self):
@@ -63,10 +28,14 @@ class visp(eventLoad.eventRunner):
 		else:
 			dataCube = self._dataset.data
 
-		n = self._dataset.wcs.pixel_axis_names.index('dispersion axis')
-		dataCube = np.moveaxis(dataCube, n+1, -1)
-		return(dataCube.reshape(self.dimInfo['numRasters'], 
-						  self.dimInfo['rasterSize']*self.dimInfo['alongSlitSize'], dataCube.shape[-1]))
+		n = np.where(dataCube.shape == self.dimInfo['spectralSize'])[0]
+		dataCube = np.moveaxis(dataCube, n, -1)
+		if self.dimInfo['numRasters'] > 1:
+			return(dataCube.reshape(self.dimInfo['numRasters'], 
+						  self.dimInfo['rasterSize']*self.dimInfo['alongSlitSize'], self.dimInfo['spectralSize']))
+		else:
+			return(dataCube.reshape(self.dimInfo['rasterSize']*self.dimInfo['alongSlitSize'], self.dimInfo['spectralSize']))
+
 	@cached_property
 	def pxlDelta(self):
 		labels = ['pxlSlitWidth', 'pxlAlongSlit']		
@@ -103,13 +72,17 @@ class visp(eventLoad.eventRunner):
 
 	@cached_property
 	def dimInfo(self):
-		labels = ['rasterSize', 'alongSlitSize', 'numRasters']
-		dimLst = ['raster scan step number', 'spatial along slit', 'raster map repeat number']
+		labels = ['rasterSize', 'alongSlitSize', 'numRasters', "spectralSize"]
+		dimLst = ['raster scan step number', 'spatial along slit', 'raster map repeat number', 'dispersion axis']
 
 		dimInfo = {}
 		for d in range(len(dimLst)):
-			n = self._dataset.wcs.pixel_axis_names.index(dimLst[d])
-			dimInfo[labels[d]] = self._dataset.headers['DNAXIS' + str(n+1)][0]
+			if dimLst[d] not in self._dataset.wcs.pixel_axis_names:
+				dimInfo[labels[d]] = 1
+			else:
+				n = self._dataset.wcs.pixel_axis_names.index(dimLst[d])
+				dimInfo[labels[d]] = self._dataset.headers['DNAXIS' + str(n+1)][0]
+			
 		return(dimInfo)
 			
 

@@ -18,8 +18,9 @@ def delayAIA(fname, epochDev):
 #> test-method:
 	
 	eD = epochDev
-	print(eD.shape)
-	print(fname)
+
+	eD.shape = [eD.geometry["rasterSize"], eD.geometry['alongSlitSize']]
+
 	jq_delayCube = readsav(fname)
 
 	#jq_delayCube['arr'][0] --> background of pixel

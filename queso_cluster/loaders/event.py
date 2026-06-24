@@ -11,7 +11,8 @@ import numpy as np
  
 from functools import cached_property
 
-from ..atoms import scores as scoreAtom
+from ..atoms import norm as normAtom
+from .. import writer
 
 class eventRunner:
 	"""
@@ -52,9 +53,18 @@ class eventRunner:
 					self.waveFitFunc = lambda N: np.poly1d(waveCoeff)(np.arange(N))*pint.Unit(self._eventRaw['src'][self._srcIndx]['axisFit']['unit'])
 				break
 
-	# def validation(self):
-	# 	match 
-	# 	return()
+		writer.dirCleanUp(self.directoryFlavor)
+
+	@cached_property
+	def normConfig(self):
+
+		match self.clusterConfig['prep']['normalize']:
+			case "normContinuum":
+				normArgs = {"norm": normAtom.normContinuum, "continuumIndx": self.lineContinuum}
+			case "normMaximum":
+				normArgs = {"norm": normAtom.normMaximum, "windowIndx": [self.blueEdge, self.redEdge]}
+
+		return(normArgs)
 
 	@cached_property
 	def instrument(self):
@@ -64,10 +74,6 @@ class eventRunner:
 	def residual(self):
 		return(bool(self._eventRaw['src'][self._srcIndx]['residual']))
 
-	# @cached_property
-	# def waveFitFunc(self):
-		
-	# 	return(waveFitFunc)
 
 	@cached_property
 	def lineTheme(self):
@@ -102,6 +108,9 @@ class eventRunner:
 		"""The datestring directory"""
 		return("".join(self._eventRaw['date'].split("-")))
 		
+	@cached_property
+	def directoryFlavor(self):
+		return("{}_{}".format(self.directoryDate, self.flavor))
 	@property
 	def blueEdge(self):
 		"""int containing the index for the beginning of the spectral window used for clustering"""
@@ -136,6 +145,9 @@ class eventRunner:
 
 	@property
 	def timeFrames(self):
+		if 'timeFrames' not in list(self.runnerConfig.keys()):
+			return(0)
+		
 		startFrame = self.runnerConfig['timeFrames'][0]
 		endFrame = self.runnerConfig['timeFrames'][1]
 		return(np.arange(startFrame, endFrame+1).astype(int))

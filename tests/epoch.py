@@ -25,44 +25,57 @@ def main(config):
 #> param type config:
 #> return (type): 
 #> test-method:
-	aiaUse = config.runners.config['aia']
+	#writer.dirCleanUp(config.directoryFlavor)
 
-	c = config.runners.label + '-' + aiaUse
-	ViSPobj = visp(dkistDir + config.dirid + '/CSYRML/')
-	ViSPobj.load()
+	aiaUse = config.runnerConfig['aia']
 
-	tiDev = ti.timeIndependent(config, c, ViSPobj)
+	ViSPobj = visp(dataDirectory=dkistDir + 
+				config.directoryDate + '/' + config.datasetID + '/')
 
-	prepSquare = runBase.runPrep(tiDev.dataSquare,
-									norm=normAtom.normMaximum)
-	#noMaskLabelLine, _ = tiDev.clustering(tiDev.dataSquare)#
+	tiDev = ti.timeIndependent(config, ViSPobj)
+	tiDev.dataSquare = ViSPobj.dataPrism
 
-	tiDev.maskLine = np.ones(prepSquare.shape[0]).astype(bool)
-	if True:
-		_, _, _, tiDev.maskLine = aia.delayAIA("/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(aiaUse), tiDev)
+	if config.overwrite:
+		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare, **config.normConfig)
+		#noMaskLabelLine, _ = tiDev.clustering(tiDev.dataSquare)#
 
-	labelLine, scoreTuple,  = tiDev.cluster(prepSquare, kLst=config.clusterConfig['optimized'])
-	#writer.exportFITS(tiDev, labelLine, c)
-	return(tiDev, labelLine)
+		tiDev.maskLine = np.ones(tiDev.prepSquare.shape[0]).astype(bool)
+		if True:
+			_, _, _, tiDev.maskLine = aia.delayAIA("/disk/data/SDO/qiuj/sarah/20221227/data/aia_lgtcv_visptime_{}.sav".format(aiaUse), tiDev)
+
+		if 'bbox' in list(config.runnerConfig.keys()):
+			tiDev.maskLine = maskAtom.maskCoordinate(config.runnerConfig['bbox'], 
+											(ViSPobj.dimInfo['rasterSize'], 
+											ViSPobj.dimInfo['alongSlitSize']))
+
+		fig = prep.figureBackup01(tiDev, ["window", "continuum"])
+		fig.savefig("./{}/histogram.png".format(config.directoryFlavor))
+
+		labelLine = tiDev.cluster(kLst=config.clusterConfig['optimized'], 
+									initialize=config.clusterConfig['prep']['initialize'])
+		labelSquare = labelLine.reshape((ViSPobj.dimInfo['rasterSize'], 
+									ViSPobj.dimInfo['alongSlitSize']))
+
+		logger.info("Save start")
+		np.savez("./{}/{}.npz".format(config.directoryFlavor, config.flavor), 
+		   labelSquare=labelSquare, maskLine=tiDev.maskLine, 
+		   prepSquare=tiDev.prepSquare.compute())
+		logger.info("Save end")
+	return(tiDev)
 
 
 def main_time(config):
 	ViSPobj = visp(dataDirectory=dkistDir + 
 				config.directoryDate + '/' + config.datasetID + '/')
 
+
 	tiDev = ti.timeIndependent(config, ViSPobj)
-	writer.dirCleanUp(config.flavor)
-
-	tiDev.dataSquare = ViSPobj.dataPrism[config.timeFrames, ...].reshape((ViSPobj.dataPrism.shape[1]*config.timeFrames.size, ViSPobj.dataPrism.shape[-1]))
-
+	tiDev.dataSquare = ViSPobj.dataPrism[config.timeFrames, ...].reshape((ViSPobj.dataPrism.shape[1]*config.timeFrames.size, 
+																	   ViSPobj.dataPrism.shape[-1]))
 
 	if config.overwrite:
-		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare,
-										norm=normAtom.normContinuum,
-										#norm=normAtom.normMaximum, 
-										#windowIndx=[config.blueEdge, config.redEdge]
-										continuumIndx=config.lineContinuum
-										)
+		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare, **config.normConfig)
+
 		#> Note: Creates a mask for data within a specific coordinate range
 		tiDev.maskLine = np.ones(tiDev.prepSquare.shape[0]).astype(bool)
 		if 'bbox' in list(config.runnerConfig.keys()):
@@ -70,48 +83,48 @@ def main_time(config):
 											(config.timeFrames.size, 
 											ViSPobj.dimInfo['rasterSize'], 
 											ViSPobj.dimInfo['alongSlitSize']))
-
-
-		labelLine, scoreTuple = tiDev.cluster(kLst=config.clusterConfig['optimized'])
+	
+		labelLine = tiDev.cluster(kLst=config.clusterConfig['optimized'], 
+									initialize=config.clusterConfig['prep']['initialize'])
 		labelSquare = labelLine.reshape((config.timeFrames.size, 
 								   ViSPobj.dimInfo['rasterSize'], 
 								   ViSPobj.dimInfo['alongSlitSize']))
 
 		logger.info("Save start")
-		np.savez("./{0}/{0}.npz".format(config.flavor), labelSquare=labelSquare, maskLine=tiDev.maskLine, prepSquare=tiDev.prepSquare.compute())
+		np.savez("./{}/{}.npz".format(config.directoryFlavor, config.flavor), 
+		   labelSquare=labelSquare, maskLine=tiDev.maskLine, 
+		   prepSquare=tiDev.prepSquare.compute())
 		logger.info("Save end")
 	return(tiDev)
 
 if __name__ == '__main__':
 	from queso_cluster.loaders.event import eventRunner
-	eventManager = eventRunner("./eventManager.yml", eventIndx=1, runIndx=0)
+	eventManager = eventRunner("./eventManager.yml", eventIndx=3, runIndx=1)
 	tiDev  = main_time(eventManager)
-
-	geoLst = list(tiDev.geometry.keys())
-
-	for g in range(len(geoLst)):
-		print("{}: {}".format(geoLst[g], tiDev.geometry[geoLst[g]]))
-
 
 	from queso_cluster.addon import products
 	p = products.Products(tiDev)
 	fig3a = p.clusterMapSequence(timeAxis=False)
-	fig3a.savefig("./{}/figure03_sequence.png".format(tiDev._config.flavor))
+	fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
+
+	kwargDict = {"vmin": 0.5} #sets the minimum for the intensity
+	fig3b = p.intensityMapSequence(timeAxis=False, **kwargDict)
+	fig3b.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
 
 	fig4 = p.clusterProfiles()
-	fig4.savefig("./{}/clusterLabels.png".format(tiDev._config.flavor))
+	fig4.savefig("./{}/clusterLabels.png".format(tiDev._config.directoryFlavor))
 
-	from queso_cluster.atoms import flare as flareAtom
-	hiIntMask = flareAtom.kernelClusterMask(p.optLabels)
+	# from queso_cluster.atoms import flare as flareAtom
+	# hiIntMask = flareAtom.kernelClusterMask(p.optLabels)
 
-	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels*hiIntMask)
-	fig3c = p.clusterMapCompound(compoundLabels)
-	fig3c.savefig("./{}/figure03_compound_peak.png".format(tiDev._config.flavor))
+	# compoundLabels = tiDev.clusterCompoundLabels(p.optLabels*hiIntMask)
+	# fig3c = p.clusterMapCompound(compoundLabels)
+	# fig3c.savefig("./{}/figure03_compound_peak.png".format(tiDev._config.flavor))
 
-	p.clusterProfilesCompound(compoundLabels)
+	# p.clusterProfilesCompound(compoundLabels)
 
-	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
-	fig3b = p.clusterMapCompound(compoundLabels)
-	fig3b.savefig("./{}/figure03_compound.png".format(tiDev._config.flavor))
+	# compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
+	# fig3b = p.clusterMapCompound(compoundLabels)
+	# fig3b.savefig("./{}/figure03_compound.png".format(tiDev._config.flavor))
 
 

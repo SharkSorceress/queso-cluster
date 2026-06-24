@@ -1,38 +1,38 @@
 - event: 
     date: '2022-12-27'
-    label: 'Priority Dataset'
+    label: 'Paper 1 dataset. C class flare with '
     run: 
-      - label: 'timeIndependent'
+      Cflare:
         overwrite: True
         config: {src: 'CSYRML', aia: 'bas_more', keepI0: [3, 5, 6], useMask: True, line: 'main'}
     src:
-      - id: {'instrument': 'ViSP', 'data': 'CSYRML', mod: ""}
-        theme: '#057BBB'
+      - id: {'instrument': 'ViSP', 'data': 'CSYRML'}
         clustering:
-          main:
+          Cflare:
+            prep: {normalize: "normContinuum", initialize: "++"}
             intrinsic: 
-              - {label: 'continuum', layerConfig: {'bins': [0, 0.75, 1.0]}}
-              - {label: 'window', layerConfig: {'bins': [0, 0.42, 0.55, 1]}}
+              - {label: 'lineContinuum', layerConfig: {'bins': [0, 0.75, 1.0]}}
+              - {label: 'window', layerConfig: {'bins': [0, 0.420, 0.554, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2, 1, 1, 2]}   
-              - {layerGroups: [1,1,4,4,1,4,3,4]} 
+              - {layerGroups: [1, 1, 4, 4, 1, 4, 4, 4]} 
         axisFit: {coeff: [18.8546e-3, 8531.8541], unit: "angstrom"}
         spectralParams:
           continuum: 26
           lineList:
-            - {label: 'main', window: [484, 603], center: 544}
+            - {label: 'main', window: [484, 603], center: 544, theme: "#000000"}
             - {label: 'H2O', window: [464, 484], center: 544}
 - event:
     date: '2023-05-03'
     label: 'Strong flare signatures'
     run: 
-      Cclass20230503_kernel:
+      Cclass_kernel:
         overwrite: True
         config: {keepI0: [3], timeFrames: [0, 3], bbox: [0, 125, 1188, 1629], src: 'AEVEG', line: 'main'}
     src: 
-      - id: {instrument: 'ViSP', data: 'AEVEG', mod: ""}
+      - id: {instrument: 'ViSP', data: 'AEVEG'}
         clustering:
-          Cclass20230503_kernel:
+          Cclass_kernel:
             intrinsic: 
               - {label: 'window', layerConfig: {bins: [0, 0.45, 0.60, 1]}}
             optimized: 
@@ -57,35 +57,38 @@
             - {label: 'Ni', center: 291, window: [256, 327]}
 - event:
     date: '2024-08-08'
-    label: 'Strong flare signatures'
+    label: 'X class flare late decay'
     run: 
-      Xclass20240808_ribbon_mNorm:
-        overwrite: True
-        config: {keepI0: [6], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'tight'}
-      Xclass20240808_ribbon_cNorm:
+      Xflare_ribbon_mNorm:
         overwrite: False
+        config: {keepI0: [4], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'narrow'}
+      Xflare_ribbon_cNorm:
+        overwrite: True
         config: {keepI0: [6], timeFrames: [0, 3], bbox: [0, 91,1750, 2548], src: 'BWVCXN', line: 'narrow'}
-      Xclass20240808_midregion:
+      Xflare_midregion:
         overwrite: False
         config: {keepI0: [2,3,4], timeFrames: [21, 30], bbox: [50, 91, 1041, 1458], src: 'BWVCXN', line: 'broad'}
     src: 
       - id: {instrument: 'ViSP', data: 'BWVCXN'}
         clustering:
-          Xclass20240808_ribbon_mNorm:
+          Xflare_ribbon_mNorm:
+            prep: {normalize: "normMaximum", initialize: "++"}
             intrinsic: 
-              - {label: 'lineContinuum', layerConfig: {bins: [0, 0.55, 1.4]}}
+              - {label: 'lineContinuum', layerConfig: {bins: [0, 0.5, 1.4]}}
               - {label: 'window', layerConfig: {bins: [0, 0.5, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2, 2]}
               - {layerGroups: [1, 1, 3, 3, 3, 3]}
-          Xclass20240808_ribbon_cNorm:
+          Xflare_ribbon_cNorm:
+            prep: {normalize: "normContinuum", initialize: "++"}
             intrinsic: 
               - {label: 'lineContinuum', layerConfig: {bins: [0, 0.5, 1.3]}}
               - {label: 'window', layerConfig: {bins: [0, 0.45, 0.57, 1.1]}}
             optimized: 
               - {layerGroups: [1, 1, 1, 1, 1, 2]}
               - {layerGroups: [1, 1, 1, 3, 1, 4, 4]}
-          Xclass20240808_midregion:
+          Xclass_midregion:
+            prep: {normalize: "normContinuum", initialize: "++"}
             intrinsic:
               - {label: 'window', layerConfig: {bins: [0, 0.45, 0.54, 0.65, 1]}}
             optimized:
@@ -96,3 +99,37 @@
             - {label: 'narrow',   window: [390, 545], center: 467, theme: '#527A00'}
             - {label: 'tight',    window: [425, 510], center: 467, theme: '#000000'}
             - {label: 'broad',    window: [375, 560], center: 467, theme: '#527A00'}
+- event:
+    date: '2024-08-11'
+    label: 'M-class flare peak to early decay'
+    run: 
+      Mflare_ribbon_cNorm:
+        overwrite: True
+        config: {timeFrames: [13,17], bbox: [0, 91, 1250, 1875], src: 'KBZDTD', line: 'broad'}
+      Mflare_ribbon_mNorm:
+        overwrite: True
+        config: {timeFrames: [13,17], bbox: [0, 91, 1250, 1875], src: 'KBZDTD', line: 'broad'} 
+    src: 
+      - id: {'instrument': 'ViSP', 'data': 'KBZDTD'}
+        clustering:
+          Mflare_ribbon_cNorm: 
+            prep: {normalize: "normContinuum", initialize: "++"}
+            intrinsic: 
+              - {label: 'window', layerConfig: {'bins': [0, 0.25, 0.36,  1]}} 
+              - {label: 'lineContinuum', layerConfig: {'bins': [0, 0.4, 1.0]}} 
+            optimized: 
+              - {layerGroups: [1, 1, 1, 2, 2, 2]}
+              - {layerGroups: [1, 1, 1, 3, 3, 3, 3, 3, 3]}
+          Mflare_ribbon_mNorm: 
+            prep: {normalize: "normMaximum", initialize: "++"}
+            intrinsic: 
+              - {label: 'window', layerConfig: {'bins': [0, 0.25, 0.36, 0.41, 1]}}
+              - {label: 'lineContinuum', layerConfig: {'bins': [0, 0.4, 1]}} 
+            optimized: 
+              - {layerGroups: [1, 1, 1, 2, 2, 2]}
+              - {layerGroups: [1, 1, 1, 3, 3, 3, 3, 3, 3]}
+        spectralParams:
+          continuum: 820
+          lineList:
+            - {label: 'narrow', window: [440, 495], center: 467, theme: '#527A00'} 
+            - {label: 'broad', window: [420, 535], center: 475, theme: '#527A00'} 

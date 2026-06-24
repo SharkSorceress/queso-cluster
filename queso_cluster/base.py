@@ -149,8 +149,7 @@ def mainIntrinsic(config, prepSquare):
 	return(auxAtom.pick_jth_label(intrinsicLine, 0).astype(int))
 
 
-@loggTimer
-def mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
+def mainOptimization(prepSquare, labelLine, initialize, kLst=None, stageMax=2):
 	if not (kLst is None):
 		if type(kLst[0]) == dict:
 			k_lst  	= [x['layerGroups'] for x in kLst]
@@ -158,60 +157,60 @@ def mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2):
 		else:
 			k_lst = kLst
 
-	else:
-		validationFuncLst = [baseAtom.calcInertiaScore, baseAtom.calcSilhouetteScore]
-		criteriaFuncLst = [baseAtom.criteriaInertiaScore, baseAtom.criteriaSilhouetteScore]
+	# else:
+	# 	validationFuncLst = [baseAtom.calcInertiaScore, baseAtom.calcSilhouetteScore]
+	# 	criteriaFuncLst = [baseAtom.criteriaInertiaScore, baseAtom.criteriaSilhouetteScore]
 
 	pwrSeq = (10**(stageMax - np.arange(stageMax+1))).astype(np.uint16)
-	labelLine *= pwrSeq[0]
+	labelLineNxt = labelLine * pwrSeq[0]
 
 	stageCounter = 1
-	scoreLst = []
-	with ProgressBar(total=stageMax, ascii=False, leave=True, 
-				desc='mainOptimization',
-				bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as pS:
-		while stageCounter <= stageMax:
-			labelLst = np.unique(labelLine[~np.isnan(labelLine)])
-			with ProgressBar(total=labelLst.size, ascii=False, leave=True, 
-						desc='mainOptimization (Stage {})'.format(stageCounter),
-						bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as p:
-				for l in range(labelLst.size):
-					indx = np.where(labelLine == labelLst[l])[0]
-					lstr = str(labelLst[l])
-					#print((lstr, len(indx)))
-					if not (kLst is None):
-						if type(kLst[0]) == dict:
-							kindx = [int(lstr[a])-1 for a in range(len(lstr)) if int(lstr[a]) > 0]
-							k1 = 0
-							k0 = int(np.sum(kindx[0]))
-							if stageCounter > 1:
-								k0 = int(np.sum(kindx[:stageCounter-1]))
-								k1 = kindx[stageCounter-1]
-				
-							kk = k_pre[stageCounter-1][k0] + k1
-							k = k_lst[stageCounter - 1][kk]
-						else:
-							k = k_lst[l]
+	#scoreLst = []
+	# with ProgressBar(total=stageMax, ascii=False, leave=True, 
+	# 			desc='mainOptimization',
+	# 			bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as pS:
+	while stageCounter <= stageMax:
+		labelLst = np.unique(labelLineNxt[~np.isnan(labelLineNxt)])
+		# with ProgressBar(total=labelLst.size, ascii=False, leave=True, 
+		# 			desc='mainOptimization (Stage {})'.format(stageCounter),
+		# 			bar_format='{desc}: {percentage:3.3f}%|{bar}| {n} [{elapsed}]') as p:
+		for l in range(labelLst.size):
+			indx = np.where(labelLineNxt == labelLst[l])[0]
+			lstr = str(labelLst[l])
+			#print((lstr, len(indx)))
+			if not (kLst is None):
+				if type(kLst[0]) == dict:
+					kindx = [int(lstr[a])-1 for a in range(len(lstr)) if int(lstr[a]) > 0]
+					k1 = 0
+					k0 = int(np.sum(kindx[0]))
+					if stageCounter > 1:
+						k0 = int(np.sum(kindx[:stageCounter-1]))
+						k1 = kindx[stageCounter-1]
+		
+					kk = k_pre[stageCounter-1][k0] + k1
+					k = k_lst[stageCounter - 1][kk]
+				else:
+					k = k_lst[l]
 
-					else:
-						k = baseRun.runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
-					
-					if k > 1:
-						nxtLabelLineUnsorted, scoreLine = baseRun.runOptimization(k, prepSquare[indx, :], 1e-6)
-						nxtLabelLineSorted, sortIndx 	= baseRun.runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted)
-						scoreLst.append(scoreLine[sortIndx])
-					elif k == 1:
-						nxtLabelLineSorted = np.ones(indx.size, dtype=int)
-						scoreLst.append(np.zeros(1, dtype=float))
-					else:
-						raise errAtom.ClusterError()
-					
-					labelLine[indx] += nxtLabelLineSorted*pwrSeq[stageCounter]
+			# else:
+			# 	k = baseRun.runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
+			
+			if k > 1:
+				nxtLabelLineUnsorted = baseRun.runOptimization(k, prepSquare[indx, :], 1e-6, initialize=initialize)
+				nxtLabelLineSorted, _ 	= baseRun.runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted)
+				#scoreLst.append(scoreLine[sortIndx])
+			elif k == 1:
+				nxtLabelLineSorted = np.ones(indx.size, dtype=int)
+				#scoreLst.append(np.zeros(1, dtype=float))
+			else:
+				raise errAtom.ClusterError()
+			
+			labelLineNxt[indx] += nxtLabelLineSorted*pwrSeq[stageCounter]
 
-					p.update(1)
-			pS.update(1)
-			stageCounter += 1
-	return(labelLine.astype(int), scoreLst)
+			#p.update(1)
+		#pS.update(1)
+		stageCounter += 1
+	return(labelLineNxt.astype(int))#, scoreLst)
 	
 
 
