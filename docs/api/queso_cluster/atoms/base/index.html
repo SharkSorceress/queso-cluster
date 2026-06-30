@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,14 +52,14 @@
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/queso_cluster/atoms/base/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="icon" href="../../../../_static/iconTeal_small.png"/>
+    <link rel="icon" href="../../../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="queso_cluster.atoms.error" href="../error/index.html" />
     <link rel="prev" title="queso_cluster.atoms.aux" href="../aux/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -104,7 +104,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -134,8 +134,8 @@
       
     
     
-    <img src="../../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -492,46 +492,43 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.concatSpectra" title="queso_cluster.atoms.base.concatSpectra"><code class="xref py py-obj docutils literal notranslate"><span class="pre">concatSpectra</span></code></a>(dataSquareLst)</p></td>
 <td><p>Function to concatenate several channels of data into one array for clustering</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.curvature" title="queso_cluster.atoms.base.curvature"><code class="xref py py-obj docutils literal notranslate"><span class="pre">curvature</span></code></a>(y)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.get_bin_edges" title="queso_cluster.atoms.base.get_bin_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bin_edges</span></code></a>(bins, lim)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.get_bin_edges" title="queso_cluster.atoms.base.get_bin_edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_bin_edges</span></code></a>(bins, lim)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.labelGluer" title="queso_cluster.atoms.base.labelGluer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labelGluer</span></code></a>(labels)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.labelGluer" title="queso_cluster.atoms.base.labelGluer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labelGluer</span></code></a>(labels)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.labelReorder" title="queso_cluster.atoms.base.labelReorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labelReorder</span></code></a>(labels)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.labelReorder" title="queso_cluster.atoms.base.labelReorder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">labelReorder</span></code></a>(labels)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.maximize" title="queso_cluster.atoms.base.maximize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maximize</span></code></a>(data, decisions, size)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.maximize" title="queso_cluster.atoms.base.maximize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maximize</span></code></a>(data, decisions, size)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.minimize" title="queso_cluster.atoms.base.minimize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minimize</span></code></a>(data, decisions, size)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.minimize" title="queso_cluster.atoms.base.minimize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">minimize</span></code></a>(data, decisions, size)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.np_all_axis0" title="queso_cluster.atoms.base.np_all_axis0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_all_axis0</span></code></a>(x)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.np_all_axis0" title="queso_cluster.atoms.base.np_all_axis0"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_all_axis0</span></code></a>(x)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.np_all_axis1" title="queso_cluster.atoms.base.np_all_axis1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_all_axis1</span></code></a>(x)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.np_all_axis1" title="queso_cluster.atoms.base.np_all_axis1"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_all_axis1</span></code></a>(x)</p></td>
-<td><p></p></td>
-</tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.np_gradient" title="queso_cluster.atoms.base.np_gradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_gradient</span></code></a>(f)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.np_gradient" title="queso_cluster.atoms.base.np_gradient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">np_gradient</span></code></a>(f)</p></td>
 <td><p>Numba accelerated gradient</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.numba_histogram" title="queso_cluster.atoms.base.numba_histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_histogram</span></code></a>(a, bins, lim)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.numba_histogram" title="queso_cluster.atoms.base.numba_histogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numba_histogram</span></code></a>(a, bins, lim)</p></td>
 <td><p>Numba accelerated histogram function</p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.rotateArray" title="queso_cluster.atoms.base.rotateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotateArray</span></code></a>(image, turns)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.rotateArray" title="queso_cluster.atoms.base.rotateArray"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotateArray</span></code></a>(image, turns)</p></td>
 <td><p>Rotates an array</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.similarityMetric" title="queso_cluster.atoms.base.similarityMetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">similarityMetric</span></code></a>(x, y[, type, ref])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.similarityMetric" title="queso_cluster.atoms.base.similarityMetric"><code class="xref py py-obj docutils literal notranslate"><span class="pre">similarityMetric</span></code></a>(x, y[, type, ref])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.startMax" title="queso_cluster.atoms.base.startMax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">startMax</span></code></a>(data, k, decisions)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.startMax" title="queso_cluster.atoms.base.startMax"><code class="xref py py-obj docutils literal notranslate"><span class="pre">startMax</span></code></a>(data, k, decisions)</p></td>
 <td><p>Heuristic k-means++.</p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.startPlusPlus" title="queso_cluster.atoms.base.startPlusPlus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">startPlusPlus</span></code></a>(data, k, decisions)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.base.startPlusPlus" title="queso_cluster.atoms.base.startPlusPlus"><code class="xref py py-obj docutils literal notranslate"><span class="pre">startPlusPlus</span></code></a>(data, k, decisions)</p></td>
 <td><p>k-means++ initialization</p></td>
 </tr>
 </tbody>
@@ -587,11 +584,6 @@
 </dd>
 </dl>
 </dd></dl>
-
-<dl class="py function">
-<dt class="sig sig-object py" id="queso_cluster.atoms.base.curvature">
-<span class="sig-name descname"><span class="pre">curvature</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/atoms/base.html#curvature"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.base.curvature" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="queso_cluster.atoms.base.get_bin_edges">
@@ -779,7 +771,6 @@ Rather than selecting from a distribution around the furtherest datapoint, this 
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.calcOptimization"><code class="docutils literal notranslate"><span class="pre">calcOptimization()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.compute_bin"><code class="docutils literal notranslate"><span class="pre">compute_bin()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.concatSpectra"><code class="docutils literal notranslate"><span class="pre">concatSpectra()</span></code></a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.curvature"><code class="docutils literal notranslate"><span class="pre">curvature()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.get_bin_edges"><code class="docutils literal notranslate"><span class="pre">get_bin_edges()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.labelGluer"><code class="docutils literal notranslate"><span class="pre">labelGluer()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.base.labelReorder"><code class="docutils literal notranslate"><span class="pre">labelReorder()</span></code></a></li>

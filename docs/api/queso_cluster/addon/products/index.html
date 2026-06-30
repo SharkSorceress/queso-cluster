@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,14 +52,14 @@
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/queso_cluster/addon/products/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="icon" href="../../../../_static/iconTeal_small.png"/>
+    <link rel="icon" href="../../../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="queso_cluster.addon.style" href="../style/index.html" />
     <link rel="prev" title="queso_cluster.addon.prep" href="../prep/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -104,7 +104,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -134,8 +134,8 @@
       
     
     
-    <img src="../../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -386,6 +386,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../prep/index.html">queso_cluster.addon.prep</a></li>
 <li class="toctree-l3 current active"><a class="current reference internal" href="#">queso_cluster.addon.products</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../style/index.html">queso_cluster.addon.style</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../tests/index.html">queso_cluster.addon.tests</a></li>
 </ul>
 </details></li>
 <li class="toctree-l2"><a class="reference internal" href="../../atoms/index.html">queso_cluster.atoms</a></li>
@@ -605,13 +606,60 @@
 <dd></dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.intensityMapSequence">
+<span class="sig-name descname"><span class="pre">intensityMapSequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/products.html#Products.intensityMapSequence"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.intensityMapSequence" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.intensityMapSequenceHorizontal">
+<span class="sig-name descname"><span class="pre">intensityMapSequenceHorizontal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/products.html#Products.intensityMapSequenceHorizontal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.intensityMapSequenceHorizontal" title="Link to this definition">#</a></dt>
+<dd><p>Horizontal oriented maps of the cluster results for individual time steps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compoundLabels</strong> (<em>char.array</em>)</p></li>
+<li><p><strong>timeAxis</strong> (<em>bool</em>) – Boolean to add an extra axis for time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>fig</strong> (<em>mpl.figure</em>) – Map of the cluster results for individual time steps</p></li>
+<li><p><strong>compoundLabels</strong> (<em>np.char.array</em>) – Character array for all sequence labels</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.intensityMapSequenceVertical">
+<span class="sig-name descname"><span class="pre">intensityMapSequenceVertical</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">timeAxis</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/products.html#Products.intensityMapSequenceVertical"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.intensityMapSequenceVertical" title="Link to this definition">#</a></dt>
+<dd><p>Vertical oriented maps of the cluster results for individual time steps</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compoundLabels</strong> (<em>char.array</em>)</p></li>
+<li><p><strong>timeAxis</strong> (<em>bool</em>) – Boolean to add an extra axis for time</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>fig</strong> (<em>mpl.figure</em>) – Map of the cluster results for individual time steps</p></li>
+<li><p><strong>compoundLabels</strong> (<em>np.char.array</em>) – Character array for all sequence labels</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="queso_cluster.addon.products.Products.load">
 <span class="sig-name descname"><span class="pre">load</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/products.html#Products.load"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.load" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="queso_cluster.addon.products.Products.spectralEntry">
-<span class="sig-name descname"><span class="pre">spectralEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showContinuum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/products.html#Products.spectralEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.spectralEntry" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">spectralEntry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">indx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showContinuum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dev</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">neighbor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/addon/products.html#Products.spectralEntry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.addon.products.Products.spectralEntry" title="Link to this definition">#</a></dt>
 <dd><p>Calculation function for <a class="reference internal" href="#queso_cluster.addon.products.Products.clusterProfiles" title="queso_cluster.addon.products.Products.clusterProfiles"><code class="xref py py-func docutils literal notranslate"><span class="pre">clusterProfiles()</span></code></a></p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -658,16 +706,6 @@
 <dl class="py attribute">
 <dt class="sig sig-object py" id="queso_cluster.addon.products.Products.vindx">
 <span class="sig-name descname"><span class="pre">vindx</span></span><a class="headerlink" href="#queso_cluster.addon.products.Products.vindx" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.xlim">
-<span class="sig-name descname"><span class="pre">xlim</span></span><a class="headerlink" href="#queso_cluster.addon.products.Products.xlim" title="Link to this definition">#</a></dt>
-<dd></dd></dl>
-
-<dl class="py attribute">
-<dt class="sig sig-object py" id="queso_cluster.addon.products.Products.ylim">
-<span class="sig-name descname"><span class="pre">ylim</span></span><a class="headerlink" href="#queso_cluster.addon.products.Products.ylim" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -731,6 +769,9 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.clusterMapSequenceVertical"><code class="docutils literal notranslate"><span class="pre">Products.clusterMapSequenceVertical()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.clusterProfiles"><code class="docutils literal notranslate"><span class="pre">Products.clusterProfiles()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.clusterProfilesCompound"><code class="docutils literal notranslate"><span class="pre">Products.clusterProfilesCompound()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.intensityMapSequence"><code class="docutils literal notranslate"><span class="pre">Products.intensityMapSequence()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.intensityMapSequenceHorizontal"><code class="docutils literal notranslate"><span class="pre">Products.intensityMapSequenceHorizontal()</span></code></a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.intensityMapSequenceVertical"><code class="docutils literal notranslate"><span class="pre">Products.intensityMapSequenceVertical()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.load"><code class="docutils literal notranslate"><span class="pre">Products.load()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.spectralEntry"><code class="docutils literal notranslate"><span class="pre">Products.spectralEntry()</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.aspect"><code class="docutils literal notranslate"><span class="pre">Products.aspect</span></code></a></li>
@@ -738,8 +779,6 @@
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.mapMake"><code class="docutils literal notranslate"><span class="pre">Products.mapMake</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.vfindx"><code class="docutils literal notranslate"><span class="pre">Products.vfindx</span></code></a></li>
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.vindx"><code class="docutils literal notranslate"><span class="pre">Products.vindx</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.xlim"><code class="docutils literal notranslate"><span class="pre">Products.xlim</span></code></a></li>
-<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.addon.products.Products.ylim"><code class="docutils literal notranslate"><span class="pre">Products.ylim</span></code></a></li>
 </ul>
 </li>
 </ul>

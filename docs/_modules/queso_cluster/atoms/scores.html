@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,12 +51,12 @@
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/queso_cluster/atoms/scores';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="icon" href="../../../_static/iconTeal_small.png"/>
+    <link rel="icon" href="../../../_static/logo.svg"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -101,7 +101,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../_static/logo_text.svg" class="logo__image only-light" alt="QuESO Documentation - Home"/>
+    <img src="../../../_static/logo_text.svg" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -150,6 +150,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -274,6 +281,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -408,242 +422,354 @@
 
 <span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">base</span> <span class="k">as</span> <span class="n">baseAtom</span>
 
-<div class="viewcode-block" id="calcResolvingIndex">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcResolvingIndex">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcResolvingIndex</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">):</span>
-	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labelLine</span><span class="p">)</span>
-	<span class="n">resolveSquare</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">),</span> <span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-	<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-		<span class="n">lindx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labelLine</span> <span class="o">==</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">l</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">resolveSquare</span><span class="p">[</span><span class="n">l</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">calcSingleResolvingIndex</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">[</span><span class="n">lindx</span><span class="p">,</span> <span class="p">:])</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..addon</span><span class="w"> </span><span class="kn">import</span> <span class="n">logg</span>
+<span class="c1"># def calcResolvingIndex(dataSquare, labelLine):</span>
+<span class="c1"># 	labelLst = np.unique(labelLine)</span>
+<span class="c1"># 	resolveSquare = np.zeros((len(labelLst), dataSquare.shape[1]))</span>
+<span class="c1"># 	for l in range(labelLst.size):</span>
+<span class="c1"># 		lindx = np.where(labelLine == labelLst[l])[0]</span>
+<span class="c1"># 		resolveSquare[l, :] = calcSingleResolvingIndex(dataSquare[lindx, :])</span>
 
-	<span class="k">return</span><span class="p">(</span><span class="n">resolveSquare</span><span class="p">)</span>		</div>
+<span class="c1"># 	return(resolveSquare)		</span>
 
+<span class="c1"># def calcSingleResolvingIndex(dataSquare):</span>
 
-<div class="viewcode-block" id="calcSingleResolvingIndex">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcSingleResolvingIndex">[docs]</a>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcSingleResolvingIndex</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">):</span>
-
-	<span class="n">centroid_mins</span><span class="p">,</span> <span class="n">centroid_plus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.75</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-	<span class="n">centroid</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-	<span class="c1"># centroid_plus = dataSquare.max(axis=0)</span>
-	<span class="c1"># centroid_mins = dataSquare.min(axis=0)</span>
+<span class="c1"># 	centroid_mins, centroid_plus = np.quantile(dataSquare, [0.25, 0.75], axis=0)</span>
+<span class="c1"># 	centroid = dataSquare.sum(axis=0)/dataSquare.shape[0]</span>
+<span class="c1"># 	# centroid_plus = dataSquare.max(axis=0)</span>
+<span class="c1"># 	# centroid_mins = dataSquare.min(axis=0)</span>
 	
-	<span class="n">plusIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dataSquare</span> <span class="o">&gt;</span> <span class="n">centroid_plus</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-	<span class="n">centroid_plus</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">plusIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">plusIndx</span><span class="o">.</span><span class="n">size</span>
+<span class="c1"># 	plusIndx = np.where(dataSquare &gt; centroid_plus)[0]</span>
+<span class="c1"># 	centroid_plus = dataSquare[plusIndx, :].sum()/plusIndx.size</span>
 
-	<span class="n">minsIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">dataSquare</span> <span class="o">&lt;</span> <span class="n">centroid_mins</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-	<span class="n">centroid_mins</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">minsIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">minsIndx</span><span class="o">.</span><span class="n">size</span>
+<span class="c1"># 	minsIndx = np.where(dataSquare &lt; centroid_mins)[0]</span>
+<span class="c1"># 	centroid_mins = dataSquare[minsIndx, :].sum()/minsIndx.size</span>
 
-	<span class="n">delta_plus</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">centroid_plus</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">)</span>
-	<span class="n">delta_mins</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">centroid_mins</span> <span class="o">-</span> <span class="n">centroid</span><span class="p">)</span>
+<span class="c1"># 	delta_plus = np.abs(centroid_plus - centroid)</span>
+<span class="c1"># 	delta_mins = np.abs(centroid_mins - centroid)</span>
 
-	<span class="k">return</span><span class="p">((</span><span class="n">delta_plus</span> <span class="o">-</span> <span class="n">delta_mins</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">delta_plus</span> <span class="o">+</span> <span class="n">delta_mins</span><span class="p">))</span></div>
-
+<span class="c1"># 	return((delta_plus - delta_mins)/(delta_plus + delta_mins))</span>
 	
 
-<div class="viewcode-block" id="calcElbowEntry">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcElbowEntry">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcElbowEntry</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type data:</span>
-	<span class="c1">#&gt; param type labels:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
+<span class="c1"># @nb.njit()</span>
+<span class="c1"># def calcElbowEntry(data, labels):</span>
+<span class="c1"># 	#&gt; detail: </span>
+<span class="c1"># 	#&gt; param type data:</span>
+<span class="c1"># 	#&gt; param type labels:</span>
+<span class="c1"># 	#&gt; return (type): </span>
+<span class="c1"># 	#&gt; test-method:</span>
 
-	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-	<span class="n">localDistance</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">))</span>
-	<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">)):</span>
-		<span class="n">indx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">centroid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">indx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">)</span>
-		<span class="n">d2</span> <span class="o">=</span> <span class="mf">0.0</span>
-		<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">)):</span>
-			<span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">indx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">centroid</span>
-			<span class="n">d2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
-		<span class="c1">#print(d2/len(indx))</span>
-		<span class="n">localDistance</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">d2</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">indx</span><span class="p">)</span>
+<span class="c1"># 	labelLst = np.unique(labels)</span>
+<span class="c1"># 	localDistance = np.zeros(len(labelLst))</span>
+<span class="c1"># 	for j in range(len(labelLst)):</span>
+<span class="c1"># 		indx = np.where(labels == labelLst[j])[0]</span>
+<span class="c1"># 		centroid = data[indx, :].sum(axis=0)/len(indx)</span>
+<span class="c1"># 		d2 = 0.0</span>
+<span class="c1"># 		for k in range(len(indx)):</span>
+<span class="c1"># 			d = data[indx[k], :] - centroid</span>
+<span class="c1"># 			d2 += np.sqrt(d.dot(d))</span>
+<span class="c1"># 		#print(d2/len(indx))</span>
+<span class="c1"># 		localDistance[j] = d2/len(indx)</span>
 
-	<span class="c1"># def _calcScore(scores):</span>
-	<span class="c1"># 	return(np.argmax(np_gradient(np_gradient(_calcCurvature(scores)))) + 1)</span>
+<span class="c1"># 	# def _calcScore(scores):</span>
+<span class="c1"># 	# 	return(np.argmax(np_gradient(np_gradient(_calcCurvature(scores)))) + 1)</span>
 
-	<span class="k">return</span><span class="p">(</span><span class="n">localDistance</span><span class="p">)</span><span class="c1">#, _calcScore)</span></div>
+<span class="c1"># 	return(localDistance)#, _calcScore)</span>
 
+<span class="c1"># # @nb.njit()</span>
+<span class="c1"># # def calcVarianceScore(data):</span>
+<span class="c1"># # 	#&gt; detail: </span>
+<span class="c1"># # 	#&gt; param type data:</span>
+<span class="c1"># # 	#&gt; return (type): </span>
+<span class="c1"># # 	#&gt; test-method:</span>
 
-<div class="viewcode-block" id="calcVarianceScore">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcVarianceScore">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcVarianceScore</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type data:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
+<span class="c1"># # 	avg_var = np.std(data, axis=0).sum()/data.shape[1]</span>
+<span class="c1"># # 	centroid = data.sum(axis=0)/data.shape[0]</span>
 
-	<span class="n">avg_var</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">std</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-	<span class="n">centroid</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+<span class="c1"># @nb.njit()</span>
+<span class="c1"># def criteriaInertiaScore(score):</span>
+<span class="c1"># 	#&gt; detail: </span>
+<span class="c1"># 	#&gt; param type score:</span>
+<span class="c1"># 	#&gt; return (type): </span>
+<span class="c1"># 	#&gt; test-method:</span>
+<span class="c1"># 	diff = baseAtom.np_gradient(score)</span>
+<span class="c1"># 	for d in range(diff.size):</span>
+<span class="c1"># 		if diff[d] &lt; diff[0]*0.8:</span>
+<span class="c1"># 			return d		</span>
 
+<span class="c1"># @nb.njit()</span>
+<span class="c1"># def calcInertiaScore(dataSquare, labelLine):</span>
+<span class="c1"># 	#&gt; detail: </span>
+<span class="c1"># 	#&gt; param type dataSquare:</span>
+<span class="c1"># 	#&gt; param type labelLine:</span>
+<span class="c1"># 	#&gt; return (type): </span>
+<span class="c1"># 	#&gt; test-method:</span>
+<span class="c1"># 	labelLst = np.unique(labelLine)</span>
+<span class="c1"># 	inertia = 0</span>
+<span class="c1"># 	for l in range(labelLst.size):</span>
+<span class="c1"># 		lindx = np.where(labelLine == labelLst[l])[0]</span>
+<span class="c1"># 		centroid = dataSquare[lindx, :].sum(axis=0)/labelLst.size</span>
+<span class="c1"># 		for ll in range(lindx.size):</span>
+<span class="c1"># 			delta = dataSquare[lindx[ll], :] - centroid</span>
+<span class="c1"># 			inertia += delta.dot(delta)</span>
+<span class="c1"># 	return(inertia)	</span>
 
-<div class="viewcode-block" id="criteriaInertiaScore">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.criteriaInertiaScore">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">criteriaInertiaScore</span><span class="p">(</span><span class="n">score</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type score:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
-	<span class="n">diff</span> <span class="o">=</span> <span class="n">baseAtom</span><span class="o">.</span><span class="n">np_gradient</span><span class="p">(</span><span class="n">score</span><span class="p">)</span>
-	<span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">diff</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-		<span class="k">if</span> <span class="n">diff</span><span class="p">[</span><span class="n">d</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">diff</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">*</span><span class="mf">0.8</span><span class="p">:</span>
-			<span class="k">return</span> <span class="n">d</span>		</div>
-
-
-<div class="viewcode-block" id="calcInertiaScore">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcInertiaScore">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcInertiaScore</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type dataSquare:</span>
-	<span class="c1">#&gt; param type labelLine:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
-	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labelLine</span><span class="p">)</span>
-	<span class="n">inertia</span> <span class="o">=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-		<span class="n">lindx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labelLine</span> <span class="o">==</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">l</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">centroid</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">lindx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span>
-		<span class="k">for</span> <span class="n">ll</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lindx</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-			<span class="n">delta</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">lindx</span><span class="p">[</span><span class="n">ll</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">centroid</span>
-			<span class="n">inertia</span> <span class="o">+=</span> <span class="n">delta</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">delta</span><span class="p">)</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">inertia</span><span class="p">)</span>	</div>
+<span class="c1"># @nb.njit()</span>
+<span class="c1"># def criteriaSilhouetteScore(score):</span>
+<span class="c1"># 	#&gt; detail: </span>
+<span class="c1"># 	#&gt; param type score:</span>
+<span class="c1"># 	#&gt; return (type): </span>
+<span class="c1"># 	#&gt; test-method:</span>
+<span class="c1"># 	return(score.argmax())</span>
 
 
-<div class="viewcode-block" id="criteriaSilhouetteScore">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.criteriaSilhouetteScore">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">criteriaSilhouetteScore</span><span class="p">(</span><span class="n">score</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type score:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
-	<span class="k">return</span><span class="p">(</span><span class="n">score</span><span class="o">.</span><span class="n">argmax</span><span class="p">())</span></div>
+<span class="c1"># @nb.njit(cache=True)</span>
+<span class="c1"># def calcNeighborSilhouetteScore(dataSquare, labelLine, point=None, unbound=False):</span>
+<span class="c1"># 	labelLst = np.unique(labelLine)</span>
+<span class="c1"># 	scores = np.zeros(labelLst.size)</span>
 
+<span class="c1"># 	if not (point is None):</span>
+<span class="c1"># 		labelLst = np.asarray([point])</span>
 
-<div class="viewcode-block" id="calcSilhouetteScore">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcSilhouetteScore">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcSilhouetteScore</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type dataSquare:</span>
-	<span class="c1">#&gt; param type labelLine:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
-	
-	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labelLine</span><span class="p">)</span>
-	<span class="c1"># intraDistance = np.zeros(len(labelLst))</span>
-	<span class="c1"># interDistance = np.zeros(len(labelLst))</span>
-	<span class="n">scoreLine</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
-			<span class="n">scoreLine</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">calcSingleSilhouetteScore</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">,</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
-			<span class="c1"># intraIndx = np.where(labelLine == labelLst[j])[0]</span>
-			<span class="c1"># interIndx = np.where(labelLine != labelLst[j])[0]</span>
+<span class="c1"># 	for l in range(labelLst.size):</span>
+<span class="c1"># 		#scores[l] = calcNeighborSingleSilhouetteScore(dataSquare, labelLine, </span>
+<span class="c1"># 		#										labelLst[l], unbound)</span>
+<span class="c1"># 		intraIndxs = np.where(labelLine == labelLst[l])[0]</span>
 
-			<span class="c1"># centroid = dataSquare[intraIndx, :].sum(axis=0)/len(intraIndx)</span>
-			<span class="c1"># intra_d2 = 0.0</span>
-			<span class="c1"># for k in range(len(intraIndx)):</span>
-			<span class="c1"># 	d = dataSquare[intraIndx[k], :] - centroid</span>
-			<span class="c1"># 	intra_d2 += np.sqrt(d.dot(d))		</span>
+<span class="c1"># 		sampleScore = np.zeros(intraIndxs.size)</span>
+
+<span class="c1"># 		for j in range(intraIndxs.size):</span>
+<span class="c1"># 			intraIndx = intraIndxs[j]</span>
+<span class="c1"># 			neighbor = findSampleNeighbor(dataSquare, labelLine, intraIndx)</span>
+
+<span class="c1"># 			interIndxs = np.where(labelLine == neighbor)[0]</span>
 			
-			<span class="c1"># inter_d2 = 0.0</span>
-			<span class="c1"># for k in range(len(interIndx)):</span>
-			<span class="c1"># 	d = dataSquare[interIndx[k], :] - centroid</span>
-			<span class="c1"># 	inter_d2 += np.sqrt(d.dot(d))</span>
+<span class="c1"># 			intraSample = dataSquare[intraIndx, :]#.sum(axis=0)/len(intraIndx)</span>
 
-			<span class="c1">#intraDistance[j] = intra_d2/len(intraIndx)</span>
-			<span class="c1">#interDistance[j] = inter_d2/len(interIndx)</span>
+<span class="c1"># 			intra_d2 = 0.0</span>
+<span class="c1"># 			for k in range(len(intraIndxs)):</span>
+<span class="c1"># 				d = dataSquare[intraIndxs[k], :] - intraSample</span>
+<span class="c1"># 				intra_d2 += np.sqrt(d.dot(d))		</span>
+			
+<span class="c1"># 			inter_d2 = 0.0</span>
+<span class="c1"># 			for k in range(len(interIndxs)):</span>
+<span class="c1"># 				d = dataSquare[interIndxs[k], :] - intraSample</span>
+<span class="c1"># 				inter_d2 += np.sqrt(d.dot(d))</span>
 
-	<span class="k">return</span><span class="p">(</span><span class="n">scoreLine</span><span class="p">)</span></div>
+<span class="c1"># 			intraDistance = intra_d2/(len(intraIndxs)-1)</span>
+<span class="c1"># 			interDistance = inter_d2/len(interIndxs)</span>
 
+<span class="c1"># 			if unbound:</span>
+<span class="c1"># 				sampleScore[j] = 1 - intraDistance/interDistance</span>
+<span class="c1"># 			else:</span>
+<span class="c1"># 				sampleScore[j] = (interDistance - intraDistance)/np.maximum(intraDistance, interDistance)</span>
 
+<span class="c1"># 		scores[l] = sampleScore.mean()</span>
 
-<div class="viewcode-block" id="calcSingleSilhouetteScore">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcSingleSilhouetteScore">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcSingleSilhouetteScore</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">lab</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type data:</span>
-	<span class="c1">#&gt; param type labels:</span>
-	<span class="c1">#&gt; param type lab:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
-	
-	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="c1"># for j in range(len(labelLst)):</span>
-		<span class="n">intraIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">lab</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">interIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">!=</span> <span class="n">lab</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># 		if point == labelLst[l]:</span>
+<span class="c1"># 			return(scores[l])</span>
 		
-		<span class="n">centroid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)</span>
-		<span class="n">intra_d2</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="c1"># 	return(scores.min())</span>
+
+
+<div class="viewcode-block" id="speedTest2">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.speedTest2">[docs]</a>
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">speedTest2</span><span class="p">(</span><span class="n">intraSamples</span><span class="p">,</span> <span class="n">intraIndxSize</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+	<span class="n">intra_d2</span> <span class="o">=</span> <span class="mf">0.0</span>
+	<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">intraIndxSize</span><span class="p">):</span>
+		<span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="n">i</span><span class="p">:</span>
+			<span class="k">continue</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="n">intraSamples</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">intraSamples</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+		<span class="n">intra_d2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>	
+	<span class="k">return</span><span class="p">(</span><span class="n">intra_d2</span><span class="o">/</span><span class="n">intraIndxSize</span><span class="p">)</span>	</div>
+
+
+
+<div class="viewcode-block" id="speedTest">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.speedTest">[docs]</a>
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">speedTest</span><span class="p">(</span><span class="n">interSamples</span><span class="p">,</span> <span class="n">intraSample</span><span class="p">,</span> <span class="n">interIndxSize</span><span class="p">):</span>
+	<span class="n">inter_d2</span> <span class="o">=</span> <span class="mf">0.0</span>
+	<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">interIndxSize</span><span class="p">):</span>
+		<span class="n">d</span> <span class="o">=</span> <span class="n">interSamples</span><span class="p">[</span><span class="n">k</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">intraSample</span>
+		<span class="n">inter_d2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+	<span class="k">return</span><span class="p">(</span><span class="n">inter_d2</span><span class="o">/</span><span class="n">interIndxSize</span><span class="p">)</span></div>
+
+
+
+<div class="viewcode-block" id="findSampleNeighbor">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.findSampleNeighbor">[docs]</a>
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">findSampleNeighbor</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">,</span> <span class="n">pointIndx</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Calculates the nearest label to a given sample</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	----------</span>
+<span class="sd">	dataSquare : ndarray</span>
+<span class="sd">		2D array (nsamples, nfeatures) containing the pool of data</span>
+<span class="sd">	labelLine : ndarray</span>
+<span class="sd">		1D array (nsamples,) for the labels on the data</span>
+<span class="sd">	pointIndx : int</span>
+<span class="sd">		sample index</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	-------</span>
+<span class="sd">	int</span>
+<span class="sd">		The label of the nearest cluster to that point</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>
+	<span class="n">store</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">dataSquare</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">inf</span>
+	<span class="n">interIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labelLine</span> <span class="o">!=</span> <span class="n">labelLine</span><span class="p">[</span><span class="n">pointIndx</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">interIndx</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+		<span class="n">delta</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">pointIndx</span><span class="p">,</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">interIndx</span><span class="p">[</span><span class="n">l</span><span class="p">],</span> <span class="p">:]</span>
+		<span class="n">store</span><span class="p">[</span><span class="n">interIndx</span><span class="p">[</span><span class="n">l</span><span class="p">]]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">delta</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">delta</span><span class="p">))</span>
+
+	<span class="n">neighborLabel</span> <span class="o">=</span> <span class="n">labelLine</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmin</span><span class="p">(</span><span class="n">store</span><span class="p">)]</span>
+
+	<span class="k">return</span><span class="p">(</span><span class="n">neighborLabel</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="calcNeighborSilhouetteScore">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcNeighborSilhouetteScore">[docs]</a>
+<span class="nd">@logg</span><span class="o">.</span><span class="n">loggTimer</span>
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calcNeighborSilhouetteScore</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">,</span> <span class="n">point</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Calculates the Silhouette Score for a specific cluster</span>
+
+<span class="sd">	Parameters</span>
+<span class="sd">	-----------</span>
+<span class="sd">	dataSquare : ndarray</span>
+<span class="sd">		2D array (nsamples, nfeatures) containing the pool of data</span>
+<span class="sd">	labelLine : ndarray</span>
+<span class="sd">		1D array (nsamples,) for the labels on the data</span>
+<span class="sd">	point : int</span>
+<span class="sd">		cluster label to evaluate</span>
+
+<span class="sd">	Returns</span>
+<span class="sd">	-------</span>
+<span class="sd">	int</span>
+<span class="sd">		Silhouette Score</span>
+
+
+<span class="sd">	&quot;&quot;&quot;</span>
+
+	<span class="n">intraIndxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labelLine</span> <span class="o">==</span> <span class="n">point</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+	<span class="n">score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">intraIndxs</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">intraIndxs</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+		<span class="n">neighbor</span> <span class="o">=</span> <span class="n">findSampleNeighbor</span><span class="p">(</span><span class="n">dataSquare</span><span class="p">,</span> <span class="n">labelLine</span><span class="p">,</span> <span class="n">intraIndxs</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+
+		<span class="n">interIndxs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labelLine</span> <span class="o">==</span> <span class="n">neighbor</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+		<span class="n">intraSamples</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">intraIndxs</span><span class="p">,</span> <span class="p">:]</span>
+		<span class="n">interSamples</span> <span class="o">=</span> <span class="n">dataSquare</span><span class="p">[</span><span class="n">interIndxs</span><span class="p">,</span> <span class="p">:]</span>
+
+		<span class="c1"># intra_d2 = 0.0</span>
+		<span class="c1"># for j in range(intraIndxs.size):</span>
+		<span class="c1"># 	if j == i:</span>
+		<span class="c1"># 		continue</span>
+		<span class="c1"># 	d = intraSamples[j, :] - intraSamples[i, :]</span>
+		<span class="c1"># 	intra_d2 += np.sqrt(d.dot(d))		</span>
+		<span class="n">intraDistance</span> <span class="o">=</span> <span class="n">speedTest2</span><span class="p">(</span><span class="n">intraSamples</span><span class="p">,</span> <span class="n">intraIndxs</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+	
+		<span class="n">interDistance</span> <span class="o">=</span> <span class="n">speedTest</span><span class="p">(</span><span class="n">interSamples</span><span class="p">,</span> <span class="n">intraSamples</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="n">interIndxs</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
+		<span class="c1"># inter_d2 = 0.0</span>
+		<span class="c1"># for k in range(interIndxs.size):</span>
+		<span class="c1"># 	d = interSamples[k, :] - intraSamples[i, :]</span>
+		<span class="c1"># 	inter_d2 += np.sqrt(d.dot(d))</span>
+
+		<span class="c1">#intraDistance = intra_d2/(intraIndxs.size-1)</span>
+		<span class="c1">#interDistance = inter_d2/interIndxs.size</span>
+		
+		<span class="c1">#if unbound:</span>
+		<span class="n">score</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">intraDistance</span><span class="o">/</span><span class="n">interDistance</span>
+		<span class="c1">#else:</span>
+		<span class="c1">#@score[i] = (interDistance - intraDistance)/np.maximum(intraDistance, interDistance)</span>
+
+	<span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">(</span><span class="n">score</span><span class="p">))</span></div>
+
+
+
+
+
+
+<div class="viewcode-block" id="calcDaviesBouldin">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcDaviesBouldin">[docs]</a>
+<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">calcDaviesBouldin</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span>
+
+	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+	<span class="n">Ri</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> 
+	<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+		<span class="n">intraIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">i</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+		
+		<span class="n">intraCentroid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)</span>
+		<span class="n">si</span> <span class="o">=</span> <span class="mf">0.0</span>
 		<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)):</span>
-			<span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">centroid</span>
-			<span class="n">intra_d2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>		
-		
-		<span class="n">inter_d2</span> <span class="o">=</span> <span class="mf">0.0</span>
-		<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interIndx</span><span class="p">)):</span>
-			<span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">interIndx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">centroid</span>
-			<span class="n">inter_d2</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+			<span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">intraCentroid</span>
+			<span class="n">si</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>	
+		<span class="n">si</span> <span class="o">/=</span> <span class="n">intraIndx</span><span class="o">.</span><span class="n">size</span>
 
-		<span class="n">intraDistance</span> <span class="o">=</span> <span class="n">intra_d2</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)</span>
-		<span class="n">interDistance</span> <span class="o">=</span> <span class="n">inter_d2</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">interIndx</span><span class="p">)</span>
+		<span class="n">Rij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">)</span> <span class="o">+</span> <span class="n">np</span><span class="o">.</span><span class="n">nan</span>
+		<span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">):</span>
+			<span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="n">j</span><span class="p">:</span>
+				<span class="k">continue</span>
 
-	<span class="c1"># def _calcScore(scores):</span>
-	<span class="c1"># 	return(np.argmax(scores) + 1)</span>
+			<span class="n">interIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">j</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+			<span class="n">interCentroid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">interIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="n">interIndx</span><span class="o">.</span><span class="n">size</span>
+			<span class="n">sj</span> <span class="o">=</span> <span class="mf">0.0</span>
+			<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">interIndx</span><span class="p">)):</span>
+				<span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">interIndx</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">interCentroid</span>
+				<span class="n">sj</span> <span class="o">+=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+			
+			<span class="n">sj</span> <span class="o">/=</span> <span class="n">interIndx</span><span class="o">.</span><span class="n">size</span>
 
-	<span class="c1"># denomArr 	= np.array([intraDistance, interDistance])</span>
-	<span class="c1"># maxIndx = np.argmax(np.array([intraDistance.max(), interDistance.max()]))</span>
+			<span class="n">dij</span> <span class="o">=</span> <span class="n">intraCentroid</span> <span class="o">-</span> <span class="n">interCentroid</span>
+			<span class="n">dij</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">dij</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">dij</span><span class="p">))</span>
 
-<span class="c1">#	return((interDistance - intraDistance)/np.maximum(intraDistance, interDistance))</span>
+			<span class="n">Rij</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">si</span> <span class="o">+</span> <span class="n">sj</span><span class="p">)</span> <span class="o">/</span> <span class="n">dij</span>
 
-	<span class="k">return</span><span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">intraDistance</span><span class="o">/</span><span class="n">interDistance</span><span class="p">)</span></div>
+		<span class="n">Ri</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nanmax</span><span class="p">(</span><span class="n">Rij</span><span class="p">)</span>
+
+	<span class="k">return</span><span class="p">(</span><span class="n">Ri</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">labelLst</span><span class="o">.</span><span class="n">size</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="calcCHindex">
-<a class="viewcode-back" href="../../../api/queso_cluster/atoms/scores/index.html#queso_cluster.atoms.scores.calcCHindex">[docs]</a>
-<span class="nd">@nb</span><span class="o">.</span><span class="n">njit</span><span class="p">()</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">calcCHindex</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">labels</span><span class="p">):</span>
-	<span class="c1">#&gt; detail: </span>
-	<span class="c1">#&gt; param type data:</span>
-	<span class="c1">#&gt; param type labels:</span>
-	<span class="c1">#&gt; return (type): </span>
-	<span class="c1">#&gt; test-method:</span>
-	<span class="n">N</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-	<span class="n">K</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">))</span>
 
-	<span class="n">labelLst</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
-	<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-		<span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+
+<span class="c1"># @nb.njit()</span>
+<span class="c1"># def calcCHindex(data, labels):</span>
+<span class="c1"># 	#&gt; detail: </span>
+<span class="c1"># 	#&gt; param type data:</span>
+<span class="c1"># 	#&gt; param type labels:</span>
+<span class="c1"># 	#&gt; return (type): </span>
+<span class="c1"># 	#&gt; test-method:</span>
+<span class="c1"># 	N = data.shape[0]</span>
+<span class="c1"># 	K = len(np.unique(labels))</span>
+
+<span class="c1"># 	labelLst = np.unique(labels)</span>
+<span class="c1"># 	if len(labelLst) == 1:</span>
+<span class="c1"># 		return(np.nan)</span>
 	
-	<span class="n">wgss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">))</span> <span class="c1">#+ np.nan</span>
-	<span class="n">bgss</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">))</span><span class="c1"># np.nan</span>
-	<span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">labelLst</span><span class="p">)):</span>
-		<span class="n">intraIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">==</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">k</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-		<span class="n">interIndx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">labels</span> <span class="o">!=</span> <span class="n">labelLst</span><span class="p">[</span><span class="n">k</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
+<span class="c1"># 	wgss = np.zeros(len(labelLst)) #+ np.nan</span>
+<span class="c1"># 	bgss = np.zeros(len(labelLst))# np.nan</span>
+<span class="c1"># 	for k in range(len(labelLst)):</span>
+<span class="c1"># 		intraIndx = np.where(labels == labelLst[k])[0]</span>
+<span class="c1"># 		interIndx = np.where(labels != labelLst[k])[0]</span>
 
-		<span class="n">intra_centroid</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)</span>
-		<span class="n">intra_d2</span> <span class="o">=</span> <span class="mf">0.0</span>
-		<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)):</span>
-			<span class="n">d</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="p">:]</span> <span class="o">-</span> <span class="n">intra_centroid</span>
-			<span class="n">intra_d2</span> <span class="o">+=</span> <span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+<span class="c1"># 		intra_centroid = data[intraIndx, :].sum(axis=0)/len(intraIndx)</span>
+<span class="c1"># 		intra_d2 = 0.0</span>
+<span class="c1"># 		for i in range(len(intraIndx)):</span>
+<span class="c1"># 			d = data[intraIndx[i], :] - intra_centroid</span>
+<span class="c1"># 			intra_d2 += d.dot(d)</span>
 
-		<span class="n">inter_centroid</span> <span class="o">=</span> <span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">interIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="n">data</span><span class="p">[</span><span class="n">intraIndx</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span><span class="o">/</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)</span> <span class="o">+</span> <span class="nb">len</span><span class="p">(</span><span class="n">interIndx</span><span class="p">))</span>
-		<span class="c1"># print(inter_centroid)</span>
-		<span class="n">d</span> <span class="o">=</span> <span class="n">inter_centroid</span> <span class="o">-</span> <span class="n">intra_centroid</span>
-		<span class="n">bgss</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">intraIndx</span><span class="p">)</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
-		<span class="n">wgss</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">nb</span><span class="o">.</span><span class="n">float32</span><span class="p">(</span><span class="n">intra_d2</span><span class="p">)</span><span class="c1">#/len(intraIndx)</span>
+<span class="c1"># 		inter_centroid = (data[interIndx, :].sum(axis=0) + data[intraIndx, :].sum(axis=0))/(len(intraIndx) + len(interIndx))</span>
+<span class="c1"># 		# print(inter_centroid)</span>
+<span class="c1"># 		d = inter_centroid - intra_centroid</span>
+<span class="c1"># 		bgss[k] = nb.float32(len(intraIndx) * d.dot(d))</span>
+<span class="c1"># 		wgss[k] = nb.float32(intra_d2)#/len(intraIndx)</span>
 
-	<span class="k">return</span><span class="p">((</span><span class="n">bgss</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">/</span><span class="n">wgss</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span> <span class="o">*</span> <span class="p">(</span><span class="n">N</span> <span class="o">-</span> <span class="n">K</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="n">K</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span></div>
-
+<span class="c1"># 	return((bgss.sum()/wgss.sum()) * (N - K)/(K - 1))</span>
 </pre></div>
 
                 </article>

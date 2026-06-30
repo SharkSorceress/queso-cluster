@@ -169,19 +169,14 @@ def minimize(data, decisions, size):
 
 @nb.njit(cache=True)
 def maximize(data, decisions, size):
-	#> detail: 
-	#> param type data:
-	#> param type decisions:
-	#> param type size:
-	#> return (type): 
-	#> test-method:
+	"""
+	
+	"""
 	data_label      = np.zeros(data.shape[0])
 	D_x             = np.zeros(data.shape[0])
 	sq_dist         = np.zeros(size)
 	for ii in range(data.shape[0]):
 		for kk in range(size):
-			# diff            = data[ii,:] - decisions[kk, :]
-			# sq_dist[kk]     = np.sqrt(diff.dot(diff))
 			sq_dist[kk] 	= similarityMetric(data[ii,:], decisions[kk, :])
 		data_label[ii]  = sq_dist.argmax()
 		D_x[ii]         = sq_dist[nb.u4(data_label[ii])]
@@ -256,6 +251,8 @@ def startMax(data, k, decisions):
 		dc_left = np.flatnonzero(1-np_all_axis1(decisions))		
 		if len(dc_left) == 0:
 			return(decisions)
+		
+		print((k, len(dc_left)))
 		D_x = np.zeros(data.shape[0])
 		for ii in range(data.shape[0]):
 			for kk in range(k-len(dc_left)):
@@ -263,7 +260,6 @@ def startMax(data, k, decisions):
 		D_x /= (k - len(dc_left))
 
 		
-
 		if (killer - data[D_x.argmax(), :]).sum() == 0:
 			return(decisions)
 		

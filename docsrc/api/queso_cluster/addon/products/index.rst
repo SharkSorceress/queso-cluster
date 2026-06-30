@@ -204,10 +204,75 @@ Module Contents
    .. py:method:: clusterProfilesCompound(compoundLabels)
 
 
+   .. py:method:: intensityMapSequence(timeAxis=False, **kwargs)
+
+
+   .. py:method:: intensityMapSequenceHorizontal(timeAxis, **kwargs)
+
+      
+      Horizontal oriented maps of the cluster results for individual time steps
+
+      :param compoundLabels:
+      :type compoundLabels: char.array
+      :param timeAxis: Boolean to add an extra axis for time
+      :type timeAxis: bool
+
+      :returns: * **fig** (*mpl.figure*) -- Map of the cluster results for individual time steps
+                * **compoundLabels** (*np.char.array*) -- Character array for all sequence labels
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
+   .. py:method:: intensityMapSequenceVertical(timeAxis, **kwargs)
+
+      
+      Vertical oriented maps of the cluster results for individual time steps
+
+      :param compoundLabels:
+      :type compoundLabels: char.array
+      :param timeAxis: Boolean to add an extra axis for time
+      :type timeAxis: bool
+
+      :returns: * **fig** (*mpl.figure*) -- Map of the cluster results for individual time steps
+                * **compoundLabels** (*np.char.array*) -- Character array for all sequence labels
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      ..
+          !! processed by numpydoc !!
+
+
    .. py:method:: load()
 
 
-   .. py:method:: spectralEntry(ax, indx, showContinuum, scores=None, dev=False)
+   .. py:method:: spectralEntry(ax, indx, showContinuum, scores=None, dev=False, neighbor=None)
 
       
       Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
@@ -263,11 +328,5 @@ Module Contents
 
 
    .. py:attribute:: vindx
-
-
-   .. py:attribute:: xlim
-
-
-   .. py:attribute:: ylim
 
 

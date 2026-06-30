@@ -16,5 +16,6 @@ Submodules
    /api/queso_cluster/addon/prep/index
    /api/queso_cluster/addon/products/index
    /api/queso_cluster/addon/style/index
+   /api/queso_cluster/addon/tests/index
 
 

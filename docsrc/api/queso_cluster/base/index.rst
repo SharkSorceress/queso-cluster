@@ -46,5 +46,5 @@ Module Contents
 
 .. py:function:: mainIntrinsic(config, prepSquare)
 
-.. py:function:: mainOptimization(prepSquare, labelLine, kLst=None, stageMax=2)
+.. py:function:: mainOptimization(prepSquare, labelLine, initialize, kLst=None, stageMax=2)
 

@@ -38,8 +38,6 @@ def kSearchTest(prepSquare):
 
 
 
-
-
 def scoreEvaluation(prepSquare, intrinsicLine, labelLine):
 	i0Arr = auxAtom.pick_jth_label(intrinsicLine, 0)
 	intrinsicLst = np.unique(i0Arr)
@@ -47,7 +45,7 @@ def scoreEvaluation(prepSquare, intrinsicLine, labelLine):
 	scoresArray = np.zeros((2, intrinsicLst.size))
 	for ii in range(intrinsicLst.size):
 		indx = np.where(i0Arr == intrinsicLst[ii])[0]
-		nSSb = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx,:], labelLine[indx], unbound=False)
+		nSSb = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx,:], labelLine[indx])
 		scoresArray[0, ii] = nSSb
 		
 		db = scoreAtom.calcDaviesBouldin(prepSquare[indx, :], labelLine[indx])

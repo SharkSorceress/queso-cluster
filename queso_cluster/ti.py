@@ -34,7 +34,7 @@ class timeIndependent:
 		self._config 		= config 
 
 	@loggTimer
-	def cluster(self, intrinsicLine=None, kLst=None, initialize='max'):
+	def cluster(self, intrinsicLine=None, kLst=None, initialize='++'):
 		"""
 		Primary clustering function
 		
@@ -70,17 +70,37 @@ class timeIndependent:
 							   self._config.blueEdge:self._config.redEdge+1]
 		logg("stop", _log=_ct_)
 
-		#counter2endAllCounters = 0
-		#counterCap = 3
-		#i0Scores = np.zeros((2, np.unique(intrinsicLine).size, counterCap))
-		#s = timeit.default_timer()
-		#while counter2endAllCounters < counterCap:
-		#	print(counter2endAllCounters)
+
+		from .addon import tests as tests
+
+		counter2endAllCounters = 0
+		counterCap = 1
+		i0Scores = np.zeros((2, np.unique(intrinsicLine).size, counterCap))
+		s = timeit.default_timer()
+
+		#print(initialize)
+		while counter2endAllCounters < counterCap:
+			#print(counter2endAllCounters)
 			#print(np.unique(intrinsicLine))
-			#> Start of Optimized Layer
-		labelLine  = baseMain.mainOptimization(prepSquare, intrinsicLine, initialize=initialize,
+			# > Start of Optimized Layer
+			labelLine  = baseMain.mainOptimization(prepSquare, intrinsicLine, initialize=initialize,
 																kLst=kLst, stageMax=len(kLst))
 			#>> End of Optimized Layer
+			# i0Arr = auxAtom.pick_jth_label(intrinsicLine, 0)
+			# intrinsicLst = np.unique(i0Arr)
+			# #finals = np.zeros(intrinsicLst.size)
+			# for ii in range(intrinsicLst.size):
+			# 	indx = np.where(i0Arr == intrinsicLst[ii])[0]
+			# 	labelLst = np.unique(labelLine[indx])
+			# 	i0Scores[0, ii, counter2endAllCounters] = scoreAtom.calcDaviesBouldin(prepSquare[indx, :], labelLine[indx])
+			# 	ssScores = np.zeros(labelLst.size)
+			# 	for l in range(labelLst.size):
+			# 		ssScores[l] = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx, :], labelLine[indx], labelLst[l])
+			# 		#print([labelLst[l], ssScores])
+			# 	i0Scores[1, ii, counter2endAllCounters] = ssScores.min()
+				
+			#i0Scores[..., counter2endAllCounters] = tests.scoreEvaluation(prepSquare, intrinsicLine, labelLine)
+			#print(i0Scores[..., counter2endAllCounters])
 
 			# i0Arr = auxAtom.pick_jth_label(intrinsicLine, 0)
 			# intrinsicLst = np.unique(i0Arr)
@@ -104,9 +124,9 @@ class timeIndependent:
 			# 	print(counter2endAllCounters)
 			# 	break
 
-		#	counter2endAllCounters += 1
-		#e = timeit.default_timer()
-		#print(e - s)
+			counter2endAllCounters += 1
+		e = timeit.default_timer()
+		print(e - s)
 		
 		# fig = plt.figure(layout='constrained', figsize=(10*2, 15), dpi=300)
 		# colors = ['black', 'red', 'blue', 'green']
@@ -116,8 +136,8 @@ class timeIndependent:
 		# 		ax = fig.add_subplot(i0Scores.shape[1], i0Scores.shape[0], counter)
 		# 		ax.autoscale(enable=True, axis='x', tight=True)
 		# 		ax.scatter(np.arange(counterCap), i0Scores[jj, ii, :], color=colors[jj])
-		# 		if jj !=  2:
-		# 			ax.axhline(y = 0.5, color='blue', linestyle='dotted')
+		# 		# if jj !=  2:
+		# 		# 	ax.axhline(y = 0.5, color='blue', linestyle='dotted')
 		# 		counter += 1
 
 		# 		if ii < i0Scores.shape[1]-1:

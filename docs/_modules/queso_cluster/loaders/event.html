@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -56,7 +56,7 @@
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -101,7 +101,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -150,6 +150,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -274,6 +281,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -415,7 +429,8 @@
  
 <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">cached_property</span>
 
-<span class="kn">from</span><span class="w"> </span><span class="nn">..atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">scores</span> <span class="k">as</span> <span class="n">scoreAtom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..atoms</span><span class="w"> </span><span class="kn">import</span> <span class="n">norm</span> <span class="k">as</span> <span class="n">normAtom</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">..</span><span class="w"> </span><span class="kn">import</span> <span class="n">writer</span>
 
 <div class="viewcode-block" id="eventRunner">
 <a class="viewcode-back" href="../../../api/queso_cluster/loaders/event/index.html#queso_cluster.loaders.event.eventRunner">[docs]</a>
@@ -458,9 +473,18 @@
 					<span class="bp">self</span><span class="o">.</span><span class="n">waveFitFunc</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">N</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">poly1d</span><span class="p">(</span><span class="n">waveCoeff</span><span class="p">)(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">N</span><span class="p">))</span><span class="o">*</span><span class="n">pint</span><span class="o">.</span><span class="n">Unit</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;axisFit&#39;</span><span class="p">][</span><span class="s1">&#39;unit&#39;</span><span class="p">])</span>
 				<span class="k">break</span>
 
-	<span class="c1"># def validation(self):</span>
-	<span class="c1"># 	match </span>
-	<span class="c1"># 	return()</span>
+		<span class="n">writer</span><span class="o">.</span><span class="n">dirCleanUp</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directoryFlavor</span><span class="p">)</span>
+
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">normConfig</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+		<span class="k">match</span> <span class="bp">self</span><span class="o">.</span><span class="n">clusterConfig</span><span class="p">[</span><span class="s1">&#39;prep&#39;</span><span class="p">][</span><span class="s1">&#39;normalize&#39;</span><span class="p">]:</span>
+			<span class="k">case</span> <span class="s2">&quot;normContinuum&quot;</span><span class="p">:</span>
+				<span class="n">normArgs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;norm&quot;</span><span class="p">:</span> <span class="n">normAtom</span><span class="o">.</span><span class="n">normContinuum</span><span class="p">,</span> <span class="s2">&quot;continuumIndx&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">lineContinuum</span><span class="p">}</span>
+			<span class="k">case</span> <span class="s2">&quot;normMaximum&quot;</span><span class="p">:</span>
+				<span class="n">normArgs</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;norm&quot;</span><span class="p">:</span> <span class="n">normAtom</span><span class="o">.</span><span class="n">normMaximum</span><span class="p">,</span> <span class="s2">&quot;windowIndx&quot;</span><span class="p">:</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">blueEdge</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">redEdge</span><span class="p">]}</span>
+
+		<span class="k">return</span><span class="p">(</span><span class="n">normArgs</span><span class="p">)</span>
 
 	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">instrument</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -470,10 +494,6 @@
 	<span class="k">def</span><span class="w"> </span><span class="nf">residual</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 		<span class="k">return</span><span class="p">(</span><span class="nb">bool</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;src&#39;</span><span class="p">][</span><span class="bp">self</span><span class="o">.</span><span class="n">_srcIndx</span><span class="p">][</span><span class="s1">&#39;residual&#39;</span><span class="p">]))</span>
 
-	<span class="c1"># @cached_property</span>
-	<span class="c1"># def waveFitFunc(self):</span>
-		
-	<span class="c1"># 	return(waveFitFunc)</span>
 
 	<span class="nd">@cached_property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">lineTheme</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -508,6 +528,9 @@
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;The datestring directory&quot;&quot;&quot;</span>
 		<span class="k">return</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_eventRaw</span><span class="p">[</span><span class="s1">&#39;date&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)))</span>
 		
+	<span class="nd">@cached_property</span>
+	<span class="k">def</span><span class="w"> </span><span class="nf">directoryFlavor</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">return</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">directoryDate</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">flavor</span><span class="p">))</span>
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">blueEdge</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">		</span><span class="sd">&quot;&quot;&quot;int containing the index for the beginning of the spectral window used for clustering&quot;&quot;&quot;</span>
@@ -542,6 +565,9 @@
 
 	<span class="nd">@property</span>
 	<span class="k">def</span><span class="w"> </span><span class="nf">timeFrames</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+		<span class="k">if</span> <span class="s1">&#39;timeFrames&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">runnerConfig</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+			<span class="k">return</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+		
 		<span class="n">startFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnerConfig</span><span class="p">[</span><span class="s1">&#39;timeFrames&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
 		<span class="n">endFrame</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">runnerConfig</span><span class="p">[</span><span class="s1">&#39;timeFrames&#39;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
 		<span class="k">return</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">startFrame</span><span class="p">,</span> <span class="n">endFrame</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>

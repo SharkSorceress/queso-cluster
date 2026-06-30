@@ -18,5 +18,5 @@ Module Contents
 
 .. py:function:: maskCoordinate(bEx, dim)
 
-.. py:function:: maskIntrinsic(keepI0, intrinsicLine, dim, timeSize)
+.. py:function:: maskIntrinsic(keepI0, intrinsicLine, dim)
 

@@ -22,7 +22,6 @@ Functions
    queso_cluster.atoms.base.calcOptimization
    queso_cluster.atoms.base.compute_bin
    queso_cluster.atoms.base.concatSpectra
-   queso_cluster.atoms.base.curvature
    queso_cluster.atoms.base.get_bin_edges
    queso_cluster.atoms.base.labelGluer
    queso_cluster.atoms.base.labelReorder
@@ -109,8 +108,6 @@ Module Contents
    ..
        !! processed by numpydoc !!
 
-.. py:function:: curvature(y)
-
 .. py:function:: get_bin_edges(bins, lim)
 
 .. py:function:: labelGluer(labels)
@@ -118,6 +115,26 @@ Module Contents
 .. py:function:: labelReorder(labels)
 
 .. py:function:: maximize(data, decisions, size)
+
+   
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
 
 .. py:function:: minimize(data, decisions, size)
 

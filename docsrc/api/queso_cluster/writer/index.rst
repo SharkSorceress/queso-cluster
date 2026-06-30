@@ -16,7 +16,7 @@ Functions
 Module Contents
 ---------------
 
-.. py:function:: dirCleanUp(flavor)
+.. py:function:: dirCleanUp(directoryFlavor)
 
 .. py:function:: exportFITS(spectralDataset, labelLine, fname)
 

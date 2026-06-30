@@ -101,10 +101,10 @@ def kFinder(data):
 
 
 @nb.njit()
-def runStart(k, data, initialize):
+def runStart(k, data, initialize, seed=np.random.random()):
 	N                          = data.shape[0]
 	starting_centroid          = np.zeros((k, data.shape[1]), data.dtype)
-	starter 				   = nb.u4(N * np.random.random())
+	starter 				   = nb.u4(N * seed)
 	starting_centroid[0, :]    = data[starter, :]
 	match initialize:
 		case '++':

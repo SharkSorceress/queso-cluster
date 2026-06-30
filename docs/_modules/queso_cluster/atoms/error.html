@@ -43,7 +43,7 @@
   <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -51,12 +51,12 @@
     <script src="../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = '_modules/queso_cluster/atoms/error';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="icon" href="../../../_static/iconTeal_small.png"/>
+    <link rel="icon" href="../../../_static/logo.svg"/>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../_static/searchtools.js"></script>
@@ -101,7 +101,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -131,8 +131,8 @@
       
     
     
-    <img src="../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../_static/logo_text.svg" class="logo__image only-light" alt="QuESO Documentation - Home"/>
+    <img src="../../../_static/logo_text.svg" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -150,6 +150,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -274,6 +281,13 @@
 <li class="nav-item ">
   <a class="nav-link nav-internal" href="../../../getting_started/index.html">
     Getting Started
+  </a>
+</li>
+
+
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../../../contribute/index.html">
+    Contribute
   </a>
 </li>
 
@@ -416,7 +430,7 @@
 
 <div class="viewcode-block" id="ConvergenceError">
 <a class="viewcode-back" href="../../../api/queso_cluster/atoms/error/index.html#queso_cluster.atoms.error.ConvergenceError">[docs]</a>
-<span class="k">class</span><span class="w"> </span><span class="nc">ConvergenceError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="k">class</span><span class="w"> </span><span class="nc">ConvergenceError</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Create an Exception for when convergence doesn&#39;t occur after :obj:`~queso_cluster.atoms.error.convergeLimit` iterations</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -431,6 +445,7 @@
         <span class="k">return</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">msg</span><span class="p">)</span></div>
 
         <span class="c1">#return(&quot;Convergence condition not met after 1000 steps&quot;)</span>
+
 
 
 <div class="viewcode-block" id="LoadError">
@@ -461,6 +476,16 @@
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Invalid intrinsic layer selection. Allowed labels include lineCenter, window, and lineContinuum&quot;</span><span class="p">)</span></div>
 
 
+<div class="viewcode-block" id="RPConflictWarning">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/error/index.html#queso_cluster.atoms.error.RPConflictWarning">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">RPConflictWarning</span><span class="p">(</span><span class="ne">Warning</span><span class="p">):</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Something occured and the number of labels is no longer equal to the input k&quot;</span><span class="p">)</span></div>
+
 
 <div class="viewcode-block" id="ClusterError">
 <a class="viewcode-back" href="../../../api/queso_cluster/atoms/error/index.html#queso_cluster.atoms.error.ClusterError">[docs]</a>
@@ -473,6 +498,19 @@
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span><span class="p">(</span><span class="s2">&quot;Value of k must be positive and at least 1.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="OopsAllNan">
+<a class="viewcode-back" href="../../../api/queso_cluster/atoms/error/index.html#queso_cluster.atoms.error.OopsAllNan">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">OopsAllNan</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates an Exception to raise an error when all data has been NaN&#39;d</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span><span class="p">(</span><span class="s2">&quot;No valid indexes. All data is NaN or masked out. Check clustering configuration&quot;</span><span class="p">)</span></div>
 
 </pre></div>
 

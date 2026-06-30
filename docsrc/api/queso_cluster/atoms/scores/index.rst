@@ -9,38 +9,83 @@ Functions
 
 .. autoapisummary::
 
-   queso_cluster.atoms.scores.calcCHindex
-   queso_cluster.atoms.scores.calcElbowEntry
-   queso_cluster.atoms.scores.calcInertiaScore
-   queso_cluster.atoms.scores.calcResolvingIndex
-   queso_cluster.atoms.scores.calcSilhouetteScore
-   queso_cluster.atoms.scores.calcSingleResolvingIndex
-   queso_cluster.atoms.scores.calcSingleSilhouetteScore
-   queso_cluster.atoms.scores.calcVarianceScore
-   queso_cluster.atoms.scores.criteriaInertiaScore
-   queso_cluster.atoms.scores.criteriaSilhouetteScore
+   queso_cluster.atoms.scores.calcDaviesBouldin
+   queso_cluster.atoms.scores.calcNeighborSilhouetteScore
+   queso_cluster.atoms.scores.findSampleNeighbor
+   queso_cluster.atoms.scores.speedTest
+   queso_cluster.atoms.scores.speedTest2
 
 
 Module Contents
 ---------------
 
-.. py:function:: calcCHindex(data, labels)
+.. py:function:: calcDaviesBouldin(data, labels, q=2)
 
-.. py:function:: calcElbowEntry(data, labels)
+.. py:function:: calcNeighborSilhouetteScore(dataSquare, labelLine, point)
 
-.. py:function:: calcInertiaScore(dataSquare, labelLine)
+   
+   Calculates the Silhouette Score for a specific cluster
 
-.. py:function:: calcResolvingIndex(dataSquare, labelLine)
+   :param dataSquare: 2D array (nsamples, nfeatures) containing the pool of data
+   :type dataSquare: ndarray
+   :param labelLine: 1D array (nsamples,) for the labels on the data
+   :type labelLine: ndarray
+   :param point: cluster label to evaluate
+   :type point: int
 
-.. py:function:: calcSilhouetteScore(dataSquare, labelLine)
+   :returns: Silhouette Score
+   :rtype: int
 
-.. py:function:: calcSingleResolvingIndex(dataSquare)
 
-.. py:function:: calcSingleSilhouetteScore(data, labels, lab)
 
-.. py:function:: calcVarianceScore(data)
 
-.. py:function:: criteriaInertiaScore(score)
 
-.. py:function:: criteriaSilhouetteScore(score)
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: findSampleNeighbor(dataSquare, labelLine, pointIndx)
+
+   
+   Calculates the nearest label to a given sample
+
+   :param dataSquare: 2D array (nsamples, nfeatures) containing the pool of data
+   :type dataSquare: ndarray
+   :param labelLine: 1D array (nsamples,) for the labels on the data
+   :type labelLine: ndarray
+   :param pointIndx: sample index
+   :type pointIndx: int
+
+   :returns: The label of the nearest cluster to that point
+   :rtype: int
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:function:: speedTest(interSamples, intraSample, interIndxSize)
+
+.. py:function:: speedTest2(intraSamples, intraIndxSize, i)
 

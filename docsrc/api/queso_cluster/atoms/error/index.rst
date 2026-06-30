@@ -31,6 +31,8 @@ Exceptions
    queso_cluster.atoms.error.ConvergenceError
    queso_cluster.atoms.error.IntrinsicLabelError
    queso_cluster.atoms.error.LoadError
+   queso_cluster.atoms.error.OopsAllNan
+   queso_cluster.atoms.error.RPConflictWarning
 
 
 Module Contents
@@ -64,7 +66,7 @@ Module Contents
 
 .. py:exception:: ConvergenceError(msg)
 
-   Bases: :py:obj:`Exception`
+   Bases: :py:obj:`Warning`
 
 
    
@@ -124,6 +126,58 @@ Module Contents
 
    
    Creates an Exception for overwrite contradiction
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:exception:: OopsAllNan
+
+   Bases: :py:obj:`Exception`
+
+
+   
+   Creates an Exception to raise an error when all data has been NaN'd
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   ..
+       !! processed by numpydoc !!
+
+.. py:exception:: RPConflictWarning
+
+   Bases: :py:obj:`Warning`
+
+
+   
+   Base class for warning categories.
 
 
 

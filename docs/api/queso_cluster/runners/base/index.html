@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,14 +52,14 @@
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/queso_cluster/runners/base/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="icon" href="../../../../_static/iconTeal_small.png"/>
+    <link rel="icon" href="../../../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="queso_cluster.td" href="../../td/index.html" />
     <link rel="prev" title="queso_cluster.runners" href="../index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -104,7 +104,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -134,8 +134,8 @@
       
     
     
-    <img src="../../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -467,22 +467,25 @@
 <tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.findOptimalK" title="queso_cluster.runners.base.findOptimalK"><code class="xref py py-obj docutils literal notranslate"><span class="pre">findOptimalK</span></code></a>(dataSquare, funcLst, criteriaLst[, converge])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runIntrinsic" title="queso_cluster.runners.base.runIntrinsic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runIntrinsic</span></code></a>(edges, data)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.kFinder" title="queso_cluster.runners.base.kFinder"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kFinder</span></code></a>(data)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runLabelSort" title="queso_cluster.runners.base.runLabelSort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runLabelSort</span></code></a>(dataSquare, labelLine)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runIntrinsic" title="queso_cluster.runners.base.runIntrinsic"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runIntrinsic</span></code></a>(edges, data)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runOptimalKSearch" title="queso_cluster.runners.base.runOptimalKSearch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runOptimalKSearch</span></code></a>(dataSquare, funcLst, checkLst)</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runLabelSort" title="queso_cluster.runners.base.runLabelSort"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runLabelSort</span></code></a>(dataSquare, labelLine)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runOptimization" title="queso_cluster.runners.base.runOptimization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runOptimization</span></code></a>(k, sub_data, converge)</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runOptimalKSearch" title="queso_cluster.runners.base.runOptimalKSearch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runOptimalKSearch</span></code></a>(dataSquare, funcLst, checkLst)</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runPrep" title="queso_cluster.runners.base.runPrep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runPrep</span></code></a>(dataSquare, norm[, quSquare])</p></td>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runOptimization" title="queso_cluster.runners.base.runOptimization"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runOptimization</span></code></a>(k, sub_data, converge[, initialize])</p></td>
 <td><p></p></td>
 </tr>
-<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runStart" title="queso_cluster.runners.base.runStart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runStart</span></code></a>(k, data[, start])</p></td>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runPrep" title="queso_cluster.runners.base.runPrep"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runPrep</span></code></a>(dataSquare, norm[, quSquare])</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.runners.base.runStart" title="queso_cluster.runners.base.runStart"><code class="xref py py-obj docutils literal notranslate"><span class="pre">runStart</span></code></a>(k, data, initialize[, seed])</p></td>
 <td><p></p></td>
 </tr>
 </tbody>
@@ -494,6 +497,11 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="queso_cluster.runners.base.findOptimalK">
 <span class="sig-name descname"><span class="pre">findOptimalK</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataSquare</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">funcLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criteriaLst</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-06</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/runners/base.html#findOptimalK"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.runners.base.findOptimalK" title="Link to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="queso_cluster.runners.base.kFinder">
+<span class="sig-name descname"><span class="pre">kFinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/runners/base.html#kFinder"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.runners.base.kFinder" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -513,7 +521,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="queso_cluster.runners.base.runOptimization">
-<span class="sig-name descname"><span class="pre">runOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/runners/base.html#runOptimization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.runners.base.runOptimization" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">runOptimization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sub_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">converge</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'++'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/runners/base.html#runOptimization"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.runners.base.runOptimization" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
@@ -523,7 +531,7 @@
 
 <dl class="py function">
 <dt class="sig sig-object py" id="queso_cluster.runners.base.runStart">
-<span class="sig-name descname"><span class="pre">runStart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">start</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/runners/base.html#runStart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.runners.base.runStart" title="Link to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">runStart</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">k</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initialize</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">np.random.random()</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/runners/base.html#runStart"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.runners.base.runStart" title="Link to this definition">#</a></dt>
 <dd></dd></dl>
 
 </section>
@@ -579,6 +587,7 @@
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#functions">Functions</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-contents">Module Contents</a><ul class="pst-show_toc_level nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.runners.base.findOptimalK"><code class="docutils literal notranslate"><span class="pre">findOptimalK()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.runners.base.kFinder"><code class="docutils literal notranslate"><span class="pre">kFinder()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.runners.base.runIntrinsic"><code class="docutils literal notranslate"><span class="pre">runIntrinsic()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.runners.base.runLabelSort"><code class="docutils literal notranslate"><span class="pre">runLabelSort()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.runners.base.runOptimalKSearch"><code class="docutils literal notranslate"><span class="pre">runOptimalKSearch()</span></code></a></li>

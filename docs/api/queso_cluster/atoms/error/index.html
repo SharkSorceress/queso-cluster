@@ -44,7 +44,7 @@
   <link rel="preload" as="script" href="../../../../_static/scripts/bootstrap.js?digest=0790524f97105ba85085" />
 <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=0790524f97105ba85085" />
 
-    <script src="../../../../_static/documentation_options.js?v=9bb49ee4"></script>
+    <script src="../../../../_static/documentation_options.js?v=cd69aaf6"></script>
     <script src="../../../../_static/doctools.js?v=fd6eb6e6"></script>
     <script src="../../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="../../../../_static/clipboard.min.js?v=a7894cd8"></script>
@@ -52,14 +52,14 @@
     <script src="../../../../_static/design-tabs.js?v=f930bc37"></script>
     <script>DOCUMENTATION_OPTIONS.pagename = 'api/queso_cluster/atoms/error/index';</script>
     <script>DOCUMENTATION_OPTIONS.search_as_you_type = false;</script>
-    <link rel="icon" href="../../../../_static/iconTeal_small.png"/>
+    <link rel="icon" href="../../../../_static/logo.png"/>
     <link rel="index" title="Index" href="../../../../genindex.html" />
     <link rel="search" title="Search" href="../../../../search.html" />
     <link rel="next" title="queso_cluster.atoms.flare" href="../flare/index.html" />
     <link rel="prev" title="queso_cluster.atoms.base" href="../base/index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="0.2.0a2" />
+  <meta name="docsearch:version" content="0.3.0a0" />
   
     
     <script src="../../../../_static/searchtools.js"></script>
@@ -104,7 +104,7 @@
   <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
 </div>
 <aside class="bd-header-announcement" aria-label="Announcement">
-  <div class="bd-header-announcement__content">queso-cluster v0.2.0a2 is out now! Have it with chips.</div>
+  <div class="bd-header-announcement__content">queso-cluster v0.3.0a0 is out now! Have it with chips.</div>
 </aside>
 
   
@@ -134,8 +134,8 @@
       
     
     
-    <img src="../../../../_static/iconTeal_small.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
-    <img src="../../../../_static/quesoBanner_small.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-light" alt="QuESO Documentation - Home"/>
+    <img src="../../../../_static/banner_new.png" class="logo__image only-dark pst-js-only" alt="QuESO Documentation - Home"/>
   
   
 </a></div>
@@ -506,6 +506,12 @@
 <tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.error.LoadError" title="queso_cluster.atoms.error.LoadError"><code class="xref py py-obj docutils literal notranslate"><span class="pre">LoadError</span></code></a></p></td>
 <td><p>Creates an Exception for overwrite contradiction</p></td>
 </tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#queso_cluster.atoms.error.OopsAllNan" title="queso_cluster.atoms.error.OopsAllNan"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OopsAllNan</span></code></a></p></td>
+<td><p>Creates an Exception to raise an error when all data has been NaN'd</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#queso_cluster.atoms.error.RPConflictWarning" title="queso_cluster.atoms.error.RPConflictWarning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RPConflictWarning</span></code></a></p></td>
+<td><p>Base class for warning categories.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -522,7 +528,7 @@
 <dl class="py exception">
 <dt class="sig sig-object py" id="queso_cluster.atoms.error.ConvergenceError">
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">ConvergenceError</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">msg</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../../_modules/queso_cluster/atoms/error.html#ConvergenceError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.error.ConvergenceError" title="Link to this definition">#</a></dt>
-<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Warning</span></code></p>
 <p>Create an Exception for when convergence doesn’t occur after <a class="reference internal" href="#queso_cluster.atoms.error.convergeLimit" title="queso_cluster.atoms.error.convergeLimit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">convergeLimit</span></code></a> iterations</p>
 <dl class="py attribute">
 <dt class="sig sig-object py" id="queso_cluster.atoms.error.ConvergenceError.msg">
@@ -543,6 +549,20 @@
 <span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">LoadError</span></span><a class="reference internal" href="../../../../_modules/queso_cluster/atoms/error.html#LoadError"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.error.LoadError" title="Link to this definition">#</a></dt>
 <dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Creates an Exception for overwrite contradiction</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="queso_cluster.atoms.error.OopsAllNan">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">OopsAllNan</span></span><a class="reference internal" href="../../../../_modules/queso_cluster/atoms/error.html#OopsAllNan"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.error.OopsAllNan" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Creates an Exception to raise an error when all data has been NaN’d</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="queso_cluster.atoms.error.RPConflictWarning">
+<span class="property"><span class="k"><span class="pre">exception</span></span><span class="w"> </span></span><span class="sig-name descname"><span class="pre">RPConflictWarning</span></span><a class="reference internal" href="../../../../_modules/queso_cluster/atoms/error.html#RPConflictWarning"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#queso_cluster.atoms.error.RPConflictWarning" title="Link to this definition">#</a></dt>
+<dd><p>Bases: <code class="xref py py-obj docutils literal notranslate"><span class="pre">Warning</span></code></p>
+<p>Base class for warning categories.</p>
 </dd></dl>
 
 <dl class="py data">
@@ -611,6 +631,8 @@
 </li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.error.IntrinsicLabelError"><code class="docutils literal notranslate"><span class="pre">IntrinsicLabelError</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.error.LoadError"><code class="docutils literal notranslate"><span class="pre">LoadError</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.error.OopsAllNan"><code class="docutils literal notranslate"><span class="pre">OopsAllNan</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.error.RPConflictWarning"><code class="docutils literal notranslate"><span class="pre">RPConflictWarning</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#queso_cluster.atoms.error.convergeLimit"><code class="docutils literal notranslate"><span class="pre">convergeLimit</span></code></a></li>
 </ul>
 </li>

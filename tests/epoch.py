@@ -68,10 +68,10 @@ def main_time(config):
 	ViSPobj = visp(dataDirectory=dkistDir + 
 				config.directoryDate + '/' + config.datasetID + '/')
 
-
 	tiDev = ti.timeIndependent(config, ViSPobj)
 	tiDev.dataSquare = ViSPobj.dataPrism[config.timeFrames, ...].reshape((ViSPobj.dataPrism.shape[1]*config.timeFrames.size, 
 																	   ViSPobj.dataPrism.shape[-1]))
+
 
 	if config.overwrite:
 		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare, **config.normConfig)
@@ -84,6 +84,10 @@ def main_time(config):
 											ViSPobj.dimInfo['rasterSize'], 
 											ViSPobj.dimInfo['alongSlitSize']))
 	
+		fig = prep.figureBackup01(tiDev, ["window", "continuum"])
+		fig.savefig("./{}/histogram.png".format(config.directoryFlavor))
+
+
 		labelLine = tiDev.cluster(kLst=config.clusterConfig['optimized'], 
 									initialize=config.clusterConfig['prep']['initialize'])
 		labelSquare = labelLine.reshape((config.timeFrames.size, 
@@ -99,17 +103,20 @@ def main_time(config):
 
 if __name__ == '__main__':
 	from queso_cluster.loaders.event import eventRunner
-	eventManager = eventRunner("./eventManager.yml", eventIndx=3, runIndx=1)
-	tiDev  = main_time(eventManager)
+	eventManager = eventRunner("./eventManager.yml", eventIndx=0, runIndx=0)
+	tiDev = main(eventManager)
 
 	from queso_cluster.addon import products
 	p = products.Products(tiDev)
-	fig3a = p.clusterMapSequence(timeAxis=False)
-	fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
+	# fig3a = p.clusterMapSequence(timeAxis=False)
+	# fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
 
-	kwargDict = {"vmin": 0.5} #sets the minimum for the intensity
-	fig3b = p.intensityMapSequence(timeAxis=False, **kwargDict)
-	fig3b.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
+	# fig3b = p.clusterMapSequence(timeAxis=False, intrinsic=True)
+	# fig3b.savefig("./{}/intrinsicSequence.png".format(tiDev._config.directoryFlavor))
+
+	# kwargDict = {"vmin": 0.5} #sets the minimum for the intensity
+	# fig3c = p.intensityMapSequence(timeAxis=False, **kwargDict)
+	# fig3c.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
 
 	fig4 = p.clusterProfiles()
 	fig4.savefig("./{}/clusterLabels.png".format(tiDev._config.directoryFlavor))

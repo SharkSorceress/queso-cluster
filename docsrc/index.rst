@@ -5,7 +5,7 @@
 .. warning::
    This documentation is under active development.
 
-.. image:: _static/img/iconTeal_small.png
+.. image:: _static/img/logo_text.png
   :width: 50%
   :align: center
 

@@ -63,8 +63,8 @@ templates_path = ["_templates"]
 # -- Options for HTML output
 html_title = 'QuESO Documentation'
 html_short_title = 'QuESO'
-html_logo = '_static/img/iconTeal_small.png'
-html_favicon = '_static/img/iconTeal_small.png'
+html_logo = '_static/img/banner_new.png'
+html_favicon = '_static/img/logo.png'
 
 html_css_files = [
     'css/custom.css',
@@ -97,8 +97,8 @@ html_theme_options = {
          "icon": "devicon-pypi-plain",
       }],
     "logo": {
-         'image_dark': '_static/img/quesoBanner_small.png',
-         'image_light': '_static/img/iconTeal_small.png'
+         'image_dark': '_static/img/banner_new.png',
+         'image_light': '_static/img/banner_new.png'
     },
     "show_nav_level": 2,
     "show_toc_level": 2,

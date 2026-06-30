@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from . import style as sty
-def figureBackup01(analysisObj, mode, dataSquare=None):
+def figureBackup01(analysisObj, mode, dataSquare=None, mask=True):
 	
 	if dataSquare is None:
 		dataSquare = analysisObj.dataSquare
@@ -16,10 +16,16 @@ def figureBackup01(analysisObj, mode, dataSquare=None):
 	for m in range(len(mode)):
 		match mode[m]:
 			case 'continuum':
-				moment0Lst.append(dataSquare[:, analysisObj._config.lineContinuum].compute())
+				dataLine = dataSquare[:, analysisObj._config.lineContinuum]
+				if mask:
+					dataLine *= analysisObj.maskLine
+				moment0Lst.append(dataLine.compute())
 			case 'window':
 				ii, jj = [analysisObj._config.blueEdge, analysisObj._config.redEdge]
-				moment0Lst.append(dataSquare[:, ii:jj+1].mean(axis=-1).compute())
+				dataLine = dataSquare[:, ii:jj+1].mean(axis=-1)
+				if mask:
+					dataLine *= analysisObj.maskLine
+				moment0Lst.append(dataLine.compute())
 
 
 
@@ -36,13 +42,13 @@ def figureBackup01(analysisObj, mode, dataSquare=None):
 
 		ax = fig.add_subplot(1, len(mode), i+1)
 		histBins = np.arange(0, np.ceil(np.nanmax(moment0Lst[i])*10)/10, step=0.01)
-		ax.hist(moment0Lst[i], bins=histBins, range=histBins, rwidth=1, fill=False, histtype='step', color='black')
+		ax.hist(moment0Lst[i][moment0Lst[i] > 0], bins=histBins, range=histBins, rwidth=1, fill=False, histtype='step', color='black')
 		#_, color_pallet =  sty._genColorPallet(len(np.diff(bins)))
 
 		# for j in range(len(bins)-2):
 		# 	ax.axvline(x = bins[j+1], color='red') 
 		ax.set_title(mode[i])
-		ax.set_yscale("log")
+		#ax.set_yscale("log")
 
 
 		ax.annotate("Min={:.3f}".format(float(np.nanmin(moment0Lst[i]))),
@@ -55,4 +61,5 @@ def figureBackup01(analysisObj, mode, dataSquare=None):
 					xytext=(0.01, 1-0.15), textcoords='axes fraction', fontfamily='sans-serif',
             		va='center', ha='left')	
 				   #color=mpl.colors.rgb2hex(color_pallet[j+1]))
+		ax.set_xlim([np.nanmin(moment0Lst[i][moment0Lst[i] > 0]), np.nanmax(moment0Lst[i][moment0Lst[i] > 0])])
 	return(fig)

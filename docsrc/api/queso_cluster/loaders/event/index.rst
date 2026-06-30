@@ -111,6 +111,9 @@ Module Contents
           !! processed by numpydoc !!
 
 
+   .. py:property:: directoryFlavor
+
+
    .. py:property:: flavor
 
 
@@ -166,6 +169,9 @@ Module Contents
 
 
    .. py:property:: lineTheme
+
+
+   .. py:property:: normConfig
 
 
    .. py:property:: overwrite

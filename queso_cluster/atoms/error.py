@@ -66,3 +66,13 @@ class ClusterError(Exception):
 
     def __str__(self):
         return("Value of k must be positive and at least 1.")
+
+class OopsAllNan(Exception):
+    """
+    Creates an Exception to raise an error when all data has been NaN'd
+    """
+    def __init__(self):
+        super().__init__()
+
+    def __str__(self):
+        return("No valid indexes. All data is NaN or masked out. Check clustering configuration")

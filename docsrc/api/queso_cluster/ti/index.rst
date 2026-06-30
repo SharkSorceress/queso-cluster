@@ -33,7 +33,7 @@ Module Contents
    :param config: object containing yaml configuration
    :type config: :class:`~queso_cluster.loaders.event.eventInput`
    :param instrumentObj: A `loader` object for specific instruments
-   :type instrumentObj: :class:`~queso_cluster.loaders.visp.visp` :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris`
+   :type instrumentObj: :class:`~queso_cluster.loaders.visp.visp`, :class:`~queso_cluster.loaders.fiss.fiss`, :class:`~queso_cluster.loaders.iris.iris`
 
 
 
@@ -52,7 +52,7 @@ Module Contents
    ..
        !! processed by numpydoc !!
 
-   .. py:method:: cluster(intrinsicLine=None, kLst=None)
+   .. py:method:: cluster(intrinsicLine=None, kLst=None, initialize='max')
 
       
       Primary clustering function
