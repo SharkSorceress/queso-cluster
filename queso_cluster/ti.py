@@ -71,7 +71,7 @@ class timeIndependent:
 		logg("stop", _log=_ct_)
 
 
-		from .addon import tests as tests
+		#from .addon import tests as tests
 
 		counter2endAllCounters = 0
 		counterCap = 1
