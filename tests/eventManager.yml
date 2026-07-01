@@ -15,7 +15,7 @@
               - {label: 'window', layerConfig: {'bins': [0, 0.42, 0.55, 1]}}
             optimized: 
               - {layerGroups: [1, 1, 2, 1, 1, 2]}   
-              - {layerGroups: [1, 1, 5, 5, 1, 5, 2, 2]} 
+              - {layerGroups: [1, 1, 5, 5, 1, 5, 5, 4]} 
         axisFit: {coeff: [18.8546e-3, 8531.8541], unit: "angstrom"}
         spectralParams:
           continuum: 26
@@ -105,7 +105,7 @@
     label: 'M-class flare peak to early decay'
     run: 
       Mflare_ribbon_cNorm:
-        overwrite: False
+        overwrite: True
         config: {keepI0: [5], timeFrames: [13,17], bbox: [0, 91, 1250, 1875], src: 'KBZDTD', line: 'broad'}
       Mflare_ribbon_mNorm:
         overwrite: True

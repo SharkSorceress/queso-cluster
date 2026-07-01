@@ -19,11 +19,7 @@ class ConvergenceError(Warning):
         super().__init__(self.msg)
 
     def __str__(self):
-        # if np.isnan(self.killCounter):
-        #     return("Convergence condition is nan.")
-        #else:
         return(self.msg)
-        #return("Convergence condition not met after 1000 steps")
 
 
 

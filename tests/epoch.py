@@ -103,35 +103,35 @@ def main_time(config):
 
 if __name__ == '__main__':
 	from queso_cluster.loaders.event import eventRunner
-	eventManager = eventRunner("./eventManager.yml", eventIndx=0, runIndx=0)
-	tiDev = main(eventManager)
+	eventManager = eventRunner("./eventManager_AH.yml", eventIndx=0, runIndx=0)
+	tiDev = main_time(eventManager)
 
 	from queso_cluster.addon import products
 	p = products.Products(tiDev)
-	# fig3a = p.clusterMapSequence(timeAxis=False)
-	# fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
+	fig3a = p.clusterMapSequence(timeAxis=False)
+	fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
 
-	# fig3b = p.clusterMapSequence(timeAxis=False, intrinsic=True)
-	# fig3b.savefig("./{}/intrinsicSequence.png".format(tiDev._config.directoryFlavor))
+	fig3b = p.clusterMapSequence(timeAxis=False, intrinsic=True)
+	fig3b.savefig("./{}/intrinsicSequence.png".format(tiDev._config.directoryFlavor))
 
-	# kwargDict = {"vmin": 0.5} #sets the minimum for the intensity
-	# fig3c = p.intensityMapSequence(timeAxis=False, **kwargDict)
-	# fig3c.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
+	kwargDict = {"vmin": 0.2} #sets the minimum for the intensity
+	fig3c = p.intensityMapSequence(timeAxis=False, **kwargDict)
+	fig3c.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
 
-	fig4 = p.clusterProfiles()
-	fig4.savefig("./{}/clusterLabels.png".format(tiDev._config.directoryFlavor))
+	# fig4 = p.clusterProfiles()
+	# fig4.savefig("./{}/clusterLabels.png".format(tiDev._config.directoryFlavor))
 
-	# from queso_cluster.atoms import flare as flareAtom
-	# hiIntMask = flareAtom.kernelClusterMask(p.optLabels)
+	from queso_cluster.atoms import flare as flareAtom
+	hiIntMask = flareAtom.kernelClusterMask(p.optLabels)
 
-	# compoundLabels = tiDev.clusterCompoundLabels(p.optLabels*hiIntMask)
-	# fig3c = p.clusterMapCompound(compoundLabels)
-	# fig3c.savefig("./{}/figure03_compound_peak.png".format(tiDev._config.flavor))
+	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels*hiIntMask)
+	fig3c = p.clusterMapCompound(compoundLabels)
+	fig3c.savefig("./{}/figure03_compound_peak.png".format(tiDev._config.directoryFlavor))
 
-	# p.clusterProfilesCompound(compoundLabels)
+	p.clusterProfilesCompound(compoundLabels)
 
-	# compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
-	# fig3b = p.clusterMapCompound(compoundLabels)
-	# fig3b.savefig("./{}/figure03_compound.png".format(tiDev._config.flavor))
+	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
+	fig3b = p.clusterMapCompound(compoundLabels)
+	fig3b.savefig("./{}/figure03_compound.png".format(tiDev._config.directoryFlavor))
 
 

@@ -68,20 +68,20 @@ def convertTime(dates, baseFormat="%Y-%m-%dT%H:%M:%S", ref=False):
 
 
 
-def _gen_dataID(Input):
-	#> detail: 
-	#> param type Input:
-	#> return (type): 
-	#> test-method:
-	stokes_lst 		= ['I', 'Q', 'U', 'V']
-	coreIndex, coreLabel = [None, '']
-	if hasattr(Input, 'manualOverride'):
-		if 'coreOrder' in Input.manualOverride.keys():
-			coreOrder = Input.manualOverride['coreOrder']
-			coreLabel = '_' + list(coreOrder)[0]
-			coreIndex = coreOrder[list(coreOrder)[0]]  
-	data_id = Input.data['id'] + "_" + stokes_lst[Input.data['stokes']] + coreLabel 
-	return(data_id, coreIndex)
+# def _gen_dataID(Input):
+# 	#> detail: 
+# 	#> param type Input:
+# 	#> return (type): 
+# 	#> test-method:
+# 	stokes_lst 		= ['I', 'Q', 'U', 'V']
+# 	coreIndex, coreLabel = [None, '']
+# 	if hasattr(Input, 'manualOverride'):
+# 		if 'coreOrder' in Input.manualOverride.keys():
+# 			coreOrder = Input.manualOverride['coreOrder']
+# 			coreLabel = '_' + list(coreOrder)[0]
+# 			coreIndex = coreOrder[list(coreOrder)[0]]  
+# 	data_id = Input.data['id'] + "_" + stokes_lst[Input.data['stokes']] + coreLabel 
+# 	return(data_id, coreIndex)
 
 
 def pick_jth_label(labelLst, j):
@@ -137,57 +137,57 @@ def density_hist2d(data, dy, top, bottom):
 
 
 
-@nb.njit(cache=True)
-def close_factors(number):
-	#> detail: find the closest pair of factors for a given number
-	#> param type number:
-	#> return (type): 
-	#> test-method:
-	factor1 = 0
-	factor2 = number
-	while factor1 +1 <= factor2:
-		factor1 += 1
-		if number % factor1 == 0:
-			factor2 = number // factor1
+# @nb.njit(cache=True)
+# def close_factors(number):
+# 	#> detail: find the closest pair of factors for a given number
+# 	#> param type number:
+# 	#> return (type): 
+# 	#> test-method:
+# 	factor1 = 0
+# 	factor2 = number
+# 	while factor1 +1 <= factor2:
+# 		factor1 += 1
+# 		if number % factor1 == 0:
+# 			factor2 = number // factor1
 		
-	return factor1, factor2
+# 	return factor1, factor2
 
-@nb.njit(cache=True)
-def almost_factors(number):
-	#> detail: find a pair of factors that are close enough for a number that is close enough
-	#> param type number:
-	#> return (type): 
-	#> test-method:
-	while True:
-		factor1, factor2 = close_factors(number)
-		if 1/2 * factor1 <= factor2: # the fraction in this line can be adjusted to change the threshold aspect ratio
-			break
-		number += 1
-	return factor1, factor2
+# @nb.njit(cache=True)
+# def almost_factors(number):
+# 	#> detail: find a pair of factors that are close enough for a number that is close enough
+# 	#> param type number:
+# 	#> return (type): 
+# 	#> test-method:
+# 	while True:
+# 		factor1, factor2 = close_factors(number)
+# 		if 1/2 * factor1 <= factor2: # the fraction in this line can be adjusted to change the threshold aspect ratio
+# 			break
+# 		number += 1
+# 	return factor1, factor2
 
-@nb.njit()
-def common_elements(ar1, ar2, ar3):
-	#> detail: 
-	#> param type ar1:
-	#> param type ar2:
-	#> param type ar3:
-	#> return (type): 
-	#> test-method:
-    n1, n2, n3 = len(ar1), len(ar2), len(ar3)
-    i, j, k = 0, 0, 0
-    common = []
-    while i < n1 and j < n2 and k < n3:
-        if ar1[i] == ar2[j] == ar3[k]:
-            common.append(ar1[i])
-            i += 1
-            j += 1
-            k += 1
-        elif ar1[i] < ar2[j]:
-            i += 1
-        elif ar2[j] < ar3[k]:
-            j += 1
-        else:
-            k += 1
-    return common
+# @nb.njit()
+# def common_elements(ar1, ar2, ar3):
+# 	#> detail: 
+# 	#> param type ar1:
+# 	#> param type ar2:
+# 	#> param type ar3:
+# 	#> return (type): 
+# 	#> test-method:
+#     n1, n2, n3 = len(ar1), len(ar2), len(ar3)
+#     i, j, k = 0, 0, 0
+#     common = []
+#     while i < n1 and j < n2 and k < n3:
+#         if ar1[i] == ar2[j] == ar3[k]:
+#             common.append(ar1[i])
+#             i += 1
+#             j += 1
+#             k += 1
+#         elif ar1[i] < ar2[j]:
+#             i += 1
+#         elif ar2[j] < ar3[k]:
+#             j += 1
+#         else:
+#             k += 1
+#     return common
 
 

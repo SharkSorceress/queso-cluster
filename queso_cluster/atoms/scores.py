@@ -265,7 +265,7 @@ def calcNeighborSilhouetteScore(dataSquare, labelLine, point):
 
 
 @nb.njit()
-def calcDaviesBouldin(data, labels, q=2):
+def calcDaviesBouldin(data, labels):
 
 	labelLst = np.unique(labels)
 	Ri = np.zeros(labelLst.size) 

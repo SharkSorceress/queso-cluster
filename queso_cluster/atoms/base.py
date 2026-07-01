@@ -66,28 +66,28 @@ def numba_histogram(a, bins, lim):
 
 	return hist, bin_edges
 
-def rotateArray(image, turns):
-	"""
-	Rotates an array
+# def rotateArray(image, turns):
+# 	"""
+# 	Rotates an array
 
-	Parameters
-	----------
-	image : ndarray
-		2D array to be rotated
-	turns : int
-		Number of pi/2 turns to rotate
+# 	Parameters
+# 	----------
+# 	image : ndarray
+# 		2D array to be rotated
+# 	turns : int
+# 		Number of pi/2 turns to rotate
 	
-	Returns
-	-------
-	ndarray
-		Rotated array
+# 	Returns
+# 	-------
+# 	ndarray
+# 		Rotated array
 	
-	"""
+# 	"""
 	
-	for i in range(turns):
-		image = np.array(list(zip(*image[::-1])))
+# 	for i in range(turns):
+# 		image = np.array(list(zip(*image[::-1])))
 
-	return(image[::-1])
+# 	return(image[::-1])
 
 @nb.njit(cache=True)
 def get_bin_edges(bins, lim):
@@ -304,29 +304,29 @@ def startPlusPlus(data, k, decisions):
 		killer = data[indx, :]
 
 
-@nb.njit(cache=True)
-def _calcMoment(waveAxis, ii, jj, lineCore, dataCube, order, ref, counter=0):    
-	#> detail: 
-	#> param type waveAxis:
-	#> param type ii:
-	#> param type jj:
-	#> param type lineCore:
-	#> param type dataCube:
-	#> param type order:
-	#> param type ref:
-	#> param type [0] counter:
-	#> return (type): 
-	#> test-method:
-	momentN = np.zeros((order+1, dataCube.shape[0]))
-	while counter <= order:
-		factor = np.power((waveAxis[ii:jj] - waveAxis[lineCore]), counter)
-		for i in range(dataCube.shape[0]):
-			momentN[counter, i] = ((dataCube[i, ii:jj] - ref[ii:jj])*factor).sum()
-		if counter > 0:
-			momentN[counter, :] /= momentN[0, :]
-		counter += 1
+# @nb.njit(cache=True)
+# def _calcMoment(waveAxis, ii, jj, lineCore, dataCube, order, ref, counter=0):    
+# 	#> detail: 
+# 	#> param type waveAxis:
+# 	#> param type ii:
+# 	#> param type jj:
+# 	#> param type lineCore:
+# 	#> param type dataCube:
+# 	#> param type order:
+# 	#> param type ref:
+# 	#> param type [0] counter:
+# 	#> return (type): 
+# 	#> test-method:
+# 	momentN = np.zeros((order+1, dataCube.shape[0]))
+# 	while counter <= order:
+# 		factor = np.power((waveAxis[ii:jj] - waveAxis[lineCore]), counter)
+# 		for i in range(dataCube.shape[0]):
+# 			momentN[counter, i] = ((dataCube[i, ii:jj] - ref[ii:jj])*factor).sum()
+# 		if counter > 0:
+# 			momentN[counter, :] /= momentN[0, :]
+# 		counter += 1
 	
-	return(momentN)
+# 	return(momentN)
 
 # @nb.njit()
 # def _calcFeatureDensity(data, converge, zindx, func1):

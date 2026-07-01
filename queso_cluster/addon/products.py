@@ -180,8 +180,8 @@ class Products:
 			ax, im  = self.mapMake._mapGen(fig, gs[1, t], 
 												intensitySequence[t, ...],
 												timeAxis=timeAxis, 
-												xlim=self.xlim,
-												ylim=self.ylim,
+												#xlim=self.xlim,
+												#ylim=self.ylim,
 												#flareContour=self.mask_map, 
 												**kwargs)
 			if not gs[0, t].is_first_col():
@@ -243,8 +243,8 @@ class Products:
 			ax, im  = self.mapMake._mapGen(fig, gs[t, 0], 
 												intensitySequence[t, ...],
 												timeAxis=timeAxis, 
-												xlim=self.xlim,
-												ylim=self.ylim,
+												#xlim=self.xlim,
+												#ylim=self.ylim,
 												#flareContour=self.mask_map, 
 												**kwargs)
 			if not gs[t, 0].is_last_row():
@@ -362,13 +362,13 @@ class Products:
 									self.optLabels.shape)
 
 					ax  = plt.subplot(gs[0, oo])
-					ax  = self.spectralEntry(ax, indx, "black", True)
+					ax  = self.spectralEntry(ax, indx)
 
 					if not gs[0, oo].is_first_col():
 						ax.set_yticklabels([])
 					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))	
 
-				fig.savefig("./{}/sequences/labelTest_{}.png".format(self._quesoOut._config.flavor, int(lcounter)))
+				fig.savefig("./{}/sequences/labelTest_{}.png".format(self._quesoOut._config.directoryFlavor, int(lcounter)))
 				lcounter += 1
 			plt.close()
 
@@ -716,10 +716,10 @@ class Products:
 			sindx = np.where(i0Arr == i0Arr[i0_indx[0]])[0].astype(np.uint32)
 
 			dbScore = None
-			if np.unique(validLabels[sindx]).size > 1:
-				#dbScore = scoresAtom.calcDaviesBouldin(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
-				dbScore = metrics.davies_bouldin_score(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
-				print(dbScore)
+			# if np.unique(validLabels[sindx]).size > 1:
+			# 	#dbScore = scoresAtom.calcDaviesBouldin(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
+			# 	dbScore = metrics.davies_bouldin_score(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
+			# 	print(dbScore)
 
 			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], scores=dbScore)
 			if gs[j,0].is_last_row():
@@ -747,14 +747,14 @@ class Products:
 				#print(sindx)
 
 				score = None
-				print(np.unique(validLabels[sindx]))
-				if np.unique(validLabels[sindx]).size > 1:
-					# score = scoresAtom.calcNeighborSilhouetteScore(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], 
-				 	# 							   validLabels[sindx], 
-					# 							   point=validLabels[o2_indx[0]])
-					score = metrics.silhouette_samples(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx], metric='euclidean')
-					score = score[validLabels[sindx] == validLabels[o2_indx[0]]].mean()
-					#print([scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]].mean(), np.median(scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]])])
+				#print(np.unique(validLabels[sindx]))
+				# if np.unique(validLabels[sindx]).size > 1:
+				# 	# score = scoresAtom.calcNeighborSilhouetteScore(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], 
+				#  	# 							   validLabels[sindx], 
+				# 	# 							   point=validLabels[o2_indx[0]])
+				# 	score = metrics.silhouette_samples(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx], metric='euclidean')
+				# 	score = score[validLabels[sindx] == validLabels[o2_indx[0]]].mean()
+				# 	#print([scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]].mean(), np.median(scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]])])
 
 				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], scores=score)
 				if gs[j,k+1].is_last_row():
@@ -802,15 +802,15 @@ class Products:
 		raw_dat = self._quesoOut.prepSquare[indx, ii:jj+1]
 		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]	
 
-		if dev:
-			resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
-			centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
-			axR = ax.twinx()
-			axR.set_ylim([-1, 1])
-			axR.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
-			ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_min, color='blue', linewidth=0.75)
-			ax.plot(self._wavelambda[ii:jj+1]--self._wavelambda[self._quesoOut._config.lineCenter], centroid_max, color='blue', linewidth=0.75)
-			logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
+		# if dev:
+		# 	resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
+		# 	centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
+		# 	axR = ax.twinx()
+		# 	axR.set_ylim([-1, 1])
+		# 	axR.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
+		# 	ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_min, color='blue', linewidth=0.75)
+		# 	ax.plot(self._wavelambda[ii:jj+1]--self._wavelambda[self._quesoOut._config.lineCenter], centroid_max, color='blue', linewidth=0.75)
+		# 	logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
 		ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_i, color='black', linewidth=0.75)
 
 		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
@@ -848,10 +848,10 @@ class Products:
 					xytext=(0.01, 1-0.1), textcoords='axes fraction', fontfamily='sans-serif',
             		va='center', ha='left')
 
-		# ax.annotate(r"m={:.3f}$\pm${:.3f}".format(centroid_i.mean(), np.std(raw_dat.mean(axis=1))),
-        #     		xy=(0.01, 1-0.15), xycoords='axes fraction',
-		# 			xytext=(0.01, 1-0.15), textcoords='axes fraction', fontfamily='sans-serif',
-        #     		va='center', ha='left')	
+		ax.annotate(r"m={:.3f}$\pm${:.3f}".format(centroid_i.mean(), np.std(raw_dat.mean(axis=1))),
+            		xy=(0.01, 1-0.15), xycoords='axes fraction',
+					xytext=(0.01, 1-0.15), textcoords='axes fraction', fontfamily='sans-serif',
+            		va='center', ha='left')	
 
 		if not (scores is None):
 			ax.annotate("S={:.3f}".format(float(scores)),

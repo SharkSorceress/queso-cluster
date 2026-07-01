@@ -8,6 +8,8 @@ def kernelClusterMask(optLabels, kernel=None):
 	----------
 	optLabels : ndarray
 		3d array containing the labels in space and time
+	kernel : int, list, array, optional
+		Cluster label(s) for the kernel cluster(s)
 	
 	Returns
 	-------
@@ -18,10 +20,13 @@ def kernelClusterMask(optLabels, kernel=None):
 	if kernel is None:
 		kernel = str(int(np.nanmax(optLabels)))
 		kernel = float(kernel[0] + '1'*(len(kernel)-1))
+	
+	kernel = np.asarray(kernel)
 
 	hiIntMask = np.zeros(optLabels.shape[1:])
 	for t in range(optLabels.shape[0]):
-		hiIntMask = np.logical_or(hiIntMask, optLabels[t, ...] == kernel)
+		for k in range(kernel.size):
+			hiIntMask = np.logical_or(hiIntMask, optLabels[t, ...] == kernel)
 
 	hiIntMask = hiIntMask.astype(float)
 	hiIntMask[hiIntMask == 0] = np.nan
