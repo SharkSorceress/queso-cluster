@@ -111,7 +111,8 @@ class eventRunner:
 	@cached_property
 	def directoryFlavor(self):
 		return("{}_{}".format(self.directoryDate, self.flavor))
-	@property
+
+	@cached_property
 	def blueEdge(self):
 		"""int containing the index for the beginning of the spectral window used for clustering"""
 		blueEdge = self.lines[0]['window'][0]
@@ -119,7 +120,7 @@ class eventRunner:
 			raise TypeError("Window indexes must be integers")
 		return(blueEdge)
 
-	@property
+	@cached_property
 	def redEdge(self):
 		"""int containing the index for the end of the spectral window used for clustering"""
 		redEdge = self.lines[0]['window'][1]
@@ -127,7 +128,7 @@ class eventRunner:
 			raise TypeError("Window indexes must be integers")
 		return(redEdge)
 
-	@property
+	@cached_property
 	def lineCenter(self):
 		"""The index for a center position in the window. This may coinside with the line center of the spectrum"""
 		center = self.lines[0]['center']
@@ -143,7 +144,7 @@ class eventRunner:
 			raise TypeError("lineContinuum index must be an integer")
 		return(continuum)
 
-	@property
+	@cached_property
 	def timeFrames(self):
 		if 'timeFrames' not in list(self.runnerConfig.keys()):
 			return(0)

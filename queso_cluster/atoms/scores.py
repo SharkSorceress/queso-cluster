@@ -5,155 +5,88 @@ import numba as nb
 from . import base as baseAtom
 
 from ..addon import logg
-# def calcResolvingIndex(dataSquare, labelLine):
-# 	labelLst = np.unique(labelLine)
-# 	resolveSquare = np.zeros((len(labelLst), dataSquare.shape[1]))
-# 	for l in range(labelLst.size):
-# 		lindx = np.where(labelLine == labelLst[l])[0]
-# 		resolveSquare[l, :] = calcSingleResolvingIndex(dataSquare[lindx, :])
 
-# 	return(resolveSquare)		
 
-# def calcSingleResolvingIndex(dataSquare):
+def inertiaScore(dataSquare, labelLine, distortion=False):
+	"""
+	Calculates the inertia (or distortion) of a given dataset
 
-# 	centroid_mins, centroid_plus = np.quantile(dataSquare, [0.25, 0.75], axis=0)
-# 	centroid = dataSquare.sum(axis=0)/dataSquare.shape[0]
-# 	# centroid_plus = dataSquare.max(axis=0)
-# 	# centroid_mins = dataSquare.min(axis=0)
-	
-# 	plusIndx = np.where(dataSquare > centroid_plus)[0]
-# 	centroid_plus = dataSquare[plusIndx, :].sum()/plusIndx.size
+	Parameters
+	----------
+	dataSquare : ndarray
+		2D array of datapoints
+	labelLine : ndarray
+		1D array of labels
+	distortion : boolean, optional
+		Decides whether to calculate inertia or distortion
 
-# 	minsIndx = np.where(dataSquare < centroid_mins)[0]
-# 	centroid_mins = dataSquare[minsIndx, :].sum()/minsIndx.size
+	Returns
+	-------
+	float
+		The score
+	"""
 
-# 	delta_plus = np.abs(centroid_plus - centroid)
-# 	delta_mins = np.abs(centroid_mins - centroid)
 
-# 	return((delta_plus - delta_mins)/(delta_plus + delta_mins))
-	
+	labelLst = np.unique(labelLine)
+	decisions = np.zeros((labelLst.size, dataSquare.shape[-1]), dtype=dataSquare.dtype)
 
-# @nb.njit()
-# def calcElbowEntry(data, labels):
-# 	#> detail: 
-# 	#> param type data:
-# 	#> param type labels:
-# 	#> return (type): 
-# 	#> test-method:
+	for l in range(labelLst.size):
+		lindx = np.where(labelLine == labelLst[l])[0]
+		decisions[l, :] = dataSquare[lindx, :].sum(axis=0)/lindx.size
 
-# 	labelLst = np.unique(labels)
-# 	localDistance = np.zeros(len(labelLst))
-# 	for j in range(len(labelLst)):
-# 		indx = np.where(labels == labelLst[j])[0]
-# 		centroid = data[indx, :].sum(axis=0)/len(indx)
-# 		d2 = 0.0
-# 		for k in range(len(indx)):
-# 			d = data[indx[k], :] - centroid
-# 			d2 += np.sqrt(d.dot(d))
-# 		#print(d2/len(indx))
-# 		localDistance[j] = d2/len(indx)
+	_, D_x = baseAtom.minimize(dataSquare, decisions, labelLst.size)
+	if distortion:
+		score = D_x.sum()
+	else:
+		score = (D_x**2).sum()
 
-# 	# def _calcScore(scores):
-# 	# 	return(np.argmax(np_gradient(np_gradient(_calcCurvature(scores)))) + 1)
-
-# 	return(localDistance)#, _calcScore)
-
-# # @nb.njit()
-# # def calcVarianceScore(data):
-# # 	#> detail: 
-# # 	#> param type data:
-# # 	#> return (type): 
-# # 	#> test-method:
-
-# # 	avg_var = np.std(data, axis=0).sum()/data.shape[1]
-# # 	centroid = data.sum(axis=0)/data.shape[0]
-
-# @nb.njit()
-# def criteriaInertiaScore(score):
-# 	#> detail: 
-# 	#> param type score:
-# 	#> return (type): 
-# 	#> test-method:
-# 	diff = baseAtom.np_gradient(score)
-# 	for d in range(diff.size):
-# 		if diff[d] < diff[0]*0.8:
-# 			return d		
-
-# @nb.njit()
-# def calcInertiaScore(dataSquare, labelLine):
-# 	#> detail: 
-# 	#> param type dataSquare:
-# 	#> param type labelLine:
-# 	#> return (type): 
-# 	#> test-method:
-# 	labelLst = np.unique(labelLine)
-# 	inertia = 0
-# 	for l in range(labelLst.size):
-# 		lindx = np.where(labelLine == labelLst[l])[0]
-# 		centroid = dataSquare[lindx, :].sum(axis=0)/labelLst.size
-# 		for ll in range(lindx.size):
-# 			delta = dataSquare[lindx[ll], :] - centroid
-# 			inertia += delta.dot(delta)
-# 	return(inertia)	
-
-# @nb.njit()
-# def criteriaSilhouetteScore(score):
-# 	#> detail: 
-# 	#> param type score:
-# 	#> return (type): 
-# 	#> test-method:
-# 	return(score.argmax())
-
+	return(score)
 
 # @nb.njit(cache=True)
-# def calcNeighborSilhouetteScore(dataSquare, labelLine, point=None, unbound=False):
-# 	labelLst = np.unique(labelLine)
-# 	scores = np.zeros(labelLst.size)
+# def distanceArray(point, dataSquare):
 
-# 	if not (point is None):
-# 		labelLst = np.asarray([point])
+# 	dist = np.zeros(dataSquare.shape[0]) + np.inf
+# 	for i in range(dataSquare.shape[0]):
+# 		if point == i:
+# 			continue
+# 		delta = dataSquare[point, :] - dataSquare[i, :]
+# 		dist[i] = np.sqrt(delta.dot(delta))
+	
+# 	return(dist)
+	
 
-# 	for l in range(labelLst.size):
-# 		#scores[l] = calcNeighborSingleSilhouetteScore(dataSquare, labelLine, 
-# 		#										labelLst[l], unbound)
-# 		intraIndxs = np.where(labelLine == labelLst[l])[0]
+# @nb.njit(cache=True)
+# def intraMapping(dataSquare):
 
-# 		sampleScore = np.zeros(intraIndxs.size)
+# 	labelLine = np.arange(dataSquare.shape[0])
+# 	nxtLabelLine = np.zeros(labelLine.shape)
+# 	i = 0
+# 	killer = 0
+# 	while True:
+# 		converge = np.unique(nxtLabelLine).size
+# 		labelLst = np.unique(labelLine)
+# 		lindx = np.where(labelLine == labelLst[i])[0]
+# 		pindx = np.where(labelLine != labelLst[i])[0]
 
-# 		for j in range(intraIndxs.size):
-# 			intraIndx = intraIndxs[j]
-# 			neighbor = findSampleNeighbor(dataSquare, labelLine, intraIndx)
+# 		for j in range(lindx.size):
+# 			nDist = distanceArray(lindx[j], dataSquare)
+# 			if lindx.size < 5:
+# 				nxtLabelLine[np.argmin(nDist)] = i
+# 			# else:
+# 			# 	test = nDist[lindx]
+# 			# 	test = np.mean(test[np.isfinite(test)])
+# 			# 	for p in range(pindx.size):
+# 			# 		if test < nDist[pindx[p]]:
+# 			# 			nxtLabelLine[pindx[p]] = i
+# 		i += 1
 
-# 			interIndxs = np.where(labelLine == neighbor)[0]
-			
-# 			intraSample = dataSquare[intraIndx, :]#.sum(axis=0)/len(intraIndx)
-
-# 			intra_d2 = 0.0
-# 			for k in range(len(intraIndxs)):
-# 				d = dataSquare[intraIndxs[k], :] - intraSample
-# 				intra_d2 += np.sqrt(d.dot(d))		
-			
-# 			inter_d2 = 0.0
-# 			for k in range(len(interIndxs)):
-# 				d = dataSquare[interIndxs[k], :] - intraSample
-# 				inter_d2 += np.sqrt(d.dot(d))
-
-# 			intraDistance = intra_d2/(len(intraIndxs)-1)
-# 			interDistance = inter_d2/len(interIndxs)
-
-# 			if unbound:
-# 				sampleScore[j] = 1 - intraDistance/interDistance
-# 			else:
-# 				sampleScore[j] = (interDistance - intraDistance)/np.maximum(intraDistance, interDistance)
-
-# 		scores[l] = sampleScore.mean()
-
-# 		if point == labelLst[l]:
-# 			return(scores[l])
+# 		if converge == np.unique(nxtLabelLine).size:
+# 			killer += 1
+# 			if killer > 10:
+# 				return(nxtLabelLine)
+# 		else:
+# 			killer = 0
 		
-# 	return(scores.min())
-
-
 @nb.njit(cache=True)
 def speedTest2(intraSamples, intraIndxSize, i):
 	intra_d2 = 0.0
@@ -162,7 +95,7 @@ def speedTest2(intraSamples, intraIndxSize, i):
 			continue
 		d = intraSamples[j, :] - intraSamples[i, :]
 		intra_d2 += np.sqrt(d.dot(d))	
-	return(intra_d2/intraIndxSize)	
+	return(intra_d2/(intraIndxSize-1))	
 
 
 @nb.njit(cache=True)
@@ -204,7 +137,6 @@ def findSampleNeighbor(dataSquare, labelLine, pointIndx):
 
 	return(neighborLabel)
 
-@logg.loggTimer
 @nb.njit(cache=True)
 def calcNeighborSilhouetteScore(dataSquare, labelLine, point):
 	"""
@@ -235,28 +167,14 @@ def calcNeighborSilhouetteScore(dataSquare, labelLine, point):
 		interIndxs = np.where(labelLine == neighbor)[0]
 		intraSamples = dataSquare[intraIndxs, :]
 		interSamples = dataSquare[interIndxs, :]
-
-		# intra_d2 = 0.0
-		# for j in range(intraIndxs.size):
-		# 	if j == i:
-		# 		continue
-		# 	d = intraSamples[j, :] - intraSamples[i, :]
-		# 	intra_d2 += np.sqrt(d.dot(d))		
-		intraDistance = speedTest2(intraSamples, intraIndxs.size, i)
 	
+		intraDistance = speedTest2(intraSamples, intraIndxs.size, i)
 		interDistance = speedTest(interSamples, intraSamples[i, :], interIndxs.size)
-		# inter_d2 = 0.0
-		# for k in range(interIndxs.size):
-		# 	d = interSamples[k, :] - intraSamples[i, :]
-		# 	inter_d2 += np.sqrt(d.dot(d))
 
-		#intraDistance = intra_d2/(intraIndxs.size-1)
-		#interDistance = inter_d2/interIndxs.size
-		
 		#if unbound:
-		score[i] = 1 - intraDistance/interDistance
+		#score[i] = 1 - intraDistance/interDistance
 		#else:
-		#@score[i] = (interDistance - intraDistance)/np.maximum(intraDistance, interDistance)
+		score[i] = (interDistance - intraDistance)/np.maximum(intraDistance, interDistance)
 
 	return(np.mean(score))
 

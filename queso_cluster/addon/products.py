@@ -12,7 +12,7 @@ from ..atoms import scores as scoresAtom
 from ..atoms import error as errorAtom
 from ..atoms import norm as normAtom
 
-from  ..runners import base as baseRun
+from  .. import base as baseMain
 
 import numpy as np
 import matplotlib as mpl
@@ -55,15 +55,16 @@ class Products:
 
 		if self.vfindx.size == 0:
 			raise errorAtom.OopsAllNan()
-
-		self._raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)
-		self._raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)	
+	
+		self._raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, self._quesoOut.waveGrid[:, None]])*100)/100.)
+		self._raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, self._quesoOut.waveGrid[:, None]])*100)/100.)	
 
 		if hasattr(self._quesoOut._config, "waveFitFunc"):
 			waveFit	= self._quesoOut._config.waveFitFunc(self._quesoOut._instrumentObj.nSpectral+1).to('angstrom')
 			self._wavelambda = waveFit.magnitude
 			self._wavelambda -= self._wavelambda[self._quesoOut._config.lineCenter]
-			self._waveUnit = waveFit.units
+			if waveFit.units == "angstrom":
+				self._waveUnit = r"\textrm{\AA}"
 			#print(self._waveUnit)
 		else:
 			self._wavelambda = np.arange(self._quesoOut._instrumentObj.dataPrism.shape[2])
@@ -72,12 +73,12 @@ class Products:
 
 		self._extent  = self._wavelambda[ii], self._wavelambda[jj], self._raw_min, self._raw_max
 
-		if len(self.vindx) == 2:
-			self.xlim = np.array([self.vindx[0].min(), self.vindx[0].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
-			self.ylim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
-		elif len(self.vindx) == 3:
-			self.xlim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
-			self.ylim = np.array([self.vindx[2].min(), self.vindx[2].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
+		# if len(self.vindx) == 2:
+		self.xlim = np.array(self._quesoOut._config.runnerConfig['bbox'][:2])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
+		self.ylim = np.array(self._quesoOut._config.runnerConfig['bbox'][2:])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
+		# elif len(self.vindx) == 3:
+		# 	self.xlim = np.array([self.vindx[1].min(), self.vindx[1].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlSlitWidth'].magnitude
+		# 	self.ylim = np.array([self.vindx[2].min(), self.vindx[2].max()])*self._quesoOut._instrumentObj.pxlDelta['pxlAlongSlit'].magnitude
 
 
 
@@ -356,19 +357,35 @@ class Products:
 						width_ratios=[1 for x in range(ncols)] + [0.2],
 						height_ratios=[1 for x in range(1)],
 						figure=fig)		
-				
+
+				ymin = np.inf
+				ymax = -np.inf
+				for oo in range(ncols):
+					indx = np.ravel_multi_index((oo*np.ones(indx2D[0].size, dtype=int), *indx2D), 
+									self.optLabels.shape)
+					ymin = np.nanmin([ymin, np.nanmin(self._quesoOut.prepSquare[indx,self._quesoOut._config.blueEdge:self._quesoOut._config.redEdge])])
+					ymax = np.nanmax([ymax, np.nanmax(self._quesoOut.prepSquare[indx,self._quesoOut._config.blueEdge:self._quesoOut._config.redEdge])])
+
+
+				print([ymin, ymax])
+
 				for oo in range(ncols):
 					indx = np.ravel_multi_index((oo*np.ones(indx2D[0].size, dtype=int), *indx2D), 
 									self.optLabels.shape)
 
+
 					ax  = plt.subplot(gs[0, oo])
-					ax  = self.spectralEntry(ax, indx)
+					
+					ax  = self.spectralEntry(ax, indx, scale=np.ceil((ymax-ymin)/50 * 1000)/1000)
+
 
 					if not gs[0, oo].is_first_col():
 						ax.set_yticklabels([])
 					ax.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))	
+					ax.set_ylim([np.floor(ymin*1000)/1000., np.ceil(ymax*1000)/1000])
+					
 
-				fig.savefig("./{}/sequences/labelTest_{}.png".format(self._quesoOut._config.directoryFlavor, int(lcounter)))
+				fig.savefig("./{}/sequences/labelTest_{}.pdf".format(self._quesoOut._config.directoryFlavor, int(lcounter)))
 				lcounter += 1
 			plt.close()
 
@@ -560,7 +577,7 @@ class Products:
 						bins = intrinsicConfig[i]['layerConfig']['bins']
 						cbar_label = "Continuum Intensity"
 
-				intrinsicLayerMap = baseRun.runIntrinsic(len(np.diff(bins)), np.floor(moment0*100)/100., 
+				intrinsicLayerMap = baseMain.runIntrinsic(len(np.diff(bins)), np.floor(moment0*100)/100., 
 											  edgeOverride=np.array(bins).astype(float))
 
 				
@@ -700,9 +717,9 @@ class Products:
 					height_ratios=[1 for x in range(nrows)],
 					figure=fig)
 
-		raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()
-		raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, ii:jj+1])*100)/100.)#.compute()	
-		extent  	= self._wavelambda[ii], self._wavelambda[jj], raw_min, raw_max
+		#raw_max = (np.ceil(np.nanmax(self._quesoOut.prepSquare[self.vfindx, self._quesoOut._config.waveGrid])*100)/100.)#.compute()
+		#raw_min = (np.floor(np.nanmin(self._quesoOut.prepSquare[self.vfindx, self._quesoOut._config.waveGrid])*100)/100.)#.compute()	
+		#extent  	= self._wavelambda[ii], self._wavelambda[jj], raw_min, raw_max
 
 		panel_bounds = []
 		bounds_ticker = int(str(i0o1Lst[0])[0])
@@ -714,12 +731,15 @@ class Products:
 			ax0      = plt.subplot(gs[j, 0])
 
 			sindx = np.where(i0Arr == i0Arr[i0_indx[0]])[0].astype(np.uint32)
+			print([i0Arr[i0_indx[0]]])
+
+			subFrame = self._quesoOut.prepSquare[self.vfindx[sindx], :]
 
 			dbScore = None
-			# if np.unique(validLabels[sindx]).size > 1:
-			# 	#dbScore = scoresAtom.calcDaviesBouldin(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
-			# 	dbScore = metrics.davies_bouldin_score(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
-			# 	print(dbScore)
+			if np.unique(validLabels[sindx]).size > 1:
+				#dbScore = scoresAtom.calcDaviesBouldin(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
+				dbScore = metrics.davies_bouldin_score(subFrame[:, self._quesoOut.waveGrid], validLabels[sindx])
+				print(dbScore)
 
 			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], scores=dbScore)
 			if gs[j,0].is_last_row():
@@ -732,7 +752,7 @@ class Products:
 		
 			if bounds_ticker != int(str(i0o1Lst[j])[0]):
 				trans = mpl.transforms.blended_transform_factory(ax0.transData, fig.transFigure)
-				panel_bounds.append([-extent[0], ax0.get_position().bounds[2], j, trans])
+				panel_bounds.append([-self._extent[0], ax0.get_position().bounds[2], j, trans])
 
 			bounds_ticker = int(str(i0o1Lst[j])[0])
 
@@ -748,13 +768,14 @@ class Products:
 
 				score = None
 				#print(np.unique(validLabels[sindx]))
-				# if np.unique(validLabels[sindx]).size > 1:
-				# 	# score = scoresAtom.calcNeighborSilhouetteScore(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], 
-				#  	# 							   validLabels[sindx], 
-				# 	# 							   point=validLabels[o2_indx[0]])
-				# 	score = metrics.silhouette_samples(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx], metric='euclidean')
-				# 	score = score[validLabels[sindx] == validLabels[o2_indx[0]]].mean()
-				# 	#print([scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]].mean(), np.median(scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]])])
+				if np.unique(validLabels[sindx]).size > 1:
+					# score = scoresAtom.calcNeighborSilhouetteScore(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], 
+				 	# 							   validLabels[sindx], 
+					# 							   point=validLabels[o2_indx[0]])
+					score = metrics.silhouette_samples(subFrame[:, self._quesoOut.waveGrid], validLabels[sindx], metric='euclidean')
+					print(validLabels[o2_indx[0]])
+					score = score[validLabels[sindx] == validLabels[o2_indx[0]]].mean()
+					#print([scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]].mean(), np.median(scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]])])
 
 				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], scores=score)
 				if gs[j,k+1].is_last_row():
@@ -767,7 +788,7 @@ class Products:
 				# 	axR.tick_params(labelright=False)
 		return(fig)
 
-	def spectralEntry(self, ax, indx, scores=None, dev=False):
+	def spectralEntry(self, ax, indx, scores=None, dev=False, scale=0.01):
 		"""
 		Calculation function for :func:`~queso_cluster.addon.products.Products.clusterProfiles`
 		
@@ -799,40 +820,27 @@ class Products:
 		ii, jj = [self._quesoOut._config.blueEdge, self._quesoOut._config.redEdge]
 
 		# 
-		raw_dat = self._quesoOut.prepSquare[indx, ii:jj+1]
+		raw_dat = self._quesoOut.prepSquare[indx,:]
+		raw_dat = raw_dat[:, ii:jj+1]
 		centroid_i = raw_dat.sum(axis=0)/raw_dat.shape[0]	
 
-		# if dev:
-		# 	resolvingIndex = scoresAtom.calcSingleResolvingIndex(raw_dat)
-		# 	centroid_min, centroid_max = np.quantile(raw_dat, [0.25, 0.75], axis=0)			
-		# 	axR = ax.twinx()
-		# 	axR.set_ylim([-1, 1])
-		# 	axR.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], resolvingIndex, color='red', linestyle='dashed', linewidth=0.75)
-		# 	ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_min, color='blue', linewidth=0.75)
-		# 	ax.plot(self._wavelambda[ii:jj+1]--self._wavelambda[self._quesoOut._config.lineCenter], centroid_max, color='blue', linewidth=0.75)
-		# 	logger.debug("Resolving Index: {}".format(np.mean(np.abs(resolvingIndex))))
-		ax.plot(self._wavelambda[ii:jj+1]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_i, color='black', linewidth=0.75)
+
+		ax.plot(self._wavelambda[self._quesoOut.waveGrid]-self._wavelambda[self._quesoOut._config.lineCenter], centroid_i[self._quesoOut.waveGrid - ii], color='black', linewidth=0.75)
 
 		# im = ax.hist2d(raw_dat, bins=[0.01, wavelambda[ii:jj+1]-wavelambda[self.lineCenter]])
-		temp_im 	= auxAtom.density_hist2d(raw_dat, 0.01, self._extent[3], self._extent[2])
-		print(self._quesoOut._config.normConfig)
+		temp_im 	= auxAtom.density_hist2d(raw_dat, scale, self._extent[3], self._extent[2])
 		if self._quesoOut._config.normConfig['norm'] == normAtom.normMaximum:
 			temp_im[temp_im > 0] = np.log10(temp_im[temp_im > 0])
 
-		ww, insty = np.meshgrid(self._wavelambda[ii:jj+1+1]-self._wavelambda[self._quesoOut._config.lineCenter], np.arange(self._extent[2], self._extent[3]+0.01, 0.01))
+		#ww_grid = self._wavelambda[self._quesoOut._config.waveGrid].tolist() + [self._wavelambda[self._quesoOut._config.redEdge + 1]]
+		ww_grid = self._wavelambda[ii:jj+1+1]
+		ww, insty = np.meshgrid(np.asarray(ww_grid)-self._wavelambda[self._quesoOut._config.lineCenter], np.arange(self._extent[2], self._extent[3]+scale, scale))
 		#print([ww.shape, insty.shape, temp_im.shape])
 		im = ax.pcolormesh(ww, insty, temp_im.T, cmap=LinearSegmentedColormap.from_list('', ['white', self._quesoOut._config.lineTheme]))
 
 		ax.axvline(x = 0, linestyle='dashed', color='black')
 
-		#tindx = self.vindx[0][indx]
-		#xindx = self.vindx[1][indx]
-		#yindx = self.vindx[2][indx]
-		# if self.optLabels.shape == 3:
-		# 	tindx, xindx, yindx = np.unravel_index(indx, self.optLabels.shape)
-		# 	labelLst = np.unique(self.optLabels[tindx, xindx, yindx]).astype(int).astype(str)
-		# else:
-		# 	xindx, yindx = np.unravel_index(indx, self.optLabels.shape)
+
 		labelLst = np.unique(self.optLabels[np.unravel_index(indx, self.optLabels.shape)]).astype(int).astype(str)
 		
 		commonLabel = [labelLst[0][j] for j in range(len(labelLst[0])) if np.unique([a[j] for a in [list(x) for x in labelLst]]).size == 1]
@@ -853,10 +861,18 @@ class Products:
 					xytext=(0.01, 1-0.15), textcoords='axes fraction', fontfamily='sans-serif',
             		va='center', ha='left')	
 
+
+		# unnorm = self._quesoOut.dataSquare[indx, ii:jj].mean(axis=1)
+		# ax.annotate(r"u={:.3f}$\pm${:.3f}".format(unnorm.mean().compute(), np.std(unnorm).compute()),
+        #     		xy=(0.01, 1-0.2), xycoords='axes fraction',
+		# 			xytext=(0.01, 1-0.2), textcoords='axes fraction', fontfamily='sans-serif',
+        #     		va='center', ha='left')	
+
+
 		if not (scores is None):
 			ax.annotate("S={:.3f}".format(float(scores)),
-            		xy=(0.01, 1-0.2), xycoords='axes fraction',
-					xytext=(0.01, 1-0.2), textcoords='axes fraction', fontfamily='sans-serif',
+            		xy=(0.01, 1-0.25), xycoords='axes fraction',
+					xytext=(0.01, 1-0.25), textcoords='axes fraction', fontfamily='sans-serif',
             		va='center', ha='left')			
 
 

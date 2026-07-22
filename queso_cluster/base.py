@@ -1,17 +1,125 @@
+"""
+	:file:  queso_cluster/base.py
+	:lang:  python
+	:synopsis: 
+	:author: Sarah Riley <academic@sriley.dev>
+"""
+
 import numpy as np
 import numba as nb
-from numba_progress import ProgressBar
-import functools
-
 
 from .addon.logg import loggTimer
 from .atoms import base as baseAtom
 from .atoms import aux as auxAtom
 from .atoms import error as errAtom
-from .atoms import mask as maskAtom
-from .runners import base as baseRun
 
-from .loaders import event as eventLoad
+def runPrep(dataSquare, norm, quSquare=None, **kwargs):
+	
+	prepSquare = norm(dataSquare, **kwargs)
+	
+	if not (quSquare is None):
+		#> TODO: Implement quSquare normalization
+		prepSquare -= quSquare
+
+	return(prepSquare)
+
+
+@nb.njit
+def runLabelSort(dataSquare, labelLine):
+	labelLst = np.unique(labelLine)
+
+	m0Lst = np.zeros(labelLst.size)
+	for l in range(labelLst.size):
+		lindx = np.where(labelLine == labelLst[l])[0]
+		m0Lst[l] = (dataSquare[lindx, :].sum(axis=0)/lindx.size).mean()
+
+	sortIndx = np.argsort(m0Lst)[::-1]
+	sortedLabelLst = labelLst[sortIndx]
+	
+	sortedLabelLine = np.zeros(labelLine.shape, dtype=labelLine.dtype)
+	for l in range(sortedLabelLst.size):
+		lindx = np.where(labelLine == sortedLabelLst[l])[0]
+		sortedLabelLine[lindx] = l+1
+
+	return(sortedLabelLine, sortIndx)
+
+
+@nb.njit()
+def runStart(k, data, initialize, starter=None):
+	N                          = data.shape[0]
+	starting_centroid          = np.zeros((k, data.shape[1]), data.dtype)
+
+	if starter is None:
+		starter = np.random.randint(0, high=N, size=1)
+	
+	starting_centroid[0, :]    = data[starter, :]
+	match initialize:
+		case '++':
+			initial_condition  = baseAtom.startPlusPlus(data, k, starting_centroid)
+		case 'max':
+			initial_condition  = baseAtom.startMax(data, k, starting_centroid)
+		case _:
+			raise Exception("Invalid Initialization")
+		
+	return(initial_condition)
+
+
+
+
+
+
+
+# def intrinsicMask(dataSquare, intrinsicLine, keepI0=None):
+# 	intrinsicLine = baseMain._mainIntrinsic(self.config.srcLst, 
+# 									np.floor(dataSquare*100)/100., 0, intrinsicSkip=False)
+# 	intrinsicLine = auxAtom.pick_jth_label(intrinsicLine, 0).astype(int)
+		
+# 	i0Mask = np.ones(dataSquare.shape[0])
+# 	if not (keepI0 is None):
+# 		i0Mask = np.zeros(prepSquare.shape[0], dtype=bool)
+# 		for i in keepI0:
+# 			#print(np.unique(intrinsicLine[(intrinsicLine == i)]))
+# 			#print(np.unique(intrinsicLine[(intrinsicLine == i)*maskLine]))
+# 			i0Mask[(intrinsicLine == i)] = 1
+# 	return(i0Mask)
+
+
+# @nb.njit()
+# def _findOptimalK(data, converge, zindx, func1, func2):
+# 	optimalGroupLst = np.zeros(30)
+# 	a = 0
+# 	counter = 0
+# 	while a < optimalGroupLst.shape[0]:
+# 		# print((a, counter))
+# 		scores1 = np.zeros(6)
+# 		scores2 = np.zeros(6)
+
+# 		groupEntry_tmp = 0
+# 		for i in range(scores1.shape[0]):
+# 			labels = _runOptimization(i+1, data[zindx, :], converge)#, label[zindx])
+# 			scores1_tmp = func1(data[zindx, :], labels)
+# 			scores2_tmp = func2(data[zindx, :], labels)
+# 			scores1[i] = scores1_tmp#np.nanmean(scores_tmp)
+# 			scores2[i] = np.nanmedian(scores2_tmp)
+
+
+# 			f = 1
+# 			if (i > 1 or i < scores1.shape[0]-1) and (scores1[i] > scores1[i-1]*f) and (scores1[i] > scores1[i + 1]*f):
+# 				if (scores2[i] > scores2[i-1]*f) and (scores2[i] > scores2[i+1]*f):
+# 					optimalGroupLst[a] = i+1
+# 					a += 1
+# 					break
+				
+# 		if optimalGroupLst[a] == 0:
+# 			counter += 1
+# 			if counter == 30:
+# 				optimalGroupLst[a] = int(np.min(np.where(scores1 == np.nanmax(scores1))[0]) + 1)
+# 				a += 1
+# 				counter = 0
+		
+# 	return(optimalGroupLst)
+
+
 
 # class clusterBase():
 # 	"""
@@ -63,55 +171,70 @@ from .loaders import event as eventLoad
 # 		return(''.join(self._config.date.split('-')))
 
 
-class interface:
+# class interface:
 
-	def __init__(self, config, instrument, framework):
-		self.flavor = config.flavor
+# 	def __init__(self, config, instrument, framework):
+# 		self.flavor = config.flavor
 
-		self.config = config
-		self.framework = framework(self.config, self.flavor, instrument)
+# 		self.config = config
+# 		self.framework = framework(self.config, self.flavor, instrument)
 	
-	def run(self, prepConfig):
-		if self.config.runners.overwrite:
-			self.framework.prepSquare = baseRun.runPrep(self.framework.dataSquare, **prepConfig)
+# 	def run(self, prepConfig):
+# 		if self.config.runners.overwrite:
+# 			self.framework.prepSquare = runPrep(self.framework.dataSquare, **prepConfig)
 		
-			self.framework.maskLine = np.ones(self.framework.prepSquare.shape[0]).astype(bool)
-			if 'bbox' in list(self.config.runners.config.keys()):
-				self.framework.maskLine = maskAtom.maskCoordinate(self.config.runners.config['bbox'], 
-													(self.framework.timeFrames.size, 
-			  											self.framework.dimInfo['rasterSize'], 
-														self.framework.dimInfo['alongSlitSize']))
+# 			self.framework.maskLine = np.ones(self.framework.prepSquare.shape[0]).astype(bool)
+# 			if 'bbox' in list(self.config.runners.config.keys()):
+# 				self.framework.maskLine = maskAtom.maskCoordinate(self.config.runners.config['bbox'], 
+# 													(self.framework.timeFrames.size, 
+# 			  											self.framework.dimInfo['rasterSize'], 
+# 														self.framework.dimInfo['alongSlitSize']))
 			
-			labelLine, scoreTuple,  = self.framework.cluster(kLst=self.config.clusterConfig['optimized'])
-			labelSquare = labelLine.reshape((self.framework.timeFrames.size, self.framework.dimInfo['rasterSize'], 
-										self.framework.dimInfo['alongSlitSize']))
-			return(labelSquare)
-		else:
-			#returnself.load()
-			raise errAtom.LoadError()
+# 			labelLine, scoreTuple,  = self.framework.cluster(kLst=self.config.clusterConfig['optimized'])
+# 			labelSquare = labelLine.reshape((self.framework.timeFrames.size, self.framework.dimInfo['rasterSize'], 
+# 										self.framework.dimInfo['alongSlitSize']))
+# 			return(labelSquare)
+# 		else:
+# 			#returnself.load()
+# 			raise errAtom.LoadError()
 	
-	def write(self, labelSquare):
-		np.savez("./{}.npz".format(), 
-		   			labelSquare=labelSquare, 
-		   			maskLine=self.framework.maskLine, 
-					prepSquare=self.framework.prepSquare)
+# 	def write(self, labelSquare):
+# 		np.savez("./{}.npz".format(), 
+# 		   			labelSquare=labelSquare, 
+# 		   			maskLine=self.framework.maskLine, 
+# 					prepSquare=self.framework.prepSquare)
 
-	def load(self):
-		loading = np.load("./{}.npz".format(self.flavor))
-		print(loading)
-		labelSquare 				= loading['labelSquare']
-		self.framework.maskLine 	= loading['maskLine']
-		self.framework.prepSquare 	= loading['prepSquare']
-		loading.close()
-		return(self.framework, labelSquare)
+# 	def load(self):
+# 		loading = np.load("./{}.npz".format(self.flavor))
+# 		print(loading)
+# 		labelSquare 				= loading['labelSquare']
+# 		self.framework.maskLine 	= loading['maskLine']
+# 		self.framework.prepSquare 	= loading['prepSquare']
+# 		loading.close()
+# 		return(self.framework, labelSquare)
 	
+@nb.njit()
+def runIntrinsic(edges, data):
+	init_label  = np.ones(data.shape[0], dtype=np.uint16)
+	for q in range(edges.size-1):
+		for r in np.where((edges[q+1] > data) * (edges[q] <= data)):
+			init_label[r] = nb.u8(q+1)
+	return(init_label)
+
 
 @loggTimer
 def mainIntrinsic(config, prepSquare):
+	weights = {'lineContinuum': 0, 'window': 1, 'lineCenter': 2}
 	intrinsicLine = np.zeros(prepSquare.shape[0])
 	intrinsicConfig = config.clusterConfig['intrinsic']
-	for i in range(len(intrinsicConfig)):
-		match intrinsicConfig[i]['label']:
+
+	weightedIntrinsic = [weights[x['label']] for x in intrinsicConfig]
+	sortedIntrinsic = sorted(range(len(intrinsicConfig)), key=lambda k: weightedIntrinsic[k])
+	print(sortedIntrinsic)
+
+	for i in range(len(sortedIntrinsic)):
+		print(intrinsicConfig[sortedIntrinsic[i]]['label'])
+		match intrinsicConfig[sortedIntrinsic[i]]['label']:
 			case 'lineContinuum':
 				indxs = nb.int16(np.array(config.lineContinuum))
 			case 'window': 
@@ -128,11 +251,11 @@ def mainIntrinsic(config, prepSquare):
 		#s = timer()
 		if 'layerConfig' in list(intrinsicConfig[i].keys()):
 			if 'bins' in list(intrinsicConfig[i]['layerConfig'].keys()):
-				intrinsicLine_tmp 	= baseRun.runIntrinsic(nb.float32(np.array(intrinsicConfig[i]['layerConfig']['bins'])), 
+				intrinsicLine_tmp 	= runIntrinsic(nb.float32(np.array(intrinsicConfig[i]['layerConfig']['bins'])), 
 											  iframe.compute())
 		else:
 			_, edges = baseAtom.numba_histogram(iframe, 1, np.array([iframe.min(), iframe.max()]))
-			intrinsicLine_tmp 	= baseRun.runIntrinsic(edges, iframe)
+			intrinsicLine_tmp 	= runIntrinsic(edges, iframe)
 		#e = timer()
 		#print("Part 3: {}s".format(e - s))
 
@@ -148,7 +271,13 @@ def mainIntrinsic(config, prepSquare):
 
 	return(auxAtom.pick_jth_label(intrinsicLine, 0).astype(int))
 
+@nb.njit()
+def runOptimization(k, sub_data, converge, initialize='++'):
+	ic                      = runStart(k, sub_data, initialize)
+	_, data_label           = baseAtom.calcOptimization(k, sub_data, ic, converge)
+	return(data_label+1)
 
+@loggTimer
 def mainOptimization(prepSquare, labelLine, initialize, kLst=None, stageMax=2):
 	if not (kLst is None):
 		if type(kLst[0]) == dict:
@@ -196,8 +325,8 @@ def mainOptimization(prepSquare, labelLine, initialize, kLst=None, stageMax=2):
 			# 	k = baseRun.runOptimalKSearch(prepSquare[indx, :], validationFuncLst, criteriaFuncLst)
 			
 			if k > 1:
-				nxtLabelLineUnsorted = baseRun.runOptimization(k, prepSquare[indx, :], 1e-6, initialize=initialize)
-				nxtLabelLineSorted, _ 	= baseRun.runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted)
+				nxtLabelLineUnsorted = runOptimization(k, prepSquare[indx, :], 1e-6, initialize=initialize)
+				nxtLabelLineSorted, _ 	= runLabelSort(prepSquare[indx, :], nxtLabelLineUnsorted)
 				#scoreLst.append(scoreLine[sortIndx])
 			elif k == 1:
 				nxtLabelLineSorted = np.ones(indx.size, dtype=int)

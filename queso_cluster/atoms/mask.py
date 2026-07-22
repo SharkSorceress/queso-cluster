@@ -1,4 +1,5 @@
 import numpy as np
+import dask.array as da
 
 def maskCoordinate(bEx, dim):
 	bboxMask = np.zeros(dim)
@@ -21,3 +22,6 @@ def maskIntrinsic(keepI0, intrinsicLine, dim):
 		i0Mask = np.broadcast_to(i0MaskNew, dim).reshape(np.prod(dim))
 
 	return(i0Mask.astype(bool))
+
+def maskNaN(dataSquare):
+	return(np.isfinite(dataSquare.sum(axis=-1)))

@@ -1,3 +1,11 @@
+"""
+	:file:  queso_cluster/atoms/flare.py
+	:lang:  python
+	:synopsis: 
+	:author: Sarah Riley <academic@sriley.dev>
+"""
+
+
 import numpy as np
 
 def kernelClusterMask(optLabels, kernel=None):

@@ -7,7 +7,7 @@ setup(
     version=__version__,
     author='Sarah Olivia Riley',
     author_email='sarah.riley1@montana.edu',
-    packages=['queso_cluster', 'queso_cluster.atoms', 'queso_cluster.runners', 'queso_cluster.addon', 'queso_cluster.loaders', 'tests'],
+    packages=['queso_cluster', 'queso_cluster.atoms', 'queso_cluster.addon', 'queso_cluster.loaders', 'tests'],
     url='https://queso.sriley.dev',
     description='Quantifying the Evolution of Spectra with Optimization',
     long_description=open('README.md').read(),

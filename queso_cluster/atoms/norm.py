@@ -98,6 +98,10 @@ def normContinuum(dataSquare, continuumIndx):
 		2D array of normalized spectral data
 
 	"""
+	# print(np.isnan(dataSquare).any().compute())
+	# if np.isnan(dataSquare).any().compute():
+	# 	norm_func = lambda x: x/(x[:, np.unique(np.where(np.isfinite(x))[-1])[0]])[:,None]
+	# else:		
 	norm_func = lambda x: x/(x[:, int(continuumIndx)])[:,None]
 	normSquare = da.blockwise(norm_func, 'ij', dataSquare, 'ij', dtype=np.float32)
 	return(normSquare)

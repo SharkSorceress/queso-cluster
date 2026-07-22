@@ -163,7 +163,8 @@ def minimize(data, decisions, size):
 	for ii in range(data.shape[0]):
 		for kk in range(size):
 			sq_dist[kk] 	= similarityMetric(data[ii,:], decisions[kk, :])
-		data_label[ii]  = sq_dist.argmin()
+		nanIndx = np.where(np.isfinite(sq_dist))[0]
+		data_label[ii]  = nanIndx[np.argmin(sq_dist[nanIndx])]#.argmin()
 		D_x[ii]         = sq_dist[int(data_label[ii])]
 	return(data_label, D_x)
 
@@ -178,7 +179,8 @@ def maximize(data, decisions, size):
 	for ii in range(data.shape[0]):
 		for kk in range(size):
 			sq_dist[kk] 	= similarityMetric(data[ii,:], decisions[kk, :])
-		data_label[ii]  = sq_dist.argmax()
+		nanIndx = np.where(np.isfinite(sq_dist))[0]
+		data_label[ii]  = nanIndx[np.argmax(sq_dist[nanIndx])]#.argmax()
 		D_x[ii]         = sq_dist[nb.u4(data_label[ii])]
 	return(data_label, D_x)
 
@@ -252,19 +254,23 @@ def startMax(data, k, decisions):
 		if len(dc_left) == 0:
 			return(decisions)
 		
-		print((k, len(dc_left)))
-		D_x = np.zeros(data.shape[0])
-		for ii in range(data.shape[0]):
-			for kk in range(k-len(dc_left)):
-				D_x[ii] 	+= similarityMetric(data[ii,:], decisions[kk, :])
-		D_x /= (k - len(dc_left))
+		# print((k, len(dc_left)))
+		# D_x = np.zeros(data.shape[0])
+		# for ii in range(data.shape[0]):
+		# 	for kk in range(k-len(dc_left)):
+		# 		D_x[ii] 	+= similarityMetric(data[ii,:], decisions[kk, :])
+		# D_x /= (k - len(dc_left))
+
+		_, Dx2 = minimize(data, decisions, k-len(dc_left))     
+
+		#Dx2 = D_x**2 #/ (D_x**2).sum()
 
 		
-		if (killer - data[D_x.argmax(), :]).sum() == 0:
+		if (killer - data[Dx2.argmax(), :]).sum() == 0:
 			return(decisions)
 		
-		decisions[dc_left[0], :]    = data[D_x.argmax(), :]
-		killer = data[D_x.argmax(), :]
+		decisions[dc_left[0], :]    = data[Dx2.argmax(), :]
+		killer = data[Dx2.argmax(), :]
 
 @nb.njit()
 def startPlusPlus(data, k, decisions):

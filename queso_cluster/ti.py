@@ -58,7 +58,11 @@ class timeIndependent:
 													(self._instrumentObj.dimInfo['rasterSize'], 
 													self._instrumentObj.dimInfo['alongSlitSize']))
 
+		# print(self.maskLine.dtype)
+		# self.maskLine *= maskAtom.maskNaN(self.prepSquare[:, self._config.blueEdge:self._config.redEdge+1].compute())
+
 		intrinsicLine = intrinsicLine[self.maskLine]
+
 		#>> End of Intrinsic Layer
 
 		_ct_ = logg("start", "compute Time")
@@ -68,14 +72,77 @@ class timeIndependent:
 		except AttributeError:
 			prepSquare = self.prepSquare[self.maskLine, 
 							   self._config.blueEdge:self._config.redEdge+1]
+		
+		prepSquare = prepSquare[:, self.waveGrid-self._config.blueEdge]
 		logg("stop", _log=_ct_)
 
 
+		#i0Arr = auxAtom.pick_jth_label(intrinsicLine, 0)#*10 + auxAtom.pick_jth_label(intrinsicLine, 1)
+		#intrinsicLst = np.unique(i0Arr)			
+
+	
 		#from .addon import tests as tests
+
+
+		# inertiaScoreArr = np.zeros((3, 5, 9))
+		# otherCounter = 10
+		# for k in range(9):
+		# 	kLst[1]['layerGroups'] = [1, 1, k+1, k+1, 1, k+1, k+1, k+1]
+		# 	counter3 = 0
+		# 	while counter3 < otherCounter:
+		# 		print((k, counter3))
+		# 		labelLine  = baseMain.mainOptimization(prepSquare, intrinsicLine, initialize=initialize,
+		# 															kLst=kLst, stageMax=len(kLst))
+
+		# 		ll = 0
+		# 		for ii in range(intrinsicLst.size):
+		# 			indx = np.where(i0Arr == intrinsicLst[ii])[0]
+		# 			optimized = intrinsicLst[ii]*10 + auxAtom.pick_jth_label(labelLine[indx], 1)
+		# 			optLst = np.unique(optimized)
+		# 			for jj in range(optLst.size):
+		# 				oindx = indx[np.where(optimized == optLst[jj])[0]]
+		# 				inertiaScoreArr[0, ll, k] += scoreAtom.inertiaScore(prepSquare[oindx, :], labelLine[oindx])
+		# 				inertiaScoreArr[1, ll, k] += scoreAtom.inertiaScore(prepSquare[oindx, :], labelLine[oindx], distortion=True)/oindx.size
+						
+		# 				ooLst = np.unique(labelLine[oindx])
+		# 				for nn in range(ooLst.size):
+		# 					inertiaScoreArr[2, ll, k] += scoreAtom.calcNeighborSilhouetteScore(prepSquare[oindx, :], labelLine[oindx], point=ooLst[nn])/ooLst.size
+	
+		# 				ll += 1
+		# 		counter3 += 1
+
+		# inertiaScoreArr /= otherCounter
+
+		# fig = plt.figure(layout='constrained', figsize=(10, 10), dpi=300)
+
+		# legendLabels = ["31X", "32X", "51X", "61X", "62X"]
+		# colors = ["red", "orange", "green", "blue", "magenta", "black"]
+
+		# for jj in range(inertiaScoreArr.shape[0]):
+		# 	ax1 = fig.add_subplot(inertiaScoreArr.shape[0], 1, jj+1)
+		# 	for ii in range(len(legendLabels)):
+				
+		# 		norm = 1
+		# 		if jj < 2:
+		# 			norm  = inertiaScoreArr[jj, ii, :].max()
+
+		# 		ax1.plot(np.arange(inertiaScoreArr.shape[2])+1, inertiaScoreArr[jj, ii, :]/norm, color=colors[ii], label=legendLabels[ii])
+		# 		ax1.scatter(np.arange(inertiaScoreArr.shape[2])+1, inertiaScoreArr[jj, ii, :]/norm, color=colors[ii])
+
+
+		# 	# ax3.plot(np.arange(inertiaScoreArr.shape[2])+1, inertiaScoreArr[1, ii, :]/inertiaScoreArr[1, ii, :].max(), color=colors[ii], label=legendLabels[ii])
+		# 	# ax3.scatter(np.arange(inertiaScoreArr.shape[2])+1, inertiaScoreArr[1, ii, :]/inertiaScoreArr[1, ii, :].max(), color=colors[ii])
+
+
+		# ax1.legend()
+		# fig.savefig("./elbow_i0o1.png")
+		# plt.close()
+
+		#kLst[1]['layerGroups'] = [1, 1, 3, 3, 1, 3, 5, 3]
 
 		counter2endAllCounters = 0
 		counterCap = 1
-		i0Scores = np.zeros((2, np.unique(intrinsicLine).size, counterCap))
+		i0Scores = np.zeros((4, np.unique(intrinsicLine).size, counterCap))
 		s = timeit.default_timer()
 
 		#print(initialize)
@@ -95,26 +162,30 @@ class timeIndependent:
 			# 	i0Scores[0, ii, counter2endAllCounters] = scoreAtom.calcDaviesBouldin(prepSquare[indx, :], labelLine[indx])
 			# 	ssScores = np.zeros(labelLst.size)
 			# 	for l in range(labelLst.size):
-			# 		ssScores[l] = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx, :], labelLine[indx], labelLst[l])
+			# 		ssScores[l] = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx, :], labelLine[indx], point=labelLst[l])
 			# 		#print([labelLst[l], ssScores])
 			# 	i0Scores[1, ii, counter2endAllCounters] = ssScores.min()
+			# 	i0Scores[2, ii, counter2endAllCounters] = np.median(ssScores)
+			# 	i0Scores[3, ii, counter2endAllCounters] = scoreAtom.inertiaScore(prepSquare[indx, :], labelLine[indx])
+			# #	print(scoreAtom.inertia(prepSquare[indx, :], labelLine[indx]))
+				#interia = scoreAtom.inertia(prepSquare[indx, :], labelLine[indx])
+
+				#i0Scores[3, ii, counter2endAllCounters] = interia
 				
-			#i0Scores[..., counter2endAllCounters] = tests.scoreEvaluation(prepSquare, intrinsicLine, labelLine)
-			#print(i0Scores[..., counter2endAllCounters])
 
 			# i0Arr = auxAtom.pick_jth_label(intrinsicLine, 0)
 			# intrinsicLst = np.unique(i0Arr)
-			# #finals = np.zeros(intrinsicLst.size)
+
+			# scoresArray = np.zeros((2, intrinsicLst.size))
 			# for ii in range(intrinsicLst.size):
 			# 	indx = np.where(i0Arr == intrinsicLst[ii])[0]
-			# 	# gSS = scoreAtom.calcGlobalSilhouetteScore(prepSquare[indx,:], labelLine[indx])
-			# 	# i0Scores[0, ii, counter2endAllCounters] = np.array(gSS).min()
-
-			# 	nSSb = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx,:], labelLine[indx], unbound=False)
-			# 	i0Scores[0, ii, counter2endAllCounters] = nSSb
+			# 	nSSb = scoreAtom.calcNeighborSilhouetteScore(prepSquare[indx,:], labelLine[indx], point=labelLst[l])
+			# 	scoresArray[0, ii] = nSSb
 				
 			# 	db = scoreAtom.calcDaviesBouldin(prepSquare[indx, :], labelLine[indx])
-			# 	i0Scores[1, ii, counter2endAllCounters] = db
+			# 	scoresArray[1, ii] = db				
+			# i0Scores[..., counter2endAllCounters] = scoresArray#tests.scoreEvaluation(prepSquare, intrinsicLine, labelLine)
+			#print(i0Scores[..., counter2endAllCounters])
 
 
 			#print(finals)
@@ -146,7 +217,7 @@ class timeIndependent:
 		# 		if jj == 0:
 		# 			ax.set_ylabel(np.unique(intrinsicLine)[ii])
 
-		# fig.savefig("./scoreTest_++.png")
+		# fig.savefig("./scoreTest_{}.png".format(initialize))
 
 		# if (i0Scores[1, :, -1] <= 0.5).all():
 		# 	raise Exception("Criteria not satisfied")
@@ -217,3 +288,16 @@ class timeIndependent:
 			
 		compoundLabels[nindxX, nindxY] = "X"
 		return(compoundLabels)
+
+
+	@cached_property
+	def waveGrid(self):
+		ii, jj = [self._config.blueEdge, self._config.redEdge]
+		if "adaptive" in list(self._config.lines[0].keys()):
+			dataLine = np.std(self.prepSquare[:, ii:jj+1], axis=0).compute()
+			std_quantile = np.quantile(dataLine, float(self._config.lines[0]['adaptive']))
+
+			w = np.unique([ii] + np.arange(ii, jj+1)[dataLine > std_quantile].tolist() + [jj])
+		else:
+			w = np.arange(ii,jj+1)
+		return(np.asarray(w).astype(int))

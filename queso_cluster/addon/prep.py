@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from . import style as sty
-def figureBackup01(analysisObj, mode, dataSquare=None, mask=True):
+def intrinsicHistogram(analysisObj, mode, dataSquare=None, mask=True):
+
 	
 	if dataSquare is None:
 		dataSquare = analysisObj.dataSquare
@@ -62,4 +63,29 @@ def figureBackup01(analysisObj, mode, dataSquare=None, mask=True):
             		va='center', ha='left')	
 				   #color=mpl.colors.rgb2hex(color_pallet[j+1]))
 		ax.set_xlim([np.nanmin(moment0Lst[i][moment0Lst[i] > 0]), np.nanmax(moment0Lst[i][moment0Lst[i] > 0])])
+	return(fig)
+
+
+def profileVariation(analysisObj, prepSquare=None):
+
+	if prepSquare is None:
+		prepSquare = analysisObj.prepSquare
+
+
+	ii, jj = [analysisObj._config.blueEdge, analysisObj._config.redEdge]
+	dataLine = np.std(prepSquare[:, ii:jj+1], axis=0).compute()
+
+	std_quantile = np.quantile(dataLine, analysisObj._config.lines[0]['adaptive'])
+
+	fig = plt.figure(layout='constrained', figsize=(10, 5), dpi=300)
+
+	ax = fig.add_subplot(121)
+	ax.plot(np.arange(ii, jj+1), dataLine, color='black')
+	ax.scatter(np.arange(ii, jj+1)[dataLine < std_quantile], dataLine[dataLine < std_quantile], color='red')
+
+	ax = fig.add_subplot(122)
+	ax.hist(dataLine, bins=np.arange(dataLine.min(), dataLine.max(), step=0.005), rwidth=1, fill=False, histtype='step', color='black')
+	ax.axvline(x = std_quantile, color='red', linestyle='dashed')
+
+
 	return(fig)

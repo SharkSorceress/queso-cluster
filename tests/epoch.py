@@ -6,8 +6,8 @@
 import numpy as np
 
 from queso_cluster import writer, ti
-from queso_cluster.runners import base as runBase
-from queso_cluster.addon import aia, prep
+from queso_cluster import base as baseMain
+from queso_cluster.addon import prep, aia
 from queso_cluster.loaders.visp import visp
 from queso_cluster.atoms import norm as normAtom
 from queso_cluster.atoms import mask as maskAtom
@@ -36,8 +36,11 @@ def main(config):
 	tiDev.dataSquare = ViSPobj.dataPrism
 
 	if config.overwrite:
-		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare, **config.normConfig)
+		tiDev.prepSquare = baseMain.runPrep(tiDev.dataSquare, **config.normConfig)
 		#noMaskLabelLine, _ = tiDev.clustering(tiDev.dataSquare)#
+
+		fig_std = prep.profileVariation(tiDev)
+		fig_std.savefig("./{}/profileVariation.png".format(config.directoryFlavor))
 
 		tiDev.maskLine = np.ones(tiDev.prepSquare.shape[0]).astype(bool)
 		if True:
@@ -48,7 +51,7 @@ def main(config):
 											(ViSPobj.dimInfo['rasterSize'], 
 											ViSPobj.dimInfo['alongSlitSize']))
 
-		fig = prep.figureBackup01(tiDev, ["window", "continuum"])
+		fig = prep.intrinsicHistogram(tiDev, ["window", "continuum"])
 		fig.savefig("./{}/histogram.png".format(config.directoryFlavor))
 
 		labelLine = tiDev.cluster(kLst=config.clusterConfig['optimized'], 
@@ -74,7 +77,7 @@ def main_time(config):
 
 
 	if config.overwrite:
-		tiDev.prepSquare = runBase.runPrep(tiDev.dataSquare, **config.normConfig)
+		tiDev.prepSquare = baseMain.runPrep(tiDev.dataSquare, **config.normConfig)
 
 		#> Note: Creates a mask for data within a specific coordinate range
 		tiDev.maskLine = np.ones(tiDev.prepSquare.shape[0]).astype(bool)
@@ -84,7 +87,7 @@ def main_time(config):
 											ViSPobj.dimInfo['rasterSize'], 
 											ViSPobj.dimInfo['alongSlitSize']))
 	
-		fig = prep.figureBackup01(tiDev, ["window", "continuum"])
+		fig = prep.intrinsicHistogram(tiDev, ["window", "continuum"])
 		fig.savefig("./{}/histogram.png".format(config.directoryFlavor))
 
 
@@ -108,15 +111,15 @@ if __name__ == '__main__':
 
 	from queso_cluster.addon import products
 	p = products.Products(tiDev)
-	fig3a = p.clusterMapSequence(timeAxis=False)
-	fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
+	# fig3a = p.clusterMapSequence(timeAxis=False)
+	# fig3a.savefig("./{}/clusterSequence.png".format(tiDev._config.directoryFlavor))
 
-	fig3b = p.clusterMapSequence(timeAxis=False, intrinsic=True)
-	fig3b.savefig("./{}/intrinsicSequence.png".format(tiDev._config.directoryFlavor))
+	# fig3b = p.clusterMapSequence(timeAxis=False, intrinsic=True)
+	# fig3b.savefig("./{}/intrinsicSequence.png".format(tiDev._config.directoryFlavor))
 
-	kwargDict = {"vmin": 0.2} #sets the minimum for the intensity
-	fig3c = p.intensityMapSequence(timeAxis=False, **kwargDict)
-	fig3c.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
+	# kwargDict = {"vmin": 0.2} #sets the minimum for the intensity
+	# fig3c = p.intensityMapSequence(timeAxis=False, **kwargDict)
+	# fig3c.savefig("./{}/intensitySequence.png".format(tiDev._config.directoryFlavor))
 
 	# fig4 = p.clusterProfiles()
 	# fig4.savefig("./{}/clusterLabels.png".format(tiDev._config.directoryFlavor))
@@ -130,8 +133,8 @@ if __name__ == '__main__':
 
 	p.clusterProfilesCompound(compoundLabels)
 
-	compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
-	fig3b = p.clusterMapCompound(compoundLabels)
-	fig3b.savefig("./{}/figure03_compound.png".format(tiDev._config.directoryFlavor))
+	# compoundLabels = tiDev.clusterCompoundLabels(p.optLabels)
+	# fig3b = p.clusterMapCompound(compoundLabels)
+	# fig3b.savefig("./{}/figure03_compound.png".format(tiDev._config.directoryFlavor))
 
 
