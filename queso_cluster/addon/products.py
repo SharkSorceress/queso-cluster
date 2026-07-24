@@ -735,13 +735,13 @@ class Products:
 
 			subFrame = self._quesoOut.prepSquare[self.vfindx[sindx], :]
 
-			dbScore = None
-			if np.unique(validLabels[sindx]).size > 1:
-				#dbScore = scoresAtom.calcDaviesBouldin(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
-				dbScore = metrics.davies_bouldin_score(subFrame[:, self._quesoOut.waveGrid], validLabels[sindx])
-				print(dbScore)
+			# dbScore = None
+			# if np.unique(validLabels[sindx]).size > 1:
+			# 	#dbScore = scoresAtom.calcDaviesBouldin(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], validLabels[sindx])
+			# 	dbScore = metrics.davies_bouldin_score(subFrame[:, self._quesoOut.waveGrid], validLabels[sindx])
+			# 	print(dbScore)
 
-			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx], scores=dbScore)
+			ax0 = self.spectralEntry(ax0, self.vfindx[i0_indx])#, scores=dbScore)
 			if gs[j,0].is_last_row():
 				#ax0.set_xlabel(r"$\lambda-\lambda_{0}$ [$\mathrm{\AA}$]")
 				ax0.set_xlabel(r"$\lambda-\lambda_{0}$" +  " [{}]".format(self._waveUnit))
@@ -768,13 +768,13 @@ class Products:
 
 				score = None
 				#print(np.unique(validLabels[sindx]))
-				if np.unique(validLabels[sindx]).size > 1:
+				#if np.unique(validLabels[sindx]).size > 1:
 					# score = scoresAtom.calcNeighborSilhouetteScore(self._quesoOut.prepSquare[self.vfindx[sindx], ii:jj+1], 
 				 	# 							   validLabels[sindx], 
 					# 							   point=validLabels[o2_indx[0]])
-					score = metrics.silhouette_samples(subFrame[:, self._quesoOut.waveGrid], validLabels[sindx], metric='euclidean')
-					print(validLabels[o2_indx[0]])
-					score = score[validLabels[sindx] == validLabels[o2_indx[0]]].mean()
+					#score = metrics.silhouette_samples(subFrame[:, self._quesoOut.waveGrid], validLabels[sindx], metric='euclidean')
+					#print(validLabels[o2_indx[0]])
+					#score = score[validLabels[sindx] == validLabels[o2_indx[0]]].mean()
 					#print([scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]].mean(), np.median(scikitScore[validLabels[sindx] == validLabels[o2_indx[0]]])])
 
 				ax = self.spectralEntry(ax,self.vfindx[o2_indx.astype(np.uint32)], scores=score)

@@ -253,19 +253,9 @@ def startMax(data, k, decisions):
 		dc_left = np.flatnonzero(1-np_all_axis1(decisions))		
 		if len(dc_left) == 0:
 			return(decisions)
-		
-		# print((k, len(dc_left)))
-		# D_x = np.zeros(data.shape[0])
-		# for ii in range(data.shape[0]):
-		# 	for kk in range(k-len(dc_left)):
-		# 		D_x[ii] 	+= similarityMetric(data[ii,:], decisions[kk, :])
-		# D_x /= (k - len(dc_left))
 
 		_, Dx2 = minimize(data, decisions, k-len(dc_left))     
 
-		#Dx2 = D_x**2 #/ (D_x**2).sum()
-
-		
 		if (killer - data[Dx2.argmax(), :]).sum() == 0:
 			return(decisions)
 		
