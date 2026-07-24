@@ -385,7 +385,7 @@ class Products:
 					ax.set_ylim([np.floor(ymin*1000)/1000., np.ceil(ymax*1000)/1000])
 					
 
-				fig.savefig("./{}/sequences/labelTest_{}.pdf".format(self._quesoOut._config.directoryFlavor, int(lcounter)))
+				fig.savefig("./{}/sequences/labelTest_{}.pdf".format(self._quesoOut._config.directoryFlavor, int(lcounter)), format="pdf")
 				lcounter += 1
 			plt.close()
 
